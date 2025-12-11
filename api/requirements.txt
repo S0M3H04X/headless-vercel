@@ -1,0 +1,6 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+libsql-experimental==0.0.26  # Turso Python Client
+pytest==8.0.1
+httpx==0.26.0               # 用於測試異步 API
+pytest-asyncio==0.23.5
