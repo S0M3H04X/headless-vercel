@@ -2,6 +2,8 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { WindowInstance, CreateWindowParams } from '@/lib/types/workspace';
+import { WorkspaceSnapshot } from '@/lib/persistence/schema'; 
+import { WorkspaceRepository } from '@/lib/persistence/storage';
 
 interface WorkspaceState {
   windows: Record<string, WindowInstance>; // ID -> Instance Map
@@ -13,11 +15,19 @@ interface WorkspaceState {
   focusWindow: (id: string) => void;
   updateGeometry: (id: string, geometry: Partial<WindowInstance['geometry']>) => void;
   minimizeWindow: (id: string, minimized: boolean) => void;
+  hydrate: (snapshot: WorkspaceSnapshot) => void; // [新增]
+
 }
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   windows: {},
   stackOrder: [],
+  hydrate: (snapshot) => {
+    set({
+        windows: snapshot.windows,
+        stackOrder: snapshot.stackOrder
+    });
+  },
 
   openWindow: ({ title, content, initialGeometry }) => {
     const id = uuidv4();
@@ -101,3 +111,16 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
      })
   }
 }));
+
+// [新增] 訂閱 Store 變更並自動儲存 (Auto-save)
+// 這是 Zustand 的強大功能：subscribe
+// 我們在 Store 初始化後立即設定監聽器
+if (typeof window !== 'undefined') {
+    useWorkspaceStore.subscribe((state) => {
+        // 這裡可以加上 debounce 避免過度寫入，暫時直接寫入
+        WorkspaceRepository.save({
+            windows: state.windows,
+            stackOrder: state.stackOrder
+        });
+    });
+}
