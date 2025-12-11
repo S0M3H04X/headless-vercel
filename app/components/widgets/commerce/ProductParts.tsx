@@ -1,6 +1,16 @@
 'use client';
 import React from 'react';
 import { ContentDescriptor } from '@/lib/types/workspace';
+import { z } from 'zod';
+import { useWidgetState } from '@/hooks/useWidgetState';
+
+// 定義這個 Widget 的狀態結構
+const ProductDescStateSchema = z.object({
+  fontSize: z.number().min(12).max(24),
+  showDetails: z.boolean(),
+});
+
+type ProductDescState = z.infer<typeof ProductDescStateSchema>;
 
 // 1. 商品圖片視窗
 export const ProductImageWidget = ({ content }: { content: ContentDescriptor }) => (
@@ -19,12 +29,21 @@ export const ProductTitleWidget = ({ content }: { content: ContentDescriptor }) 
 );
 
 // 3. 商品描述視窗
-export const ProductDescWidget = ({ content }: { content: ContentDescriptor }) => (
-  <div className="h-full w-full bg-white p-6 overflow-y-auto">
-    <h3 className="font-bold text-sm mb-2 text-gray-500">DESCRIPTION</h3>
-    <p className="text-sm leading-relaxed text-gray-800">
-      這是一雙傳奇的球鞋。採用了最先進的氣墊技術，不僅適合運動，更適合收藏。
+export const ProductDescWidget = ({ content, internalState }: { content: ContentDescriptor, internalState: unknown }) => {
+  // 使用衛士：給定預設值
+  const state = useWidgetState<ProductDescState>(
+    internalState, 
+    ProductDescStateSchema, 
+    { fontSize: 14, showDetails: true }
+  );
+
+  return (
+    <div className="h-full w-full bg-white p-6 overflow-y-auto">
+      {/* 使用安全的 state */}
+      <p style={{ fontSize: state.fontSize }}>
+        這是一雙傳奇的球鞋。採用了最先進的氣墊技術，不僅適合運動，更適合收藏。
       (這裡是原子化拆分後的描述區塊，獨立渲染)
-    </p>
-  </div>
-);
+      </p>
+    </div>
+  );
+};

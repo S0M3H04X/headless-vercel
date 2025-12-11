@@ -1,12 +1,31 @@
 // app/lib/types/workspace.ts
 
-// 1. 內容描述符 (極細顆粒) - 這是 UI Shell 唯一知道關於"內容"的事
-export type ContentKind = 'shopify_product' | 'media_player' | 'pdf_viewer';
+// 使用 const object 來模擬 Enum (比 TypeScript Enum 更輕量且容易整合)
+export const WidgetKind = {
+  // Commerce Context
+  Product: 'shopify_product',
+  ProductImage: 'product_image',
+  ProductTitle: 'product_title',
+  ProductDesc: 'product_desc',
+  
+  // Content Context
+  MediaPlayer: 'media_player',
+  VideoControl: 'video_control',
+  VideoVisual: 'video_visual',
+  VideoMixer: 'video_mixer',
+  
+  // Asset Context
+  PDFViewer: 'pdf_viewer',
+} as const;
 
+// 衍生型別
+export type WidgetKindType = typeof WidgetKind[keyof typeof WidgetKind];
+
+// 更新 ContentDescriptor
 export interface ContentDescriptor {
-  kind: ContentKind;
-  sourceId: string; // e.g., "gid://shopify/Product/123"
-  initialMeta?: Record<string, unknown>; // 允許傳遞初始參數
+  kind: WidgetKindType | string; // 允許 string 是為了容錯，但建議用 WidgetKind
+  sourceId: string;
+  initialMeta?: Record<string, unknown>;
 }
 
 // 2. 視窗實體 (中顆粒) - 包含幾何狀態與不透明的內部狀態

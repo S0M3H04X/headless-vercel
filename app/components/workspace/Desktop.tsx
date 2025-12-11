@@ -6,7 +6,7 @@ import { useWorkspaceStore } from '@/store/workspaceStore';
 import { WinboxWrapper } from '../ui/WinboxWrapper';
 import { WidgetRenderer } from '@/components/widgets/Registry';
 import { WorkspaceRepository } from '@/lib/persistence/storage';
-
+import { ScenarioService } from '@/lib/services/scenarioService';
 
 
 export default function Desktop() {
@@ -98,27 +98,16 @@ export default function Desktop() {
       <div className="absolute top-4 left-4 z-50 flex gap-2">
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition-colors"
-          onClick={openProductSuite}
+          onClick={() => ScenarioService.launchProductSuite('gid://shopify/Product/12345')}
         >
-          Open Product Suite (3 Windows)
+          Open Product Suite
         </button>
+        
         <button
           className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition-colors"
-          onClick={openStudioSuite}
+          onClick={() => ScenarioService.launchVideoStudio('vid_demo_01')}
         >
-          Open Video Studio (3 Windows)
-        </button>
-        <button
-          className="px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700 transition-colors"
-          onClick={() =>
-            openWindow({
-              title: 'Broken Widget',
-              // @ts-expect-error Testing invalid kind
-              content: { kind: 'invalid_kind', sourceId: 'test' },
-            })
-          }
-        >
-          Test Error
+          Open Video Studio
         </button>
       </div>
 

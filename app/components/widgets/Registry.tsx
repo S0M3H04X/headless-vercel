@@ -3,23 +3,28 @@
 import React, { Suspense, lazy } from 'react';
 import { ContentDescriptor, ContentKind } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
+import { WidgetKind } from '@/lib/types/workspace';
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼
 const WIDGET_MAP: Record<string, React.LazyExoticComponent<any>> = {
-  shopify_product: lazy(() => import('./commerce/ProductWidget')),
-  media_player: lazy(() => import('./content/MediaPlayerWidget')),
+  [WidgetKind.Product]: lazy(() => import('./commerce/ProductWidget')),
+  [WidgetKind.MediaPlayer]: lazy(() => import('./content/MediaPlayerWidget')),
+  
+  [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
+  // shopify_product: lazy(() => import('./commerce/ProductWidget')),
+  // media_player: lazy(() => import('./content/MediaPlayerWidget')),
   // 尚未實作的組件可以先指派給通用 Placeholder
   // [新增] 商品原子組件 (Named Export 需要不同的 lazy 寫法)
-  product_image: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
-  product_title: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
-  product_desc:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
+  // product_image: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
+  [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
+  [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
 
   // [新增] 影音原子組件
-  video_control: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
-  video_visual:  lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
-  video_mixer:   lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
-  pdf_viewer: lazy(() => import('./commerce/ProductWidget')), // 暫代
+  [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
+  [WidgetKind.VideoVisual]:  lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
+  [WidgetKind.VideoMixer]:   lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
+  [WidgetKind.PDFViewer]: lazy(() => import('./commerce/ProductWidget')), // 暫代
 };
 
 // --- 2. 載入中畫面 (Skeleton) ---
