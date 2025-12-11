@@ -6,13 +6,15 @@ import 'winbox/dist/css/winbox.min.css';
 import { WindowInstance } from '@/lib/types/workspace';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 
+import '@/styles/winbox-controls.css';
+
 interface WinboxWrapperProps {
   windowInstance: WindowInstance;
   children: React.ReactNode;
 }
 
 export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, children }) => {
-  const { id, title, geometry, zIndex } = windowInstance;
+  const { id, title, geometry, zIndex, internalState } = windowInstance;
   const updateGeometry = useWorkspaceStore((s) => s.updateGeometry);
   const closeWindow = useWorkspaceStore((s) => s.closeWindow);
   const focusWindow = useWorkspaceStore((s) => s.focusWindow);
@@ -71,6 +73,38 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
                 focusWindow(id);
             },
         });
+
+        // --- [新增] Dev 環境專屬 Header 面板 ---
+        if (process.env.NODE_ENV === 'development') {
+            
+            // 1. Debug 按鈕 (印出狀態)
+            wb.addControl({
+                index: 0,
+                class: "wb-debug", // 對應 CSS icon
+                image: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'%3E%3Cpath d='M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z' /%3E%3C/svg%3E",
+                click: function(event: any, winbox: any) {
+                    console.log(`[🔍 Debug ${id}]`, {
+                        geometry: { x: winbox.x, y: winbox.y, w: winbox.width, h: winbox.height },
+                        internalState: internalState,
+                        zIndex: winbox.index
+                    });
+                    alert(`Debug Info Logged for ${title}`);
+                }
+            });
+
+             // 2. Refresh 按鈕 (模擬重載 Widget)
+             wb.addControl({
+                index: 0,
+                class: "wb-refresh", 
+                image: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'%3E%3Cpath d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' /%3E%3C/svg%3E",
+                click: function(event: any, winbox: any) {
+                    // 這裡可以實作更複雜的邏輯，例如強制卸載再掛載 Portal
+                    winbox.setTitle(title + " (Reloading...)");
+                    setTimeout(() => winbox.setTitle(title), 500);
+                }
+            });
+        }
+        // -------------------------------------
 
         // 確保引用
         winboxRef.current = wb;

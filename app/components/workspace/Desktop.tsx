@@ -4,22 +4,10 @@
 import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { WinboxWrapper } from '../ui/WinboxWrapper';
+import { WidgetRenderer } from '@/components/widgets/Registry';
 import { ContentDescriptor } from '@/lib/types/workspace';
 
-// --- 臨時的 Registry (Phase 2 會移出) ---
-const WidgetRenderer = ({ content }: { content: ContentDescriptor }) => {
-  switch (content.kind) {
-    case 'shopify_product':
-      return <div>🛒 Product Widget: {content.sourceId}</div>;
-    case 'media_player':
-      return <div>▶️ Media Player: {content.sourceId}</div>;
-    case 'pdf_viewer':
-      return <div>📄 PDF Viewer: {content.sourceId}</div>;
-    default:
-      return <div className="text-red-500">Unknown Widget</div>;
-  }
-};
-// ----------------------------------------
+
 
 export default function Desktop() {
   const windows = useWorkspaceStore((state) => state.windows);
@@ -37,7 +25,7 @@ export default function Desktop() {
               title: 'Product A',
               content: { kind: 'shopify_product', sourceId: 'prod_123' },
             });
-            // 檢查 Store 是否更新
+            // 檢查 Store 是否更新 [DEBUG]
             setTimeout(() => {
               console.log('[Desktop] Current Windows:', useWorkspaceStore.getState().windows);
             }, 100);
@@ -57,12 +45,24 @@ export default function Desktop() {
         >
           Open Video
         </button>
+        <button
+            className="px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700 transition-colors"
+            onClick={() =>
+                openWindow({
+                    title: 'Broken Widget',
+                    // @ts-expect-error Testing invalid kind
+                    content: { kind: 'invalid_kind', sourceId: 'test' },
+                })
+            }
+        >
+            Test Error
+        </button>
       </div>
 
       {/* 視窗渲染層 */}
       {Object.values(windows).map((win) => (
         <WinboxWrapper key={win.id} windowInstance={win}>
-          <WidgetRenderer content={win.content} />
+          <WidgetRenderer content={win.content} internalState={win.internalState} />
         </WinboxWrapper>
       ))}
     </div>
