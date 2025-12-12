@@ -1,30 +1,28 @@
 'use client';
 
 import React, { Suspense, lazy } from 'react';
-import { ContentDescriptor, ContentKind } from '@/lib/types/workspace';
+import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
-import { WidgetKind } from '@/lib/types/workspace';
+
+
+
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼
-const WIDGET_MAP: Record<string, React.LazyExoticComponent<any>> = {
+const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<BaseWidgetProps>>> = {
   [WidgetKind.Product]: lazy(() => import('./commerce/ProductWidget')),
   [WidgetKind.MediaPlayer]: lazy(() => import('./content/MediaPlayerWidget')),
+  [WidgetKind.PDFViewer]: lazy(() => import('./assets/PDFViewerWidget')),
   
   [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
-  // shopify_product: lazy(() => import('./commerce/ProductWidget')),
-  // media_player: lazy(() => import('./content/MediaPlayerWidget')),
-  // 尚未實作的組件可以先指派給通用 Placeholder
-  // [新增] 商品原子組件 (Named Export 需要不同的 lazy 寫法)
-  // product_image: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
   [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
   [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
 
   // [新增] 影音原子組件
   [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
-  [WidgetKind.VideoVisual]:  lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
-  [WidgetKind.VideoMixer]:   lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
-  [WidgetKind.PDFViewer]: lazy(() => import('./commerce/ProductWidget')), // 暫代
+  [WidgetKind.VideoVisual]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
+  [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
+  
 };
 
 // --- 2. 載入中畫面 (Skeleton) ---
@@ -48,12 +46,13 @@ const UnknownWidget = ({ kind }: { kind: string }) => (
 );
 
 interface WidgetRendererProps {
+  id: string;
   content: ContentDescriptor;
   internalState?: unknown;
 }
 
 // --- 4. 統一渲染入口 (Facade Pattern) ---
-export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ content, internalState }) => {
+export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ id, content, internalState }) => {
   const WidgetComponent = WIDGET_MAP[content.kind];
 
   if (!WidgetComponent) {
@@ -66,7 +65,7 @@ export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ content, interna
       {/* Layer 2: 非同步載入 (防止卡頓) */}
       <Suspense fallback={<LoadingFallback />}>
         {/* Layer 3: 具體業務組件 */}
-        <WidgetComponent content={content} internalState={internalState} />
+        <WidgetComponent id={id} content={content} internalState={internalState} />
       </Suspense>
     </WidgetErrorBoundary>
   );

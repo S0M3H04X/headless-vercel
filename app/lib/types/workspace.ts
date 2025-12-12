@@ -50,3 +50,10 @@ export interface CreateWindowParams {
   content: ContentDescriptor;
   initialGeometry?: Partial<WindowInstance['geometry']>;
 }
+
+// [新增] 所有的 Widget 都必須接受這些 Props
+export interface BaseWidgetProps {
+  id: string; // 用於寫回狀態
+  content: ContentDescriptor;
+  internalState?: any; // 不透明狀態
+}

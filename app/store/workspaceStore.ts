@@ -16,7 +16,7 @@ interface WorkspaceState {
   updateGeometry: (id: string, geometry: Partial<WindowInstance['geometry']>) => void;
   minimizeWindow: (id: string, minimized: boolean) => void;
   hydrate: (snapshot: WorkspaceSnapshot) => void; // [新增]
-
+  updateInternalState: (id: string, stateUpdate: Record<string, any>) => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
@@ -26,6 +26,26 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     set({
         windows: snapshot.windows,
         stackOrder: snapshot.stackOrder
+    });
+  },
+  updateInternalState: (id, stateUpdate) => {
+    set((state) => {
+      const win = state.windows[id];
+      if (!win) return {};
+      
+      // 深度合併或淺層合併取決於需求，這裡使用淺層合併 (Shallow Merge)
+      // 確保不破壞原有的其他狀態欄位
+      const newState = { 
+        ...((win.internalState as object) || {}), 
+        ...stateUpdate 
+      };
+
+      return {
+        windows: {
+          ...state.windows,
+          [id]: { ...win, internalState: newState },
+        },
+      };
     });
   },
 

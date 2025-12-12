@@ -4,8 +4,6 @@
     "paths": {
       "@/*": [
         "./app/*"
-
-        
       ]
     },
     "lib": [
@@ -38,7 +36,9 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "app/polyfills.js",
+    "next.config.ts"
   ],
   "exclude": [
     "node_modules"

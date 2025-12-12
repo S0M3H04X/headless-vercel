@@ -1,9 +1,10 @@
 'use client';
 import React from 'react';
 import { ContentDescriptor } from '@/lib/types/workspace';
+import { BaseWidgetProps } from '@/lib/types/workspace';
 
 // 1. 播放控制器
-export const PlaybackController = ({ content }: { content: ContentDescriptor }) => (
+export const PlaybackController = ({ content }: BaseWidgetProps) => (
   <div className="h-full w-full bg-zinc-900 text-white flex items-center justify-around p-2">
     <button className="p-2 hover:text-green-400">⏮</button>
     <button className="p-4 bg-green-600 rounded-full hover:bg-green-500 shadow-lg shadow-green-900/50">▶</button>
@@ -13,7 +14,7 @@ export const PlaybackController = ({ content }: { content: ContentDescriptor }) 
 );
 
 // 2. 視覺化視圖 (Visualiser)
-export const Visualiser = ({ content }: { content: ContentDescriptor }) => (
+export const Visualiser = ({ content }: BaseWidgetProps) => (
   <div className="h-full w-full bg-black flex items-end justify-center gap-1 p-4">
     {/* 模擬頻譜跳動 */}
     {[40, 60, 30, 80, 50, 90, 20, 60].map((h, i) => (
@@ -27,7 +28,7 @@ export const Visualiser = ({ content }: { content: ContentDescriptor }) => (
 );
 
 // 3. 混音器 (EQ Mixer)
-export const EQMixer = ({ content }: { content: ContentDescriptor }) => (
+export const EQMixer = ({ content }: BaseWidgetProps) => (
   <div className="h-full w-full bg-zinc-800 p-4 flex justify-around">
     {['BASS', 'MID', 'TREBLE'].map((label) => (
       <div key={label} className="flex flex-col items-center h-full">

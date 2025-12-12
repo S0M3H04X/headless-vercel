@@ -17,7 +17,15 @@ export function useWidgetState<T>(
       return defaultState;
     }
 
-    // 2. 嘗試驗證
+    // 2. [新增] 針對 Store 初始化的空物件 {} 進行特判
+    // 這是為了避免 "expected number, received undefined" 的 Zod 誤報
+    if (typeof rawState === 'object' && Object.keys(rawState as object).length === 0) {
+        // 您可以選擇在這裡印一個溫和的 Info，或者完全靜默
+        // console.debug('[WidgetState] Empty state initialized with defaults');
+        return defaultState;
+    }
+
+    // 3. 嘗試驗證
     const result = schema.safeParse(rawState);
     
     if (result.success) {

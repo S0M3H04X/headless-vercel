@@ -1,13 +1,11 @@
 'use client';
 import React from 'react';
 import { ContentDescriptor } from '@/lib/types/workspace';
+import { BaseWidgetProps } from '@/lib/types/workspace';
 
-interface WidgetProps {
-  content: ContentDescriptor;
-  internalState: any; // 暫時使用 any，Phase 3 會處理
-}
 
-export default function ProductWidget({ content }: WidgetProps) {
+
+export default function ProductWidget({ id, content, internalState }: BaseWidgetProps) {
   // 模擬：未來這裡會呼叫 Shopify API
   return (
     <div className="h-full w-full flex flex-col p-4 bg-white">
