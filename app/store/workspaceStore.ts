@@ -1,146 +1,140 @@
-// app/store/workspaceStore.ts
 import { create } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
-import { WindowInstance, CreateWindowParams } from '@/lib/types/workspace';
-import { WorkspaceSnapshot } from '@/lib/persistence/schema'; 
-import { WorkspaceRepository } from '@/lib/persistence/storage';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { WindowInstance, ContentDescriptor } from '@/lib/types/workspace';
 
 interface WorkspaceState {
-  windows: Record<string, WindowInstance>; // ID -> Instance Map
-  stackOrder: string[]; // 儲存 ID 順序，最後一個是 Top (Highest Z-Index)
+  windows: Record<string, WindowInstance>;
+  stackOrder: string[];
   
-  // Actions (高內聚：只能透過這些方法修改狀態)
-  openWindow: (params: CreateWindowParams) => void;
+  openWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
-  updateGeometry: (id: string, geometry: Partial<WindowInstance['geometry']>) => void;
-  minimizeWindow: (id: string, minimized: boolean) => void;
-  hydrate: (snapshot: WorkspaceSnapshot) => void; // [新增]
+  updateWindowGeometry: (id: string, geometry: any) => void;
   updateInternalState: (id: string, stateUpdate: Record<string, any>) => void;
+  minimizeWindow: (id: string) => void;
+  restoreWindow: (id: string) => void;
+  
+  // [刪除] 移除 hydrate 定義
+  // hydrate: (snapshot: any) => void; 
 }
 
-export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
-  windows: {},
-  stackOrder: [],
-  hydrate: (snapshot) => {
-    set({
-        windows: snapshot.windows,
-        stackOrder: snapshot.stackOrder
-    });
-  },
-  updateInternalState: (id, stateUpdate) => {
-    set((state) => {
-      const win = state.windows[id];
-      if (!win) return {};
-      
-      // 深度合併或淺層合併取決於需求，這裡使用淺層合併 (Shallow Merge)
-      // 確保不破壞原有的其他狀態欄位
-      const newState = { 
-        ...((win.internalState as object) || {}), 
-        ...stateUpdate 
-      };
+export const useWorkspaceStore = create<WorkspaceState>()(
+  persist(
+    (set, get) => ({
+      windows: {},
+      stackOrder: [],
 
-      return {
-        windows: {
-          ...state.windows,
-          [id]: { ...win, internalState: newState },
-        },
-      };
-    });
-  },
+      // [刪除] 移除 hydrate 實作
+      /* hydrate: (snapshot) => {
+        set({ windows: snapshot.windows, stackOrder: snapshot.stackOrder });
+      },
+      */
 
-  openWindow: ({ title, content, initialGeometry }) => {
-    const id = uuidv4();
-    const defaultGeo = { x: 50, y: 50, width: 400, height: 300 };
-    
-    const newWindow: WindowInstance = {
-      id,
-      title,
-      geometry: { ...defaultGeo, ...initialGeometry },
-      zIndex: 0, // 會由 focusWindow 自動計算
-      isMinimized: false,
-      content,
-      internalState: {},
-    };
+      openWindow: ({ title, content, initialGeometry }) => {
+        // ... (保持不變)
+        const id = `win_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const defaultGeometry = { x: 50, y: 50, width: 400, height: 300 };
+        
+        const newWindow: WindowInstance = {
+          id,
+          title,
+          content,
+          geometry: initialGeometry || defaultGeometry,
+          zIndex: get().stackOrder.length + 1,
+          isMinimized: false,
+          internalState: {},
+        };
 
-    set((state) => {
-      // 開啟新視窗時，自動置頂
-      const newStack = [...state.stackOrder, id];
-      return {
-        windows: { ...state.windows, [id]: newWindow },
-        stackOrder: newStack,
-      };
-    });
-    
-    // 觸發一次 Focus 以更新 Z-Index
-    get().focusWindow(id);
-  },
+        set((state) => ({
+          windows: { ...state.windows, [id]: newWindow },
+          stackOrder: [...state.stackOrder, id],
+        }));
+      },
 
-  closeWindow: (id) => {
-    set((state) => {
-      const { [id]: _, ...remainingWindows } = state.windows;
-      return {
-        windows: remainingWindows,
-        stackOrder: state.stackOrder.filter((wId) => wId !== id),
-      };
-    });
-  },
-
-  focusWindow: (id) => {
-    set((state) => {
-      // 將該 ID 移到 Stack 的最後面 (Top)
-      const newStack = state.stackOrder.filter((wId) => wId !== id);
-      newStack.push(id);
-      
-      // 根據 Stack 順序重新分配 Z-Index
-      // 這裡實現了 Workspace 對 Viewport 層級的絕對控制
-      const updatedWindows = { ...state.windows };
-      newStack.forEach((wId, index) => {
-        if (updatedWindows[wId]) {
-          updatedWindows[wId] = { ...updatedWindows[wId], zIndex: 10 + index };
-        }
-      });
-
-      return { stackOrder: newStack, windows: updatedWindows };
-    });
-  },
-
-  updateGeometry: (id, geometry) => {
-    set((state) => {
-      const win = state.windows[id];
-      if (!win) return {};
-      return {
-        windows: {
-          ...state.windows,
-          [id]: { ...win, geometry: { ...win.geometry, ...geometry } },
-        },
-      };
-    });
-  },
-
-  minimizeWindow: (id, minimized) => {
-     set((state) => {
-      const win = state.windows[id];
-      if (!win) return {};
-      return {
-        windows: {
-            ...state.windows,
-            [id]: { ...win, isMinimized: minimized }
-        }
-      }
-     })
-  }
-}));
-
-// [新增] 訂閱 Store 變更並自動儲存 (Auto-save)
-// 這是 Zustand 的強大功能：subscribe
-// 我們在 Store 初始化後立即設定監聽器
-if (typeof window !== 'undefined') {
-    useWorkspaceStore.subscribe((state) => {
-        // 這裡可以加上 debounce 避免過度寫入，暫時直接寫入
-        WorkspaceRepository.save({
-            windows: state.windows,
-            stackOrder: state.stackOrder
+      closeWindow: (id) => {
+        set((state) => {
+          const { [id]: removed, ...others } = state.windows;
+          return {
+            windows: others,
+            stackOrder: state.stackOrder.filter((winId) => winId !== id),
+          };
         });
-    });
-}
+      },
+
+      focusWindow: (id) => {
+        set((state) => {
+          const newStack = state.stackOrder.filter((w) => w !== id);
+          newStack.push(id);
+          
+          const updatedWindows = { ...state.windows };
+          newStack.forEach((winId, index) => {
+             if (updatedWindows[winId]) {
+                 updatedWindows[winId] = { ...updatedWindows[winId], zIndex: index + 1 };
+             }
+          });
+
+          return { stackOrder: newStack, windows: updatedWindows };
+        });
+      },
+
+      updateWindowGeometry: (id, geometry) => {
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {}; // 必須回傳物件以符合型別
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { ...win, geometry: { ...win.geometry, ...geometry } },
+            },
+          };
+        });
+      },
+
+      updateInternalState: (id, stateUpdate) => {
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {};
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { 
+                  ...win, 
+                  internalState: { ...(win.internalState as object), ...stateUpdate } 
+              },
+            },
+          };
+        });
+      },
+
+      minimizeWindow: (id) => {
+          set((state) => {
+              const win = state.windows[id];
+              if (!win) return {};
+              return {
+                windows: {
+                    ...state.windows,
+                    [id]: { ...win, isMinimized: true }
+                }
+              };
+          });
+      },
+
+      restoreWindow: (id) => {
+          set((state) => {
+              const win = state.windows[id];
+              if (!win) return {};
+              return {
+                windows: {
+                    ...state.windows,
+                    [id]: { ...win, isMinimized: false }
+                }
+              };
+          });
+          get().focusWindow(id);
+      }
+    }),
+    {
+      name: 'headless-os-workspace',
+    }
+  )
+);
