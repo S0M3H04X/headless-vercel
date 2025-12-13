@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    // "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./app/*"
+      ]
+    },
     "lib": [
       "dom",
       "dom.iterable",
@@ -12,7 +18,6 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -22,15 +27,18 @@
       }
     ],
     "types": [
-      "vitest/globals", 
-      "@testing-library/jest-dom" 
-    ]
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
+    "moduleResolution": "node"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "app/polyfills.js",
+    "next.config.ts"
   ],
   "exclude": [
     "node_modules"

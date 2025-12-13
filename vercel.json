@@ -1,26 +1,13 @@
 {
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "api/index.py"
-    }
-  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" }
+    { 
+      "source": "/api/python/(.*)", 
+      "destination": "/api/index.py" 
+    }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/python/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, max-age=0" }
       ]

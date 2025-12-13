@@ -2,5 +2,13 @@ node_modules
 .venv
 .next
 .env.local
+diagram
 __pycache__
 __tests__
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
