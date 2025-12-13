@@ -31,27 +31,37 @@ export const ScenarioService = {
   },
 
   // Scenario 2: Video Studio
-  launchVideoStudio: (videoId: string) => {
+  launchVideoStudio: (sourceId?: string) => {
     const { openWindow } = useWorkspaceStore.getState();
     const baseX = 100;
     const baseY = 100;
 
+    // 使用一個開源的測試影片 (Big Buck Bunny)
+    // 或是您 public 資料夾內的 '/asses/video/demo.mp4t' (如果有)
+    const videoUrl = '/assets/mp4/01.mp4';
+
+    // 1. Visualiser (Master) - 負責載入影片
     openWindow({
-      title: 'Visualiser',
-      content: { kind: WidgetKind.VideoVisual, sourceId: videoId },
-      initialGeometry: { x: baseX, y: baseY, width: 600, height: 200 }
+      title: 'Studio Monitor A',
+      content: { 
+          kind: WidgetKind.VideoVisual, 
+          sourceId: videoUrl // 這裡傳入真實 URL
+      },
+      initialGeometry: { x: baseX, y: baseY, width: 600, height: 340 }
     });
 
+    // 2. Playback (Controller) - sourceId 在這裡是為了參考，實際上它控制 Global Store
     openWindow({
-      title: 'Playback',
-      content: { kind: WidgetKind.VideoControl, sourceId: videoId },
-      initialGeometry: { x: baseX, y: baseY + 210, width: 350, height: 150 }
+      title: 'Transport',
+      content: { kind: WidgetKind.VideoControl, sourceId: 'ctrl_01' },
+      initialGeometry: { x: baseX, y: baseY + 350, width: 350, height: 200 }
     });
 
+    // 3. EQ (Mixer)
     openWindow({
-      title: 'EQ Mixer',
-      content: { kind: WidgetKind.VideoMixer, sourceId: videoId },
-      initialGeometry: { x: baseX + 360, y: baseY + 210, width: 240, height: 150 }
+      title: 'Master EQ',
+      content: { kind: WidgetKind.VideoMixer, sourceId: 'mix_01' },
+      initialGeometry: { x: baseX + 360, y: baseY + 350, width: 150, height: 200 }
     });
   }
 };

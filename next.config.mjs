@@ -1,16 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
-    // 解決 pdfjs-dist 的 canvas 依賴問題
+  webpack: (config, { dev, isServer, webpack }) => {
+    // 1. 基礎設定：解決 Canvas 依賴與 Top Level Await
     config.resolve.alias.canvas = false;
-    
-    // 確保支援 Web Assembly 或 Top Level Await (如果 pdf.js 需要)
-    // 注意：Next.js 14 通常預設支援 topLevelAwait，但明確寫出更保險
-    // config.experiments = { ...config.experiments, topLevelAwait: true }; 
-    
+    config.experiments = { 
+        ...config.experiments, 
+        topLevelAwait: true 
+    };
+
+    // 2. [核心修復] 僅在開發模式下 (dev) 且在客戶端 (Client-side) 應用此修正
+    if (dev && !isServer) {
+        // (A) 重要：先關閉 Next.js 預設的 devtool，交由 Plugin 接管
+        config.devtool = false;
+
+        // (B) 注入您提供的修復
+        config.plugins.push(
+            new webpack.EvalSourceMapDevToolPlugin({
+                // 這是 Next.js 預設 eval-source-map 的優化版設定
+                modules: true,
+                columns: false, // 關閉行內映射以提升效能
+                
+                // [關鍵] 排除 pdfjs-dist，讓它保持原始代碼結構，不被 eval 包裹
+                // 這樣 Worker 才能正確解析路徑，且不會撐爆記憶體
+                exclude: [/node_modules\/pdfjs-dist/], 
+            })
+        );
+    }
+
     return config;
   },
-  // 避免在開發模式下過於激進的快取導致 Worker 更新失敗
+  // 保持開發體驗流暢的快取設定
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,

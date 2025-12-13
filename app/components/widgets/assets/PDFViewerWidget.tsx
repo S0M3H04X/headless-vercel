@@ -17,6 +17,11 @@ interface WidgetProps {
   internalState: unknown;
 }
 
+const PDF_OPTIONS = {
+  cMapUrl: 'https://unpkg.com/pdfjs-dist@5.4.296/cmaps/',
+  cMapPacked: true,
+};
+
 const PDFStateSchema = z.object({
   pageNumber: z.number().min(1).default(1),
   scale: z.number().default(1.0),
@@ -97,10 +102,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
             onLoadError={onDocumentLoadError}
             className="shadow-2xl"
             loading={<div className="text-white">載入文件中...</div>}
-            options={{
-                cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-                cMapPacked: true,
-            }}
+            options={PDF_OPTIONS}
         >
             <Page 
                 pageNumber={state.pageNumber} 

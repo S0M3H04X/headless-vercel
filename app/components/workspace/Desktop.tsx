@@ -66,7 +66,7 @@ export default function Desktop() {
               content: {
                 kind: 'pdf_viewer', // 或使用 WidgetKind.PDFViewer
                 // 請換成一個有效的 PDF 網址 (注意 CORS 問題)
-                sourceId: '@/assets/pdf/dissertation.pdf',
+                sourceId: '/assets/pdf/dissertation.pdf',
               },
               initialGeometry: { x: 300, y: 100, width: 600, height: 800 },
             })

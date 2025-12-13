@@ -14,7 +14,7 @@
     "@types/react": "^18.3.27",
     "@types/uuid": "^10.0.0",
     "next": "^14.1.0",
-    "pdfjs-dist": "^5.4.449",
+    "pdfjs-dist": "^5.4.296",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-pdf": "^10.2.0",
