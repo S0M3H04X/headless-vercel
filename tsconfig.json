@@ -30,7 +30,7 @@
       "vitest/globals",
       "@testing-library/jest-dom"
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2017"
   },
   "include": [
