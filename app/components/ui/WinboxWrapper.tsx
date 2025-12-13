@@ -15,7 +15,7 @@ interface WinboxWrapperProps {
 
 export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, children }) => {
   const { id, title, geometry, zIndex, internalState } = windowInstance;
-  const updateGeometry = useWorkspaceStore((s) => s.updateGeometry);
+  const updateGeometry = useWorkspaceStore((s) => s.updateWindowGeometry);
   const closeWindow = useWorkspaceStore((s) => s.closeWindow);
   const focusWindow = useWorkspaceStore((s) => s.focusWindow);
 
