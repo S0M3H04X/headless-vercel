@@ -18,7 +18,7 @@ export const Launcher = () => {
       
       <button
         className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition-colors"
-        onClick={() => ScenarioService.launchVideoStudio()}
+        onClick={() => ScenarioService.launchVideoStudio('01')}
       >
         Open Video Studio
       </button>
