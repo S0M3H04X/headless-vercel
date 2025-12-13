@@ -77,19 +77,41 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
 // 3. 商品描述視窗
 export const ProductDescWidget = ({ content, internalState }: BaseWidgetProps) => {
   // 使用衛士：給定預設值
+  const { product, loading } = useShopifyProduct(content.sourceId);
   const state = useWidgetState<ProductDescState>(
     internalState, 
     ProductDescStateSchema, 
     DEFAULT_DESC_STATE
   );
 
+  if (loading) {
+    return (
+      <div className="h-full w-full bg-white p-6 flex flex-col gap-2">
+        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full bg-white p-6 overflow-y-auto">
-      {/* 使用安全的 state */}
-      <p style={{ fontSize: state.fontSize }}>
-        這是一雙傳奇的球鞋。採用了最先進的氣墊技術，不僅適合運動，更適合收藏。
-      (這裡是原子化拆分後的描述區塊，獨立渲染)
-      </p>
+      {/* C. 渲染真實描述 */}
+      <div 
+        style={{ fontSize: state.fontSize }} 
+        className="text-gray-700 leading-relaxed whitespace-pre-wrap"
+      >
+        {product?.description || "No description available for this product."}
+      </div>
+
+      {/* 狀態控制的額外資訊 */}
+      {state.showDetails && (
+        <div className="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-mono">
+          Product ID: {content.sourceId}<br/>
+          Source: Shopify Storefront API
+        </div>
+      )}
     </div>
   );
+
 };

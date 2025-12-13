@@ -8,5 +8,4 @@ if (typeof Promise.withResolvers === 'undefined') {
     });
     return { promise, resolve, reject };
   };
-  console.log('[Polyfill] Promise.withResolvers injected manually.');
 }

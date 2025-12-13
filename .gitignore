@@ -5,7 +5,7 @@ node_modules
 diagram
 __pycache__
 __tests__
-
+.DS_Store
 # Playwright
 /test-results/
 /playwright-report/

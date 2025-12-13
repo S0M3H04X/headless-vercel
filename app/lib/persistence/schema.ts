@@ -4,7 +4,7 @@ import { z } from 'zod';
 const ContentDescriptorSchema = z.object({
   kind: z.string(), // 允許字串，讓 Registry 決定是否為 Unknown
   sourceId: z.string(),
-  initialMeta: z.record(z.unknown()).optional(),
+  initialMeta: z.record(z.string(), z.unknown()).optional(),
 });
 
 // 定義 WindowInstance 的驗證規則 (只驗證持久化需要的欄位)

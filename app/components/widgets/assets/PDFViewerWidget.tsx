@@ -10,13 +10,17 @@ import { ContentDescriptor } from '@/lib/types/workspace';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 interface WidgetProps {
   id: string;
   content: ContentDescriptor;
   internalState: unknown;
 }
+
+const PDF_OPTIONS = {
+  cMapUrl: 'https://unpkg.com/pdfjs-dist@5.4.296/cmaps/',
+  cMapPacked: true,
+};
 
 const PDFStateSchema = z.object({
   pageNumber: z.number().min(1).default(1),
@@ -98,10 +102,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
             onLoadError={onDocumentLoadError}
             className="shadow-2xl"
             loading={<div className="text-white">載入文件中...</div>}
-            options={{
-                cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-                cMapPacked: true,
-            }}
+            options={PDF_OPTIONS}
         >
             <Page 
                 pageNumber={state.pageNumber} 

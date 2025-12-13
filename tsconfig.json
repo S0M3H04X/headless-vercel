@@ -30,7 +30,8 @@
       "vitest/globals",
       "@testing-library/jest-dom"
     ],
-    "moduleResolution": "node"
+    "moduleResolution": "bundler",
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
@@ -38,9 +39,11 @@
     "**/*.ts",
     "**/*.tsx",
     "app/polyfills.js",
-    "next.config.ts"
+    "next.config.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "vitest.config.ts"
   ]
 }
