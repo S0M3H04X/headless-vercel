@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  rewrites: async () => {
+    return [
+      {
+        source: '/api/python/:path*',
+        destination:
+          process.env.NODE_ENV === 'development'
+            ? 'http://127.0.0.1:8000/api/python/:path*' // 本地開發時指向 Python Server
+            : '/api/index.py', // 生產環境交給 Vercel 處理
+      },
+    ];
+  },
   webpack: (config, { dev, isServer, webpack }) => {
     // 1. 基礎設定：解決 Canvas 依賴與 Top Level Await
     config.resolve.alias.canvas = false;
