@@ -47,6 +47,20 @@
 ### 3. Static Assets
 PDF Worker 檔案位於 `public/pdf.worker.mjs`，這是為了繞過 Webpack 打包路徑問題的最終手段。
 
+## 📂 專案結構
+app/ 
+├── components/ 
+│ ├── system/ # 系統級 UI (Launcher, Taskbar) 
+│ ├── widgets/ # 具體應用 (Product, Video, PDF) 
+│ ├── workspace/ # 桌面容器 
+│ └── ui/ # 通用元件 (WinboxWrapper) 
+├── lib/ 
+│ ├── services/ # 業務邏輯 (ScenarioService) 
+│ ├── constants/ # 設定常數 (Layouts) 
+│ └── persistence/ # 存檔邏輯 
+├── store/ # Zustand Stores 
+└── hooks/ # Custom Hooks (useShopify, useWidgetState)
+
 ## 🚀 Getting Started
 
 ```bash
@@ -54,8 +68,24 @@ PDF Worker 檔案位於 `public/pdf.worker.mjs`，這是為了繞過 Webpack 打
 npm install
 
 # 設定環境變數 (.env.local)
-# NEXT_PUBLIC_SHOPIFY_DOMAIN=...
-# NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN=...
+NEXT_PUBLIC_SHOPIFY_DOMAIN=...
+NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN=...
 
 # 啟動開發伺服器
 npm run dev
+
+
+### ✅ 執行檢查
+
+請執行以下步驟驗證重構成果：
+
+1.  **Singleton 測試**：
+    * 點擊 "Open Video Studio"。
+    * 再次點擊 "Open Video Studio"。
+    * **預期**：跳出 Alert 警告，且不會開啟第二組視窗。
+2.  **功能回歸測試**：
+    * 點擊 "Open Product Suite" -> 確認商品描述是否正常載入。
+    * 點擊 "Open PDF" -> 確認 PDF 是否正常顯示且無 404 錯誤。
+3.  **代碼整潔度**：
+    * 檢查 `Desktop.tsx` 是否變乾淨了。
+    * 檢查 `ScenarioService.ts` 裡的魔術數字是否消失。

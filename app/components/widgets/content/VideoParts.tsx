@@ -1,23 +1,35 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
+import { z } from 'zod';
+import { useWidgetState } from '@/hooks/useWidgetState';
 import { useVideoStudioStore } from '@/store/videoStudioStore';
 import { BaseWidgetProps } from '@/lib/types/workspace';
 
+// --- 定義 Schemas ---
+// 即使目前是空的，定義出來也能防止未來擴充時忘記
+const VisualiserStateSchema = z.object({
+  showOverlay: z.boolean().default(true), // 範例：控制是否顯示 "LIVE FEED" 文字
+});
+
+const ControllerStateSchema = z.object({}); // 目前無內部狀態
+const MixerStateSchema = z.object({});      // 目前無內部狀態
+
 // --- 1. Visualiser (負責播放與畫面) ---
-export const Visualiser = ({ content }: BaseWidgetProps) => {
+export const Visualiser = ({ content, internalState }: BaseWidgetProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const state = useWidgetState(internalState, VisualiserStateSchema, { showOverlay: true });
+
   const storedTime = useVideoStudioStore(s => s.currentTime);
   const registerVideo = useVideoStudioStore((s) => s.registerVideo);
   const setPlaying = useVideoStudioStore((s) => s.setPlaying);
   // const setProgress = useVideoStudioStore((s) => s.setProgress);
   const setDuration = useVideoStudioStore((s) => s.setDuration);
-  const syncTime = useVideoStudioStore((s) => s.currentTime);
+  // const syncTime = useVideoStudioStore((s) => s.currentTime);
 
   // 初始化：註冊 video ref 到 store
   useEffect(() => {
-    if (videoRef.current) {
-      registerVideo(videoRef.current);
-    }
+    if (videoRef.current) registerVideo(videoRef.current);
     return () => registerVideo(null);
   }, [registerVideo]);
 
@@ -74,9 +86,12 @@ export const Visualiser = ({ content }: BaseWidgetProps) => {
         // [小技巧] 加上這個屬性可以讓跨網域影片支援截圖或 Canvas 操作 (如果以後需要)
         crossOrigin="anonymous"
       />
-      <div className="absolute top-2 right-2 text-xs text-green-500 font-mono z-20 bg-black/50 px-2">
-        LIVE FEED
-      </div>
+      {/* [Fix] 使用受保護的 state */}
+      {state.showOverlay && (
+        <div className="absolute top-2 right-2 text-xs text-green-500 font-mono z-20 bg-black/50 px-2">
+          LIVE FEED
+        </div>
+      )}
     </div>
   );
 };

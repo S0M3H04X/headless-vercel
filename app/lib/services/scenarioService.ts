@@ -1,67 +1,77 @@
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { WidgetKind } from '@/lib/types/workspace';
+import { INITIAL_LAYOUTS } from '@/lib/constants/layout';
+
+const VIDEO_WIDGET_KINDS = [
+  WidgetKind.VideoVisual,
+  WidgetKind.VideoControl,
+  WidgetKind.VideoMixer,
+];
 
 export const ScenarioService = {
   // Scenario 1: Product Suite
-  launchProductSuite: (productId: string) => {
+  launchProductSuite: (handle: string) => {
     const { openWindow } = useWorkspaceStore.getState();
-    const baseX = 50;
-    const baseY = 50;
+    const layout = INITIAL_LAYOUTS.PRODUCT;
 
-    // 1. Image (Left)
     openWindow({
       title: 'Product Gallery',
-      content: { kind: WidgetKind.ProductImage, sourceId: productId },
-      initialGeometry: { x: baseX, y: baseY, width: 400, height: 500 }
+      content: { kind: WidgetKind.ProductImage, sourceId: handle },
+      initialGeometry: layout.GALLERY
     });
 
-    // 2. Info (Top Right)
     openWindow({
       title: 'Product Info',
-      content: { kind: WidgetKind.ProductTitle, sourceId: productId },
-      initialGeometry: { x: baseX + 410, y: baseY, width: 300, height: 150 }
+      content: { kind: WidgetKind.ProductTitle, sourceId: handle },
+      initialGeometry: layout.INFO
     });
 
-    // 3. Details (Bottom Right)
     openWindow({
       title: 'Details',
-      content: { kind: WidgetKind.ProductDesc, sourceId: productId },
-      initialGeometry: { x: baseX + 410, y: baseY + 160, width: 300, height: 340 }
+      content: { kind: WidgetKind.ProductDesc, sourceId: handle },
+      initialGeometry: layout.DETAILS
     });
   },
 
-  // Scenario 2: Video Studio
+
+
+  // Scenario 2: Video Studio (with Singleton Check)
   launchVideoStudio: (sourceId?: string) => {
-    const { openWindow } = useWorkspaceStore.getState();
-    const baseX = 100;
-    const baseY = 100;
+    const store = useWorkspaceStore.getState();
+    
+    // [Fix 1] Singleton Check: 檢查是否已經有 Video Studio 相關視窗
+    const hasVideoStudio = Object.values(store.windows).some(win => 
+      VIDEO_WIDGET_KINDS.includes(win.content.kind as any)
+    );
 
-    // 使用一個開源的測試影片 (Big Buck Bunny)
-    // 或是您 public 資料夾內的 '/asses/video/demo.mp4t' (如果有)
-    const videoUrl = '/assets/mp4/01.mp4';
+    if (hasVideoStudio) {
+      // 這裡簡單使用 alert，實務上可以使用 Toast 通知
+      alert("Video Studio is already running. Only one instance is allowed.");
+      return;
+    }
 
-    // 1. Visualiser (Master) - 負責載入影片
+    const { openWindow } = store;
+    const layout = INITIAL_LAYOUTS.VIDEO;
+    // 使用真實影片或預設影片
+    const videoUrl = sourceId || 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+
+    // [Fix 2] 使用常數佈局
     openWindow({
       title: 'Studio Monitor A',
-      content: { 
-          kind: WidgetKind.VideoVisual, 
-          sourceId: videoUrl // 這裡傳入真實 URL
-      },
-      initialGeometry: { x: baseX, y: baseY, width: 600, height: 340 }
+      content: { kind: WidgetKind.VideoVisual, sourceId: videoUrl },
+      initialGeometry: layout.VISUALISER
     });
 
-    // 2. Playback (Controller) - sourceId 在這裡是為了參考，實際上它控制 Global Store
     openWindow({
       title: 'Transport',
       content: { kind: WidgetKind.VideoControl, sourceId: 'ctrl_01' },
-      initialGeometry: { x: baseX, y: baseY + 350, width: 350, height: 200 }
+      initialGeometry: layout.CONTROL
     });
 
-    // 3. EQ (Mixer)
     openWindow({
       title: 'Master EQ',
       content: { kind: WidgetKind.VideoMixer, sourceId: 'mix_01' },
-      initialGeometry: { x: baseX + 360, y: baseY + 350, width: 150, height: 200 }
+      initialGeometry: layout.MIXER
     });
   }
 };
