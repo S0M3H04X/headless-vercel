@@ -4,12 +4,41 @@ from api.db import get_db
 
 app = FastAPI(docs_url="/api/python/docs", openapi_url="/api/python/openapi.json")
 
+# 定義傳入的資料結構
+class AnalyticsEvent(BaseModel):
+    event_type: str                  # 例如: "window_open", "window_close"
+    payload: Dict[str, Any]          # 例如: { "window_id": "...", "title": "..." }
+    timestamp: int                   # Unix Timestamp
+    session_id: Optional[str] = None # 用戶 Session ID
+
 class InventoryCheck(BaseModel):
     sku: str
 
 @app.get("/api/python/health")
 def health_check():
     return {"status": "ok", "environment": "python-headless-vercel"}
+
+
+@app.post("/api/python/analytics/collect")
+async def collect_analytics(event: AnalyticsEvent):
+    try:
+        # [模擬運算] 這裡可以連接 DB 進行寫入
+        # 現階段我們先將數據打印到 Vercel Function Logs 以供驗證
+        print(f"📊 [Analytics] {event.event_type} at {event.timestamp}")
+        print(f"   Payload: {event.payload}")
+        
+        # 模擬一個簡單的聚合運算：計算停留時間 (如果是關閉視窗事件)
+        if event.event_type == "window_close":
+            duration = event.payload.get("duration_seconds", 0)
+            if duration > 60:
+                print(f"   🔥 High engagement detected! Duration: {duration}s")
+
+        return {"status": "recorded", "id": event.timestamp}
+    except Exception as e:
+        print(f"❌ Analytics Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+        
 
 @app.post("/api/python/inventory/check")
 def check_inventory(item: InventoryCheck):

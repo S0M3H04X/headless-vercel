@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { WindowInstance, ContentDescriptor } from '@/lib/types/workspace';
+import { AnalyticsService } from '@/lib/services/analytics';
 
 interface WorkspaceState {
   windows: Record<string, WindowInstance>;
@@ -14,8 +15,7 @@ interface WorkspaceState {
   minimizeWindow: (id: string) => void;
   restoreWindow: (id: string) => void;
   
-  // [刪除] 移除 hydrate 定義
-  // hydrate: (snapshot: any) => void; 
+
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -24,17 +24,20 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       windows: {},
       stackOrder: [],
 
-      // [刪除] 移除 hydrate 實作
-      /* hydrate: (snapshot) => {
-        set({ windows: snapshot.windows, stackOrder: snapshot.stackOrder });
-      },
-      */
-
       openWindow: ({ title, content, initialGeometry }) => {
-        // ... (保持不變)
+
         const id = `win_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const defaultGeometry = { x: 50, y: 50, width: 400, height: 300 };
-        
+
+        // Phase5-3: 視窗開啟事件追蹤
+        AnalyticsService.track('window_open', {
+            window_id: id,
+            title: title,
+            kind: content.kind,
+            source_id: content.sourceId
+        });
+        // ----------------------------------
+
         const newWindow: WindowInstance = {
           id,
           title,
@@ -42,7 +45,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           geometry: initialGeometry || defaultGeometry,
           zIndex: get().stackOrder.length + 1,
           isMinimized: false,
-          internalState: {},
+          internalState: {
+            _openTime: Date.now(),
+          },
         };
 
         set((state) => ({
@@ -52,6 +57,21 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       },
 
       closeWindow: (id) => {
+        // --- Phase5-3 視窗關閉事件追蹤 ---
+        const win = get().windows[id];
+        if (win) {
+            const openTime = (win.internalState as any)?._openTime || Date.now();
+            const duration = (Date.now() - openTime) / 1000; // 秒
+
+            AnalyticsService.track('window_close', {
+                window_id: id,
+                title: win.title,
+                kind: win.content.kind,
+                duration_seconds: duration
+            });
+        }
+        // ----------------------------------
+
         set((state) => {
           const { [id]: removed, ...others } = state.windows;
           return {
