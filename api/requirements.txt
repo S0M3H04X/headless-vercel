@@ -1,6 +1,6 @@
 fastapi==0.109.2
 uvicorn==0.27.1
-libsql-client==0.0.3  # [修正] 改用 HTTP Client，避免 Serverless 二進位問題
+libsql-client>=0.3.0  # [修正] 移除不存在的 0.0.3，改用 >=0.3.0 自動抓取最新版
 pytest==8.0.1
 httpx==0.26.0
 pytest-asyncio==0.23.5
