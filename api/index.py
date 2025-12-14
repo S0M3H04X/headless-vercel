@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from typing import Dict, Any, Optional
 from api.db import get_db
 
 app = FastAPI(docs_url="/api/python/docs", openapi_url="/api/python/openapi.json")
@@ -38,7 +39,7 @@ async def collect_analytics(event: AnalyticsEvent):
         print(f"❌ Analytics Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-        
+
 
 @app.post("/api/python/inventory/check")
 def check_inventory(item: InventoryCheck):
