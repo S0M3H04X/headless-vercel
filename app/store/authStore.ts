@@ -50,11 +50,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     window.location.href = '/api/auth/login';
   },
 
-  logout: () => {
-    // 這裡暫時只處理前端，Step 2.5 會加入後端 API 呼叫
-    set({ isAuthenticated: false, user: null });
-    // 清除 Cookie 的動作需由後端完成，或是手動清除 Document Cookie (但 HttpOnly JS 刪不掉)
-    // 所以現階段這只是 UI 變更，重新整理後可能又會變回登入狀態 (如果 Cookie 還在)
-    console.log('[AuthStore] Frontend logout triggered');
+  logout: async () => {
+    try {
+        // [新增] 呼叫後端清除 Cookie
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+        console.error('Logout failed:', e);
+    } finally {
+        // 無論後端成功與否，前端都要重置狀態
+        set({ isAuthenticated: false, user: null });
+        // 可選：強制重整頁面以確保乾淨
+        window.location.reload(); 
+    }
   }
 }));

@@ -20,12 +20,8 @@ export async function GET(request: Request) {
   const storedVerifier = cookieStore.get('shopify_auth_verifier')?.value;
   const storedState = cookieStore.get('shopify_auth_state')?.value;
 
-  if (!storedVerifier || !storedState) {
-    return NextResponse.json({ error: 'Session expired or invalid' }, { status: 400 });
-  }
-
-  if (state !== storedState) {
-    return NextResponse.json({ error: 'State mismatch (CSRF warning)' }, { status: 400 });
+  if (!storedVerifier || !storedState || state !== storedState) {
+    return NextResponse.json({ error: 'Session validation failed' }, { status: 400 });
   }
 
   // 3. 向 Shopify 交換 Token (PKCE Flow)
@@ -50,9 +46,7 @@ export async function GET(request: Request) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Token Exchange Failed:', errorText);
-      return NextResponse.json({ error: 'Failed to exchange token', details: errorText }, { status: 500 });
+      throw new Error(await response.text());
     }
 
     const data = await response.json();
@@ -68,10 +62,22 @@ export async function GET(request: Request) {
       maxAge: expires_in, // 跟隨 API 回傳的過期時間
     });
 
+    // 2. [新增] 存入 Refresh Token (長期)
+    // 雖然 API 可能沒回傳 refresh_token 的 expires_in，但通常較長，我們設為 30 天
+    if (refresh_token) {
+        cookieStore.set('shopify_refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30, // 30 天
+        });
+    }
+
     if (id_token) {
        cookieStore.set('shopify_id_token', id_token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
         maxAge: expires_in,

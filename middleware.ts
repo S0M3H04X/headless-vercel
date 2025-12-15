@@ -1,39 +1,55 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// 1. 定義需要受保護的路徑 (Matcher)
+// 注意：Next.js 的 matcher 語法不支援變數，必須寫死字串
+export const config = {
+  matcher: [
+    /* * 受保護的 API 路由
+     * 攔截所有 /api/shopify/ 開頭的請求
+     */
+    '/api/shopify/:path*',
+
+    /* * 受保護的靜態資產 (High Value Assets)
+     * 攔截 PDF 與 MP4，防止未登入使用者直接下載
+     */
+    '/assets/pdf/:path*',
+    '/assets/mp4/:path*',
+  ],
+};
+
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  // 2. 檢查身分憑證
+  // 讀取 HttpOnly Cookie: 'shopify_access_token'
+  const accessToken = request.cookies.get('shopify_access_token');
+  const isAuth = !!accessToken;
 
-  // 1. 定義受保護的路徑 (Protected Routes)
-  // 只有呼叫 Shopify 數據的 API 需要被攔截
-  const isProtectedApi = pathname.startsWith('/api/shopify');
+  // 3. 如果已登入，直接放行 (Pass-through)
+  if (isAuth) {
+    return NextResponse.next();
+  }
 
-  // 2. 獲取 Token
-  const hasToken = request.cookies.has('shopify_access_token');
+  // 4. 如果未登入，根據請求類型回傳 401
+  const path = request.nextUrl.pathname;
 
-  // 3. 攔截邏輯
-  if (isProtectedApi && !hasToken) {
-    // API 請求若無權限，回傳 401 (讓前端 Widget 處理顯示登入按鈕)
+  // Case A: API 請求 (回傳 JSON)
+  if (path.startsWith('/api/')) {
     return NextResponse.json(
-      { error: 'Unauthorized', code: 'needs_login' },
+      { 
+        error: 'Unauthorized', 
+        message: 'Valid shopify_access_token required' 
+      },
       { status: 401 }
     );
   }
 
-  // 4. 其他請求一律放行 (Pass-through)
-  return NextResponse.next();
+  // Case B: 靜態資源請求 (PDF/MP4)
+  // 這裡回傳 401 純文字，瀏覽器會顯示錯誤頁面，達到「阻擋下載」的目的
+  // 未來可改為 Rewrite 到一個 "Please Login" 的佔位圖片或頁面
+  return new NextResponse('Access Denied: Please login to view this content.', {
+    status: 401,
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
 }
-
-// 設定 Matcher 以優化效能 (排除靜態資源與 Next.js 內部請求)
-export const config = {
-  matcher: [
-    /*
-     * 匹配所有請求路徑，除了:
-     * 1. /api/auth/* (登入/登出/Callback)
-     * 2. /api/python/* (Python 後端)
-     * 3. /_next/* (Next.js 系統檔)
-     * 4. 靜態檔案 (favicon, images, etc.)
-     */
-    '/((?!api/auth|api/python|_next/static|_next/image|favicon.ico).*)',
-  ],
-};
