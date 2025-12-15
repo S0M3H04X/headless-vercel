@@ -8,12 +8,10 @@ import { WidgetRenderer } from '@/components/widgets/Registry';
 import { WorkspaceRepository } from '@/lib/persistence/storage';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { Launcher } from '../system/Launcher';
-import { AuthWidget } from '@/components/workspace/desktop/AuthWidget';
+import { AuthWidget } from '@/components/desktop/AuthWidget';
 
 
 export default function Desktop() {
-  // const openWindow = useWorkspaceStore((state) => state.openWindow);
-  // const hydrate = useWorkspaceStore((state) => state.hydrate);
   
   // 防止水合不匹配 (Hydration Mismatch)
   const [isHydrated, setIsHydrated] = useState(false);

@@ -30,7 +30,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             set({ 
                 isAuthenticated: true, 
                 isLoading: false,
-                user: { name: 'Shopify Member' } // 暫時 Mock，未來可從 API 獲取
+                user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
             });
         } else {
             set({ isAuthenticated: false, isLoading: false, user: null });
