@@ -1,6 +1,7 @@
 // app/page.tsx
 import Desktop from '@/components/workspace/Desktop';
 
+
 export default function Home() {
   return (
     <main className="h-screen w-screen overflow-hidden">

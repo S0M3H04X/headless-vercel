@@ -8,6 +8,7 @@ import { WidgetRenderer } from '@/components/widgets/Registry';
 import { WorkspaceRepository } from '@/lib/persistence/storage';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { Launcher } from '../system/Launcher';
+import { AuthWidget } from '@/components/workspace/desktop/AuthWidget';
 
 
 export default function Desktop() {
@@ -34,6 +35,7 @@ export default function Desktop() {
   return (
     <div className="relative w-full h-screen bg-slate-100 overflow-hidden">
       {/* 測試控制台 */}
+      <AuthWidget />
       {/* 系統層：Launcher (未來可在這裡加入 Taskbar, StartMenu) */}
       <Launcher />
 

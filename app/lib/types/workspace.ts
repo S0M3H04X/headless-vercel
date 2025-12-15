@@ -16,6 +16,7 @@ export const WidgetKind = {
   
   // Asset Context
   PDFViewer: 'pdf_viewer',
+  
 } as const;
 
 // 衍生型別
