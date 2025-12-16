@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { SystemMenu } from './SystemMenu';
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
 
 export const MenuBar: React.FC = () => {
   const [time, setTime] = useState<string>('');
+  const [mounted, setMounted] = useState(false);
   
   // [修正] 從 Workspace Store 獲取 windows 與 stackOrder
   const windows = useWorkspaceStore((state) => state.windows);
@@ -13,42 +15,42 @@ export const MenuBar: React.FC = () => {
 
   // [修正] 推導 activeWindowId (Stack 的最後一個即為最上層/聚焦視窗)
   const activeWindowId = stackOrder.length > 0 ? stackOrder[stackOrder.length - 1] : null;
+  const activeWindowTitle = activeWindowId && windows[activeWindowId] 
+    ? (windows[activeWindowId].title || 'Application') 
+    : 'Finder';
 
-  // 時鐘邏輯
   useEffect(() => {
+    setMounted(true);
     const updateTime = () => {
-      const now = new Date();
-      setTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      // 在客戶端產生時間字串
+      setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     };
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // [修正] 獲取當前聚焦視窗的標題
-  // 注意：title 是在 WindowInstance 第一層，不在 content 內
-  const activeWindowTitle = activeWindowId && windows[activeWindowId] 
-    ? (windows[activeWindowId].title || 'Application') 
-    : 'Finder'; // 若無聚焦視窗，預設顯示 Finder
-
   return (
-    <div className="fixed top-0 left-0 w-full h-[32px] bg-[#e0e0e0] border-b border-gray-400 shadow-sm z-[9999] flex items-center justify-between px-1 select-none font-sans">
-      
-      {/* Left: System Menu & App Title */}
+    <div 
+      className="fixed top-0 left-0 w-full bg-[#e0e0e0] border-b border-gray-400 shadow-sm flex items-center justify-between px-1 select-none font-sans"
+      style={{ 
+        height: LAYOUT.MENU_BAR_HEIGHT,
+        zIndex: Z_INDEX.MENU_BAR 
+      }}
+    >
       <div className="flex items-center h-full">
         <SystemMenu />
-        
-        {/* AC-03: App Title (Current Focused App) */}
-        <div className="ml-4 font-bold text-black px-2 border-l border-gray-300">
+        <div className="ml-4 font-bold text-black px-2 border-l border-gray-300 text-sm">
           {activeWindowTitle}
         </div>
       </div>
 
-      {/* Right: Clock / Tray */}
       <div className="flex items-center h-full px-3 text-sm font-semibold text-black">
-        <span>{time}</span>
+        {/* 使用 suppressHydrationWarning 作為額外保險，雖然 mounted check 已經解決了大部分問題 */}
+        <span suppressHydrationWarning>
+            {mounted ? time : ''}
+        </span>
       </div>
-      
     </div>
   );
 };
