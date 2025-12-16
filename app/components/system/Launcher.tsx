@@ -8,7 +8,7 @@ export const Launcher = () => {
   const openWindow = useWorkspaceStore((s) => s.openWindow);
 
   return (
-    <div className="absolute top-4 left-4 z-50 flex gap-2 flex-wrap pointer-events-auto">
+    <div className="absolute top-10 left-4 z-30 flex gap-2 flex-wrap pointer-events-auto">
       <button
         className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition-colors"
         onClick={() => ScenarioService.launchProductSuite('tee')}
