@@ -9,6 +9,7 @@ import { WorkspaceRepository } from '@/lib/persistence/storage';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { Launcher } from '../system/Launcher';
 import { AuthWidget } from '@/components/desktop/AuthWidget';
+import { MenuBar } from '@/components/system/MenuBar';
 
 
 export default function Desktop() {
