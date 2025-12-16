@@ -8,7 +8,8 @@ import { WidgetRenderer } from '@/components/widgets/Registry';
 import { WorkspaceRepository } from '@/lib/persistence/storage';
 import { Desktop } from '@/components/workspace/Desktop';
 import { Launcher } from '@/components/system/Launcher';
-import { AuthWidget } from '@/components/desktop/AuthWidget';
+// import { AuthWidget } from '@/components/desktop/AuthWidget';
+import { MenuBar } from '@/components/system/MenuBar'; // [新增]
 
 
 
@@ -40,9 +41,9 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
-      <Desktop>
-        {/* 測試控制台 */}
-        <AuthWidget />
+        {/* 全域導航層 (Z-Index 最高) */}
+      <MenuBar />
+      <Desktop> 
         {/* 系統層：Launcher (未來可在這裡加入 Taskbar, StartMenu) */}
         <Launcher />
 
