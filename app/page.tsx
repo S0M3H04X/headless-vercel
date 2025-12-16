@@ -28,7 +28,14 @@ export default function Home() {
   // [關鍵保護] 如果還沒水合，不要渲染 Winbox (避免與 SSR 衝突)
   // 可以渲染一個 Loading Spinner 或空的 div
   if (!isHydrated) {
-    return <div className="h-screen w-screen bg-slate-100" />;
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-gray-900 text-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent" />
+          <p className="font-mono text-sm">System Booting...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -5,8 +5,6 @@ import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/work
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
 
 
-
-
 // --- 1. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼
 const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<BaseWidgetProps>>> = {

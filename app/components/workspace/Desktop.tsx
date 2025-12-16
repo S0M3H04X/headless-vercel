@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useRef } from 'react';
-// 移除 AuthWidget 的 import
-// import { AuthWidget } from '@/components/desktop/AuthWidget'; 
 
 interface DesktopProps {
   children?: React.ReactNode;
