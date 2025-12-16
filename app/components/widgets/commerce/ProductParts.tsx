@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 
 import { BaseWidgetProps } from '@/lib/types/workspace';
 import { useWidgetState } from '@/hooks/useWidgetState';
 import { useShopifyProduct } from '@/hooks/useShopifyProduct';
+import { useCartStore } from '@/store/cartStore'; // [新增] 引入 Store
 
 
 const DEFAULT_DESC_STATE = { fontSize: 14, showDetails: true };
@@ -53,8 +54,25 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
 export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
   
-  const addToCart = () => {
-     alert(`Added ${product?.title} to cart! (Cart Context Pending)`);
+  const addItem = useCartStore((s) => s.addItem); // [新增]
+  const [isAdding, setIsAdding] = useState(false); // [新增] Loading 狀態
+
+  const handleAddToCart = async () => {
+     // Shopify Cart API 需要 Variant ID，而非 Product ID
+     // 這裡簡化邏輯：預設選取第一個 Variant
+     // 未來可擴充 Variant 選擇器 Widget
+     const defaultVariantId = product?.variants?.edges?.[0]?.node?.id;
+
+     if (!defaultVariantId) {
+       alert('Error: No variant available');
+       return;
+     }
+
+     setIsAdding(true);
+     await addItem(defaultVariantId, 1);
+     setIsAdding(false);
+     
+     // 可選：加入成功後不需要 alert，因為 MenuBar 數字會跳，且 CartWidget 可能會自動開啟
   };
 
   if (loading) return <div className="p-4">Loading...</div>;
@@ -65,10 +83,18 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
         {product?.title || 'Product Not Found'}
       </h1>
       <button 
-        onClick={addToCart}
-        className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition-transform active:scale-95"
+        onClick={handleAddToCart}
+        disabled={isAdding || !product}
+        className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 disabled:bg-gray-400 transition-all active:scale-95 flex items-center justify-center gap-2 mx-auto"
       >
-        ADD TO CART
+        {isAdding ? (
+          <>
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            Adding...
+          </>
+        ) : (
+          'ADD TO CART'
+        )}
       </button>
     </div>
   );

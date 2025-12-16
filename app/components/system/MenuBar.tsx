@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { SystemMenu } from './SystemMenu';
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { useCartStore } from '@/store/cartStore'; // [新增]
 import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
+import { WidgetKind } from '@/lib/types/workspace'; // [新增]
 
 export const MenuBar: React.FC = () => {
   const [time, setTime] = useState<string>('');
@@ -12,6 +14,11 @@ export const MenuBar: React.FC = () => {
   // [修正] 從 Workspace Store 獲取 windows 與 stackOrder
   const windows = useWorkspaceStore((state) => state.windows);
   const stackOrder = useWorkspaceStore((state) => state.stackOrder);
+  const openWindow = useWorkspaceStore((state) => state.openWindow);
+
+  // [新增] 訂閱購物車狀態
+  const cart = useCartStore((state) => state.cart);
+  const totalQuantity = cart?.totalQuantity || 0;
 
   // [修正] 推導 activeWindowId (Stack 的最後一個即為最上層/聚焦視窗)
   const activeWindowId = stackOrder.length > 0 ? stackOrder[stackOrder.length - 1] : null;
@@ -30,6 +37,32 @@ export const MenuBar: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // [新增] 開啟購物車視窗邏輯
+  const handleOpenCart = () => {
+    // 檢查是否已開啟 (簡單檢查：遍歷 windows)
+    const existingCartId = Object.values(windows).find(w => w.content.kind === WidgetKind.Cart)?.id;
+    
+    if (existingCartId) {
+      // 若已開啟，則聚焦 (需 WorkspaceStore 支援 focusWindow，若無則暫時忽略或重新 open 達到置頂)
+      // 假設 openWindow 內部有處理重複 ID 或我們重新 open 相同內容
+      // 這裡直接呼叫 openWindow，讓 WorkspaceStore 決定是否建立新視窗或置頂
+      // 更好的做法是 WorkspaceStore 提供 focusWindow(id)，這裡暫用 openWindow
+      // 注意：如果您沒有實作單例模式，這可能會開第二個購物車視窗。
+      // 建議在 openWindow 傳入固定 ID 'system-cart' 來實現單例
+      openWindow({
+        title: 'Shopping Cart',
+        content: { kind: WidgetKind.Cart, sourceId: 'cart' },
+        initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 } // 靠右顯示
+      });
+    } else {
+      openWindow({
+        title: 'Shopping Cart',
+        content: { kind: WidgetKind.Cart, sourceId: 'cart' },
+        initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 }
+      });
+    }
+  };
+
   return (
     <div 
       className="fixed top-0 left-0 w-full bg-[#e0e0e0] border-b border-gray-400 shadow-sm flex items-center justify-between px-1 select-none font-sans"
@@ -46,6 +79,20 @@ export const MenuBar: React.FC = () => {
       </div>
 
       <div className="flex items-center h-full px-3 text-sm font-semibold text-black">
+
+        {/* [新增] 購物車按鈕 */}
+        <button 
+          onClick={handleOpenCart}
+          className="flex items-center gap-1 hover:bg-gray-300 px-2 py-0.5 rounded transition-colors"
+        >
+          <span>🛒</span>
+          {totalQuantity > 0 && (
+            <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full min-w-[1.2em] text-center">
+              {totalQuantity}
+            </span>
+          )}
+        </button>
+
         {/* 使用 suppressHydrationWarning 作為額外保險，雖然 mounted check 已經解決了大部分問題 */}
         <span suppressHydrationWarning>
             {mounted ? time : ''}

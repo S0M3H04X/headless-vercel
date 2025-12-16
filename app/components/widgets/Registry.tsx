@@ -4,6 +4,7 @@ import React, { Suspense, lazy } from 'react';
 import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
 
+const CartWidgetPlaceholder = () => <div className="p-4">Cart Widget Loading...</div>;
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼
@@ -20,6 +21,9 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
   [WidgetKind.VideoVisual]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
   [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
+
+  [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
+  
   
 };
 
