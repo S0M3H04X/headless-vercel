@@ -8,12 +8,12 @@ import { useWorkspaceStore } from '@/store/workspaceStore';
 
 import '@/styles/winbox-controls.css';
 
-interface WinboxWrapperProps {
+interface WinboxProviderProps {
   windowInstance: WindowInstance;
   children: React.ReactNode;
 }
 
-export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, children }) => {
+export const WinboxProvider: React.FC<WinboxProviderProps> = ({ windowInstance, children }) => {
   const { id, title, geometry, zIndex, internalState } = windowInstance;
   const updateGeometry = useWorkspaceStore((s) => s.updateWindowGeometry);
   const closeWindow = useWorkspaceStore((s) => s.closeWindow);
@@ -24,7 +24,7 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
 
   useEffect(() => {
     let isMounted = true;
-    console.log(`[WinboxWrapper] Initializing: ${title}`);
+    console.log(`[WinboxProvider] Initializing: ${title}`);
 
     // --- 最終修正策略：Bundle + Window Access ---
     // 1. 引入 "bundle" 版本，確保所有依賴(template/helper)都已打包，不會有路徑解析錯誤。
@@ -38,11 +38,11 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
         const WinBoxConstructor = (window as any).WinBox;
 
         if (typeof WinBoxConstructor !== 'function') {
-            console.error('[WinboxWrapper] Critical: WinBox not found on window object after import.');
+            console.error('[WinboxProvider] Critical: WinBox not found on window object after import.');
             return;
         }
 
-        console.log('[WinboxWrapper] Constructor found via window.WinBox');
+        console.log('[WinboxProvider] Constructor found via window.WinBox');
 
         const wb = new WinBoxConstructor({
             title: title,
@@ -64,7 +64,7 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
             },
             onclose: function (force: boolean) {
                 // 這裡返回 true 會允許關閉，但我們希望由 React 卸載
-                // 所以我們先觸發 Store 的關閉，這會導致 WinboxWrapper 被 Unmount
+                // 所以我們先觸發 Store 的關閉，這會導致 WinboxProvider 被 Unmount
                 // 然後在 cleanup function 裡執行真正的 winbox.close()
                 closeWindow(id);
                 return false; 
@@ -112,7 +112,7 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
         // 將 Winbox 的 body 設為 Portal 的目標
         setMountNode(wb.body);
       })
-      .catch((e) => console.error('[WinboxWrapper] Bundle Import Failed:', e));
+      .catch((e) => console.error('[WinboxProvider] Bundle Import Failed:', e));
 
     return () => {
       isMounted = false;
@@ -121,7 +121,7 @@ export const WinboxWrapper: React.FC<WinboxWrapperProps> = ({ windowInstance, ch
           // 強制關閉 DOM 元素
           winboxRef.current.close(true); 
         } catch(e) { 
-          console.warn('[WinboxWrapper] Cleanup error:', e); 
+          console.warn('[WinboxProvider] Cleanup error:', e); 
         }
       }
     };

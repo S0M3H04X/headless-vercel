@@ -15,6 +15,9 @@ export const config = {
      */
     '/assets/pdf/:path*',
     '/assets/mp4/:path*',
+
+    // 3. [Reserved] Future WebAssembly Widgets
+    // '/api/wasm/:path*',
   ],
 };
 
@@ -37,7 +40,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Unauthorized', 
-        message: 'Valid shopify_access_token required' 
+        message: 'Valid shopify_access_token required',
+        code: 'AUTH_REQUIRED' // 給前端判斷的錯誤碼 
       },
       { status: 401 }
     );
