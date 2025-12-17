@@ -10,6 +10,7 @@ interface WorkspaceState {
   openWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
+  focusOrOpenWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   updateWindowGeometry: (id: string, geometry: any) => void;
   updateInternalState: (id: string, stateUpdate: Record<string, any>) => void;
   minimizeWindow: (id: string) => void;
@@ -49,6 +50,8 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             _openTime: Date.now(),
           },
         };
+
+        
 
         set((state) => ({
           windows: { ...state.windows, [id]: newWindow },
@@ -95,6 +98,20 @@ export const useWorkspaceStore = create<WorkspaceState>()(
 
           return { stackOrder: newStack, windows: updatedWindows };
         });
+      },
+      
+      focusOrOpenWindow: (params) => {
+        const { windows, focusWindow, openWindow } = get();
+        // 根據 kind 尋找是否已存在相同類型的視窗
+        const existingWindow = Object.values(windows).find(
+          (w) => w.content.kind === params.content.kind
+        );
+
+        if (existingWindow) {
+          focusWindow(existingWindow.id);
+        } else {
+          openWindow(params);
+        }
       },
 
       updateWindowGeometry: (id, geometry) => {

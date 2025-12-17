@@ -26,6 +26,8 @@ export const MenuBar: React.FC = () => {
     ? (windows[activeWindowId].title || 'Application') 
     : 'Finder';
 
+  const focusOrOpenWindow = useWorkspaceStore((state) => state.focusOrOpenWindow);
+
   useEffect(() => {
     setMounted(true);
     const updateTime = () => {
@@ -39,28 +41,11 @@ export const MenuBar: React.FC = () => {
 
   // [新增] 開啟購物車視窗邏輯
   const handleOpenCart = () => {
-    // 檢查是否已開啟 (簡單檢查：遍歷 windows)
-    const existingCartId = Object.values(windows).find(w => w.content.kind === WidgetKind.Cart)?.id;
-    
-    if (existingCartId) {
-      // 若已開啟，則聚焦 (需 WorkspaceStore 支援 focusWindow，若無則暫時忽略或重新 open 達到置頂)
-      // 假設 openWindow 內部有處理重複 ID 或我們重新 open 相同內容
-      // 這裡直接呼叫 openWindow，讓 WorkspaceStore 決定是否建立新視窗或置頂
-      // 更好的做法是 WorkspaceStore 提供 focusWindow(id)，這裡暫用 openWindow
-      // 注意：如果您沒有實作單例模式，這可能會開第二個購物車視窗。
-      // 建議在 openWindow 傳入固定 ID 'system-cart' 來實現單例
-      openWindow({
-        title: 'Shopping Cart',
-        content: { kind: WidgetKind.Cart, sourceId: 'cart' },
-        initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 } // 靠右顯示
-      });
-    } else {
-      openWindow({
-        title: 'Shopping Cart',
-        content: { kind: WidgetKind.Cart, sourceId: 'cart' },
-        initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 }
-      });
-    }
+    focusOrOpenWindow({
+      title: 'Shopping Cart',
+      content: { kind: WidgetKind.Cart, sourceId: 'cart' },
+      initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 }
+    });
   };
 
   return (

@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/cartStore';
 import { BaseWidgetProps } from '@/lib/types/workspace';
 
 export default function CartWidget({ content }: BaseWidgetProps) {
-  const { cart, isLoading, removeItem, updateQuantity, initialize } = useCartStore();
+  const { cart, error, isLoading, removeItem, updateQuantity, initialize, clearError } = useCartStore();
 
   // 初始化：確保 LocalStorage 中的 Cart ID 被載入並同步最新狀態
   useEffect(() => {
@@ -41,6 +41,21 @@ export default function CartWidget({ content }: BaseWidgetProps) {
         <p className="text-sm text-gray-400 mt-2 text-center">
           Browse products and click "Add to Cart" to start shopping.
         </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8 bg-red-50 text-red-600">
+        <p className="font-bold mb-2">Error</p>
+        <p className="text-sm text-center mb-4">{error}</p>
+        <button 
+          onClick={() => { clearError(); initialize(); }}
+          className="px-4 py-2 bg-white border border-red-200 rounded shadow-sm hover:bg-red-50"
+        >
+          Retry
+        </button>
       </div>
     );
   }

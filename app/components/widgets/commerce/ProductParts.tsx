@@ -53,7 +53,6 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
 // 2. 商品標題視窗 (修正加入購物車邏輯)
 export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
-  console.log(product)
   const addItem = useCartStore((s) => s.addItem);
   const [isAdding, setIsAdding] = useState(false);
 

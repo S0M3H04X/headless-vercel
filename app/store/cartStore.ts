@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { Cart, createCart, addToCart, removeFromCart, updateCartLine, getCart } from '@/lib/shopify';
+import { error } from 'node:console';
 
 interface CartState {
   cartId: string | null;
   cart: Cart | null;
   isOpen: boolean;
   isLoading: boolean;
+  error: string | null;
   
   // Actions
   initialize: () => Promise<void>;
@@ -16,6 +18,8 @@ interface CartState {
   addItem: (variantId: string, quantity?: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
+
+  clearError: () => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -25,12 +29,15 @@ export const useCartStore = create<CartState>()(
       cart: null,
       isOpen: false,
       isLoading: false,
+      error: null,
+
+      clearError: () => set({ error: null }),
 
       initialize: async () => {
         const { cartId } = get();
         if (cartId) {
           try {
-            set({ isLoading: true });
+            set({ isLoading: true, error: null });
             const cart = await getCart(cartId);
             if (cart) {
               set({ cart });
@@ -40,7 +47,7 @@ export const useCartStore = create<CartState>()(
             }
           } catch (error) {
             console.error('Failed to fetch cart:', error);
-            set({ cartId: null, cart: null });
+            set({ error: 'Failed to load cart. Please try again.' });
           } finally {
             set({ isLoading: false });
           }
@@ -53,7 +60,7 @@ export const useCartStore = create<CartState>()(
 
       addItem: async (variantId, quantity = 1) => {
         let { cartId } = get();
-        set({ isLoading: true, isOpen: true }); // 自動開啟視窗
+        set({ isLoading: true, isOpen: true, error: null }); // 自動開啟視窗
 
         try {
           // 1. 若無購物車，先建立
@@ -68,6 +75,7 @@ export const useCartStore = create<CartState>()(
           set({ cart: updatedCart });
         } catch (error) {
           console.error('Failed to add item:', error);
+          set({ error: 'Could not add item to cart.' });
         } finally {
           set({ isLoading: false });
         }
@@ -82,7 +90,7 @@ export const useCartStore = create<CartState>()(
           const updatedCart = await removeFromCart(cartId, [lineId]);
           set({ cart: updatedCart });
         } catch (error) {
-          console.error('Failed to remove item:', error);
+          set({ error: 'Failed to remove item.' });
         } finally {
           set({ isLoading: false });
         }
@@ -97,7 +105,7 @@ export const useCartStore = create<CartState>()(
           const updatedCart = await updateCartLine(cartId, [{ id: lineId, quantity }]);
           set({ cart: updatedCart });
         } catch (error) {
-          console.error('Failed to update quantity:', error);
+          set({ error: 'Failed to update quantity.' });
         } finally {
           set({ isLoading: false });
         }
