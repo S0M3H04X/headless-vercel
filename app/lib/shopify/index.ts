@@ -1,8 +1,8 @@
 // app/lib/shopify/index.ts
 
 // --- 1. 基礎設定 (保留您原有的 shopifyFetch) ---
-const domain = `https://${process.env.SHOPIFY_STORE_DOMAIN}`;
-const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+const domain = `https://${process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN}`;
+const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
 
 export async function shopifyFetch<T>({ query, variables }: { query: string; variables?: object }): Promise<T> {
   const endpoint = `${domain}/api/2023-10/graphql.json`;
@@ -34,7 +34,90 @@ export async function shopifyFetch<T>({ query, variables }: { query: string; var
   }
 }
 
+
 // --- 2. 型別定義 (Types) ---
+
+// --- Product Types ---
+
+export interface Product {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  descriptionHtml: string;
+  featuredImage?: {
+    url: string;
+    altText: string;
+  };
+  images: {
+    edges: Array<{
+      node: {
+        url: string;
+        altText: string;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: {
+        id: string;
+        title: string;
+        price: {
+          amount: string;
+          currencyCode: string;
+        };
+      };
+    }>;
+  };
+}
+
+// --- Product Operations ---
+
+export async function getProduct(handle: string): Promise<Product | null> {
+  const query = `
+    query getProduct($handle: String!) {
+      product(handle: $handle) {
+        id
+        handle
+        title
+        description
+        descriptionHtml
+        featuredImage {
+          url
+          altText
+        }
+        images(first: 5) {
+          edges {
+            node {
+              url
+              altText
+            }
+          }
+        }
+        variants(first: 1) {
+          edges {
+            node {
+              id
+              title
+              price {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await shopifyFetch<{ product: Product }>({
+    query,
+    variables: { handle },
+  });
+
+  return response.product;
+}
+
 
 export interface CartLine {
   id: string;

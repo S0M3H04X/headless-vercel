@@ -13,7 +13,7 @@ export const Launcher = () => {
         className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition-colors"
         onClick={() => ScenarioService.launchProductSuite('tee')}
       >
-        Open Product Suite
+        Open Tee
       </button>
       
       <button

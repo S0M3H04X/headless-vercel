@@ -16,13 +16,13 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
   [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
   [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
+  [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
 
   // [新增] 影音原子組件
   [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
   [WidgetKind.VideoVisual]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
   [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
 
-  [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
   
   
 };

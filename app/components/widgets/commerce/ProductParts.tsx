@@ -50,29 +50,26 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
   );
 };
 
-// 2. 商品標題視窗
+// 2. 商品標題視窗 (修正加入購物車邏輯)
 export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
-  
-  const addItem = useCartStore((s) => s.addItem); // [新增]
-  const [isAdding, setIsAdding] = useState(false); // [新增] Loading 狀態
+  console.log(product)
+  const addItem = useCartStore((s) => s.addItem);
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async () => {
-     // Shopify Cart API 需要 Variant ID，而非 Product ID
-     // 這裡簡化邏輯：預設選取第一個 Variant
-     // 未來可擴充 Variant 選擇器 Widget
+     // 安全地獲取第一個 Variant ID
      const defaultVariantId = product?.variants?.edges?.[0]?.node?.id;
 
      if (!defaultVariantId) {
-       alert('Error: No variant available');
+       console.error("Product data missing variants:", product);
+       alert('Error: No variant available. Please check console.');
        return;
      }
 
      setIsAdding(true);
      await addItem(defaultVariantId, 1);
      setIsAdding(false);
-     
-     // 可選：加入成功後不需要 alert，因為 MenuBar 數字會跳，且 CartWidget 可能會自動開啟
   };
 
   if (loading) return <div className="p-4">Loading...</div>;
@@ -82,6 +79,11 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
       <h1 className="text-2xl font-black uppercase tracking-widest leading-tight">
         {product?.title || 'Product Not Found'}
       </h1>
+      <div className="text-sm text-gray-500 mt-2 font-mono">
+        {product?.variants?.edges?.[0]?.node?.price?.amount 
+          ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
+          : ''}
+      </div>
       <button 
         onClick={handleAddToCart}
         disabled={isAdding || !product}
