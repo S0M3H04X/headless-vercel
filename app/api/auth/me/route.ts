@@ -8,12 +8,21 @@ export async function GET() {
 
   // 情況 A: Access Token 有效 -> 直接通過
   if (accessToken) {
-    return NextResponse.json({ authenticated: true });
+    return NextResponse.json({ 
+      authenticated: true,
+      accessToken: accessToken,
+      user: {
+        name: 'Member'  // 可擴充更多用戶資訊
+      } 
+    });
   }
 
   // 情況 B: Access Token 失效，但沒有 Refresh Token -> 視為未登入
   if (!refreshToken) {
-    return NextResponse.json({ authenticated: false }, { status: 401 });
+    return NextResponse.json({ 
+      authenticated: false,
+      accessToken: null 
+    }, { status: 401 });
   }
 
   // 情況 C: Access Token 失效，嘗試使用 Refresh Token 交換

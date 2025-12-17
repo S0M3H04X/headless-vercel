@@ -17,6 +17,7 @@ export const WidgetKind = {
   // Asset Context
   PDFViewer: 'pdf_viewer',
   Cart: 'cart_manager',
+  UserProfile: 'user_profile',
   
 } as const;
 

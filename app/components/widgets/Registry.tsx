@@ -17,6 +17,7 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
   [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
   [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
+  [WidgetKind.UserProfile]: lazy(() => import('./user/UserProfileWidget')),
 
   // [新增] 影音原子組件
   [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),

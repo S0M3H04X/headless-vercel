@@ -4,19 +4,36 @@
 const domain = `https://${process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN}`;
 const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
 
-export async function shopifyFetch<T>({ query, variables }: { query: string; variables?: object }): Promise<T> {
+export async function shopifyFetch<T>({ 
+  query, 
+  variables, 
+  cache = 'force-cache',
+  customerAccessToken 
+}: { 
+  query: string; 
+  variables?: object;
+  cache?: RequestCache;
+  customerAccessToken?: string; // [新增] 支援會員權杖
+}): Promise<T> {
   const endpoint = `${domain}/api/2023-10/graphql.json`;
+  const key = JSON.stringify({ query, variables });
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-Shopify-Storefront-Access-Token': storefrontAccessToken!,
+  };
+
+  // [新增] 若有會員權杖，加入 Header
+  if (customerAccessToken) {
+    headers['X-Shopify-Customer-Access-Token'] = customerAccessToken;
+  }
 
   try {
     const result = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': storefrontAccessToken!,
-      },
+      headers, // 使用動態 headers
       body: JSON.stringify({ query, variables }),
-      cache: 'no-store', // 購物車操作不應快取
-      // next: { tags: ['cart'] } // 若需要 Revalidation 可加
+      cache, 
+      next: { tags: ['shopify'] }
     });
 
     const body = await result.json();
@@ -25,7 +42,7 @@ export async function shopifyFetch<T>({ query, variables }: { query: string; var
       throw body.errors[0];
     }
 
-    return body.data; // 注意：這裡已經回傳了 data 層
+    return body.data;
   } catch (e) {
     throw {
       error: e,
@@ -321,4 +338,89 @@ export async function getCart(cartId: string): Promise<Cart | null> {
     variables: { cartId } 
   });
   return response.cart;
+}
+
+// --- Customer Types ---
+
+export interface Order {
+  id: string;
+  orderNumber: number;
+  processedAt: string;
+  financialStatus: string;
+  fulfillmentStatus: string;
+  statusUrl: string;
+  currentTotalPrice: {
+    amount: string;
+    currencyCode: string;
+  };
+  lineItems: {
+    edges: Array<{
+      node: {
+        title: string;
+        quantity: number;
+      }
+    }>
+  }
+}
+
+export interface Customer {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  orders: {
+    edges: Array<{
+      node: Order;
+    }>;
+  };
+}
+
+// --- Customer Operations ---
+
+export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
+  const query = `
+    query getCustomer {
+      customer {
+        id
+        firstName
+        lastName
+        email
+        phone
+        orders(first: 10, reverse: true) {
+          edges {
+            node {
+              id
+              orderNumber
+              processedAt
+              financialStatus
+              fulfillmentStatus
+              statusUrl
+              currentTotalPrice {
+                amount
+                currencyCode
+              }
+              lineItems(first: 5) {
+                edges {
+                  node {
+                    title
+                    quantity
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  // 注意：這裡必須傳入 customerAccessToken 並且不快取 (涉及私密資料)
+  const response = await shopifyFetch<{ customer: Customer }>({
+    query,
+    customerAccessToken,
+    cache: 'no-store' 
+  });
+
+  return response.customer;
 }

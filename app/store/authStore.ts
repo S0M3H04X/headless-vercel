@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 interface AuthState {
   isAuthenticated: boolean;
+  customerAccessToken: string | null;
   isLoading: boolean;
   user: {
     name?: string;
@@ -15,6 +16,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
+  customerAccessToken: null,
   isLoading: true, // 初始狀態設為 true，避免畫面閃爍
   user: null,
 
@@ -29,19 +31,20 @@ export const useAuthStore = create<AuthState>((set) => ({
         if (data.authenticated) {
             set({ 
                 isAuthenticated: true, 
+                customerAccessToken: data.accessToken || null,
                 isLoading: false,
                 user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
             });
         } else {
-            set({ isAuthenticated: false, isLoading: false, user: null });
+            set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
         }
       } else {
         // 401 或其他錯誤視為未登入
-        set({ isAuthenticated: false, isLoading: false, user: null });
+        set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
       }
     } catch (error) {
       console.error('[AuthStore] Check failed', error);
-      set({ isAuthenticated: false, isLoading: false, user: null });
+      set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
     }
   },
 
@@ -58,7 +61,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         console.error('Logout failed:', e);
     } finally {
         // 無論後端成功與否，前端都要重置狀態
-        set({ isAuthenticated: false, user: null });
+        set({ isAuthenticated: false, customerAccessToken: null, user: null });
         // 可選：強制重整頁面以確保乾淨
         window.location.reload(); 
     }
