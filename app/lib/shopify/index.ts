@@ -4,18 +4,18 @@
 const domain = `https://${process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN}`;
 const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
 
-export async function shopifyFetch<T>({ 
-  query, 
-  variables, 
+export async function shopifyFetch<T>({
+  query,
+  variables,
   cache = 'force-cache',
-  customerAccessToken 
-}: { 
-  query: string; 
+  customerAccessToken
+}: {
+  query: string;
   variables?: object;
   cache?: RequestCache;
   customerAccessToken?: string; // [新增] 支援會員權杖
 }): Promise<T> {
-  const endpoint = `${domain}/api/2023-10/graphql.json`;
+  const endpoint = `${domain}/api/2024-10/graphql.json`;
   const key = JSON.stringify({ query, variables });
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function shopifyFetch<T>({
       method: 'POST',
       headers, // 使用動態 headers
       body: JSON.stringify({ query, variables }),
-      cache, 
+      cache,
       next: { tags: ['shopify'] }
     });
 
@@ -44,6 +44,7 @@ export async function shopifyFetch<T>({
 
     return body.data;
   } catch (e) {
+    console.error('[ShopifyFetch Error]', e);
     throw {
       error: e,
       query
@@ -261,7 +262,7 @@ export async function createCart(): Promise<Cart> {
   // [修正 1] 傳入物件參數
   // [修正 2] 泛型指定為 CartOperationResponse<'cartCreate'>
   const response = await shopifyFetch<CartOperationResponse<'cartCreate'>>({ query });
-  
+
   // [修正 3] 直接存取 cartCreate，不需要再 .data
   return response.cartCreate.cart;
 }
@@ -278,9 +279,9 @@ export async function addToCart(cartId: string, lines: { merchandiseId: string; 
     ${CART_FRAGMENT}
   `;
 
-  const response = await shopifyFetch<CartOperationResponse<'cartLinesAdd'>>({ 
-    query, 
-    variables: { cartId, lines } 
+  const response = await shopifyFetch<CartOperationResponse<'cartLinesAdd'>>({
+    query,
+    variables: { cartId, lines }
   });
   return response.cartLinesAdd.cart;
 }
@@ -297,9 +298,9 @@ export async function removeFromCart(cartId: string, lineIds: string[]): Promise
     ${CART_FRAGMENT}
   `;
 
-  const response = await shopifyFetch<CartOperationResponse<'cartLinesRemove'>>({ 
-    query, 
-    variables: { cartId, lineIds } 
+  const response = await shopifyFetch<CartOperationResponse<'cartLinesRemove'>>({
+    query,
+    variables: { cartId, lineIds }
   });
   return response.cartLinesRemove.cart;
 }
@@ -316,9 +317,9 @@ export async function updateCartLine(cartId: string, lines: { id: string; quanti
     ${CART_FRAGMENT}
   `;
 
-  const response = await shopifyFetch<CartOperationResponse<'cartLinesUpdate'>>({ 
-    query, 
-    variables: { cartId, lines } 
+  const response = await shopifyFetch<CartOperationResponse<'cartLinesUpdate'>>({
+    query,
+    variables: { cartId, lines }
   });
   return response.cartLinesUpdate.cart;
 }
@@ -333,9 +334,9 @@ export async function getCart(cartId: string): Promise<Cart | null> {
     ${CART_FRAGMENT}
   `;
 
-  const response = await shopifyFetch<{ cart: Cart }>({ 
-    query, 
-    variables: { cartId } 
+  const response = await shopifyFetch<{ cart: Cart }>({
+    query,
+    variables: { cartId }
   });
   return response.cart;
 }
@@ -380,8 +381,8 @@ export interface Customer {
 
 export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
   const query = `
-    query getCustomer {
-      customer {
+    query getCustomer($customerAccessToken: String!) {
+      customer(customerAccessToken: $customerAccessToken) {
         id
         firstName
         lastName
@@ -408,6 +409,16 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
                   }
                 }
               }
+              successfulFulfillments(first: 1) {
+               edges {
+                  node {
+                      trackingInfo {
+                          number
+                          url
+                      }
+                  }
+               }
+              }
             }
           }
         }
@@ -418,8 +429,8 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
   // 注意：這裡必須傳入 customerAccessToken 並且不快取 (涉及私密資料)
   const response = await shopifyFetch<{ customer: Customer }>({
     query,
-    customerAccessToken,
-    cache: 'no-store' 
+    variables: { customerAccessToken },
+    cache: 'no-store'
   });
 
   return response.customer;

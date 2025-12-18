@@ -9,6 +9,12 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
   const { customer, loading, error } = useShopifyCustomer();
   const logout = useAuthStore((s) => s.logout);
 
+  const getFulfillmentStatus = (order: any) => {
+    return order.successfulFulfillments?.edges?.length > 0
+      ? 'FULFILLED'
+      : 'UNFULFILLED';
+  };
+
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center bg-gray-50">
@@ -22,7 +28,7 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
       <div className="h-full flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
         <div className="text-red-500 mb-2">⚠️</div>
         <p className="text-gray-600 text-sm mb-4">{error || 'Session expired'}</p>
-        <button 
+        <button
           onClick={logout}
           className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 text-xs"
         >
@@ -68,28 +74,27 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
                     <span className="font-mono font-bold text-sm text-gray-900">
                       Order #{order.orderNumber}
                     </span>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
-                      order.financialStatus === 'PAID' 
-                        ? 'bg-green-50 text-green-700 border-green-200' 
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${order.financialStatus === 'PAID'
+                        ? 'bg-green-50 text-green-700 border-green-200'
                         : 'bg-yellow-50 text-yellow-700 border-yellow-200'
-                    }`}>
+                      }`}>
                       {order.financialStatus}
                     </span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {new Date(order.processedAt).toLocaleDateString()} • 
+                    {new Date(order.processedAt).toLocaleDateString()} •
                     {order.lineItems.edges.map(e => e.node.title).join(', ').slice(0, 30)}...
                   </div>
                 </div>
-                
+
                 <div className="text-right">
                   <div className="font-medium text-sm">
                     {order.currentTotalPrice.amount} {order.currentTotalPrice.currencyCode}
                   </div>
                   {order.statusUrl && (
-                    <a 
-                      href={order.statusUrl} 
-                      target="_blank" 
+                    <a
+                      href={order.statusUrl}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-[10px] text-blue-600 hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
                     >
@@ -106,7 +111,7 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
       {/* Footer: Actions */}
       <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
         <span className="text-xs text-gray-400">Shopify Secure Session</span>
-        <button 
+        <button
           onClick={logout}
           className="text-xs text-red-600 hover:text-red-800 font-medium px-3 py-1 hover:bg-red-50 rounded"
         >
