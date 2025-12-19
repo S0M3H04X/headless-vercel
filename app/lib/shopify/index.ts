@@ -367,7 +367,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string;
+  // phone?: string;
   orders: {
     edges: Array<{
       node: Order;
@@ -376,24 +376,25 @@ export interface Customer {
 }
 
 // --- Customer Operations ---
-
-// app/lib/shopify/index.ts
-
 export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
+  // [關鍵修正 1] 移除 ($customerAccessToken) 參數
+  // Customer Account API 直接從 HTTP Header 讀取 Token，不需要在 Query 中傳遞
   const query = `
-    query getCustomer($customerAccessToken: String!) {
-      customer(customerAccessToken: $customerAccessToken) {
+    query getCustomerProfile {
+      customer {
         id
         firstName
         lastName
-        email
+        emailAddress {
+          emailAddress
+        }
         orders(first: 10, reverse: true) {
           edges {
             node {
               id
-              orderNumber
+              name           # Customer API 用 name 代表訂單號 (如 #1001)
               financialStatus
-              currentTotalPrice {
+              totalPrice {   # 注意：這裡是 totalPrice 而非 currentTotalPrice
                 amount
                 currencyCode
               }
@@ -405,13 +406,6 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
                   }
                 }
               }
-              # [修正] successfulFulfillments 是 List，不是 Connection
-              successfulFulfillments {
-                 trackingInfo {
-                    number
-                    url
-                 }
-              }
             }
           }
         }
@@ -421,27 +415,34 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
 
   const response = await shopifyFetch<{ customer: any }>({
     query,
-    variables: { customerAccessToken },
-    customerAccessToken, 
-    apiType: 'storefront', 
+    // variables: {}, // 不需要變數
+    customerAccessToken, // 傳給 BFF 放入 Header
+    apiType: 'customer', // [關鍵修正 2] 明確指定走 Customer Account API 線路
     cache: 'no-store'
   });
 
   const rawCustomer = response.customer;
+  
+  // [安全檢查] 若 Token 無效或過期，API 可能回傳 null
   if (!rawCustomer) return null;
 
+  // [關鍵修正 3] Adapter: 將 API 結構轉換為 UI 預期的結構
   return {
-    ...rawCustomer,
-    email: rawCustomer.email, 
+    id: rawCustomer.id,
+    firstName: rawCustomer.firstName,
+    lastName: rawCustomer.lastName,
+    email: rawCustomer.emailAddress?.emailAddress || '', // 欄位轉換
     orders: {
-      edges: rawCustomer.orders.edges.map((edge: any) => ({
+      edges: (rawCustomer.orders?.edges || []).map((edge: any) => ({
         node: {
-          ...edge.node,
-          // [修正] 資料結構轉換邏輯：檢查陣列長度
-          fulfillmentStatus: (edge.node.successfulFulfillments && edge.node.successfulFulfillments.length > 0) 
-            ? 'FULFILLED' 
-            : 'UNFULFILLED',
-          statusUrl: edge.node.successfulFulfillments?.[0]?.trackingInfo?.[0]?.url || ''
+          id: edge.node.id,
+          orderNumber: edge.node.name, // Mapping name -> orderNumber
+          processedAt: new Date().toISOString(), // API 可能未回傳，給預設值
+          financialStatus: edge.node.financialStatus,
+          fulfillmentStatus: 'UNFULFILLED', // Customer API 需額外查詢，暫時給預設值以防崩潰
+          statusUrl: '', 
+          currentTotalPrice: edge.node.totalPrice, // Mapping totalPrice -> currentTotalPrice
+          lineItems: edge.node.lineItems
         }
       }))
     }

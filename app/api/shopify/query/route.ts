@@ -33,8 +33,8 @@ async function getCustomerAccountEndpoint(shopDomain: string): Promise<string | 
     console.log(`[Discovery] Config received:`, config); // [除錯] 查看回傳了什麼
 
     // 2. 驗證回傳值
-    if (config && config.graphql_endpoint) {
-      return config.graphql_endpoint;
+    if (config && config.graphql_api) {
+      return config.graphql_api;
     }
     return null;
   } catch (error) {
@@ -64,6 +64,13 @@ export async function POST(req: Request) {
     // 2. 路由分流 (Routing)
     if (apiType === 'customer') {
       // --- Customer Account API ---
+
+      // [除錯關鍵] 印出 Token 的前綴，確認 BFF 到底收到了什麼
+      // 若顯示 undefined 或非 shcat_ 開頭，則問題在前端
+      const tokenPreview = customerAccessToken 
+        ? `${customerAccessToken.substring(0, 10)}...` 
+        : 'UNDEFINED/NULL';
+      console.log(`[BFF Debug] Received Customer Token: ${tokenPreview}`);
       
       // A. 嘗試動態發現
       endpoint = await getCustomerAccountEndpoint(domain);
@@ -76,18 +83,15 @@ export async function POST(req: Request) {
 
       // C. 若仍無 Endpoint，則報錯
       if (!endpoint) {
-        console.error('[BFF Critical] Could not determine Customer API Endpoint');
-        return NextResponse.json(
-            { error: 'Configuration Error: Unable to resolve Customer API URL. Please check SHOPIFY_STORE_DOMAIN or add SHOPIFY_SHOP_ID.' }, 
-            { status: 500 }
-        );
+        return NextResponse.json({ error: 'Configuration Error: No Endpoint' }, { status: 500 });
       }
       
-      // Token 處理
+      // [修正 2] 確保 Token 存在才加入 Header，且格式正確
       if (customerAccessToken) {
-        headers['Authorization'] = `Bearer ${customerAccessToken}`; // 注意：文檔建議 Bearer
-        // 備註：若 Bearer 不工作，可嘗試 headers['X-Shopify-Customer-Access-Token'] = customerAccessToken;
+        headers['Authorization'] = customerAccessToken; // 嘗試 1: 直接傳送 (部分文件建議)
+        // headers['Authorization'] = `Bearer ${customerAccessToken}`; // 嘗試 2: 標準 OAuth
       }
+
       
       console.log(`[BFF] Final Endpoint -> ${endpoint}`);
 
@@ -107,10 +111,11 @@ export async function POST(req: Request) {
     });
 
     const text = await result.text();
+    let json;
     
     // 嘗試解析 JSON
     try {
-      const json = JSON.parse(text);
+      json = JSON.parse(text);
       if (json.errors) {
         console.warn('[Shopify API Error]', json.errors);
         return NextResponse.json(json);
@@ -123,6 +128,13 @@ export async function POST(req: Request) {
         { status: 502 }
       );
     }
+
+    if (json.errors) {
+      console.warn('[Shopify API Error]', json.errors);
+      return NextResponse.json(json);
+    }
+
+    return NextResponse.json(json);
 
   } catch (error: any) {
     console.error('[BFF Critical]', error);
