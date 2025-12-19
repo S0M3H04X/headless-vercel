@@ -1,59 +1,133 @@
 import { NextResponse } from 'next/server';
 
-// 定義環境變數介面 (確保型別安全)
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-const apiVersion = process.env.SHOPIFY_API_VERSION || '2025-01';
+const apiVersion = process.env.SHOPIFY_API_VERSION || '2025-10';
+const shopId = process.env.SHOPIFY_SHOP_ID;
+
+/**
+ * [Discovery Pattern]
+ * 動態獲取 Customer Account API 的 GraphQL 端點
+ * 文檔來源: Customer Account API reference -> Discovery endpoints
+ */
+async function getCustomerAccountEndpoint(shopDomain: string): Promise<string | null> {
+  // 1. 確保網域格式乾淨
+  const cleanDomain = shopDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const discoveryUrl = `https://${cleanDomain}/.well-known/customer-account-api`;
+  
+  console.log(`[Discovery] Fetching config from: ${discoveryUrl}`);
+
+  try {
+    const response = await fetch(discoveryUrl, { 
+      next: { revalidate: 3600 },
+      method: 'GET',
+      headers: { 'User-Agent': 'NextJS-BFF' }
+    });
+    
+    if (!response.ok) {
+      console.warn(`[Discovery] Failed with status: ${response.status}`);
+      return null;
+    }
+
+    const config = await response.json();
+    console.log(`[Discovery] Config received:`, config); // [除錯] 查看回傳了什麼
+
+    // 2. 驗證回傳值
+    if (config && config.graphql_endpoint) {
+      return config.graphql_endpoint;
+    }
+    return null;
+  } catch (error) {
+    console.error('[Discovery Error]', error);
+    return null;
+  }
+}
 
 export async function POST(req: Request) {
-
+  // 1. 基礎環境變數檢查
   if (!domain || !storefrontAccessToken) {
     return NextResponse.json(
-      { error: 'Missing Shopify credentials on server' }, 
+      { error: 'Server Config Error: Missing Shopify Credentials' }, 
       { status: 500 }
     );
   }
 
   try {
     const body = await req.json();
-    const { query, variables, customerAccessToken } = body;
+    const { query, variables, customerAccessToken, apiType = 'storefront' } = body;
 
-    const endpoint = `https://${domain}/api/${apiVersion}/graphql.json`;
-
+    let endpoint: string | null = null;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
     };
 
-    // 如果前端傳來了 Customer Token，則附加到 Header 或 Variables
-    // 注意：Storefront API 通常不需要將 Token 放在 Header (除非是 Customer Account API)
-    // 這裡保留彈性，若您的 Query 需要它作為 Header，可在此處理
-    if (customerAccessToken) {
-        // 部分舊版實作或特定 Query 可能需要
-        // headers['X-Shopify-Customer-Access-Token'] = customerAccessToken;
+    // 2. 路由分流 (Routing)
+    if (apiType === 'customer') {
+      // --- Customer Account API ---
+      
+      // A. 嘗試動態發現
+      endpoint = await getCustomerAccountEndpoint(domain);
+      
+      // B. Fallback 機制 (若發現失敗且有設定 Shop ID)
+      if (!endpoint && shopId) {
+        console.warn('[Discovery] Falling back to manual URL construction');
+        endpoint = `https://shopify.com/${shopId}/account/customer/api/${apiVersion}/graphql`;
+      }
+
+      // C. 若仍無 Endpoint，則報錯
+      if (!endpoint) {
+        console.error('[BFF Critical] Could not determine Customer API Endpoint');
+        return NextResponse.json(
+            { error: 'Configuration Error: Unable to resolve Customer API URL. Please check SHOPIFY_STORE_DOMAIN or add SHOPIFY_SHOP_ID.' }, 
+            { status: 500 }
+        );
+      }
+      
+      // Token 處理
+      if (customerAccessToken) {
+        headers['Authorization'] = `Bearer ${customerAccessToken}`; // 注意：文檔建議 Bearer
+        // 備註：若 Bearer 不工作，可嘗試 headers['X-Shopify-Customer-Access-Token'] = customerAccessToken;
+      }
+      
+      console.log(`[BFF] Final Endpoint -> ${endpoint}`);
+
+    } else {
+      // --- Storefront API ---
+      endpoint = `https://${domain}/api/${apiVersion}/graphql.json`;
+      headers['X-Shopify-Storefront-Access-Token'] = storefrontAccessToken;
     }
 
+    // 3. 轉發請求 (Proxy Request)
+    // [修正] 這裡 endpoint 已經保證不為 undefined/null，否則上面已 return
     const result = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify({ query, variables }),
-      cache: 'no-store', // BFF 不快取，避免資料過期 (可改用 next/cache 優化)
+      cache: 'no-store',
     });
 
-    const json = await result.json();
-
-    if (json.errors) {
-      console.error('[Shopify BFF Error]', json.errors);
-      // 回傳 200 但帶有錯誤訊息，讓前端 handle
-      return NextResponse.json(json); 
+    const text = await result.text();
+    
+    // 嘗試解析 JSON
+    try {
+      const json = JSON.parse(text);
+      if (json.errors) {
+        console.warn('[Shopify API Error]', json.errors);
+        return NextResponse.json(json);
+      }
+      return NextResponse.json(json);
+    } catch (e) {
+      console.error('[BFF] Non-JSON Response from Shopify:', text.substring(0, 200));
+      return NextResponse.json(
+        { error: `Upstream Error: Received invalid response (${result.status})` },
+        { status: 502 }
+      );
     }
 
-    return NextResponse.json(json);
-
-  } catch (error) {
-    console.error('[Shopify BFF Critical]', error);
+  } catch (error: any) {
+    console.error('[BFF Critical]', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' }, 
+      { error: error.message || 'Internal Server Error' }, 
       { status: 500 }
     );
   }

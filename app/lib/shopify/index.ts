@@ -6,12 +6,14 @@ export async function shopifyFetch<T>({
   query,
   variables,
   cache = 'force-cache',
-  customerAccessToken
+  customerAccessToken,
+  apiType = 'storefront'
 }: {
   query: string;
   variables?: object;
   cache?: RequestCache;
   customerAccessToken?: string; // [新增] 支援會員權杖
+  apiType?: 'storefront' | 'customer';
 }): Promise<T> {
   try {
     // [修改] 改為呼叫 Next.js BFF API
@@ -21,18 +23,20 @@ export async function shopifyFetch<T>({
         'Content-Type': 'application/json',
         // 注意：這裡不再需要傳送 Storefront Access Token，因為它在後端
       },
-      body: JSON.stringify({ 
-        query, 
+      body: JSON.stringify({
+        query,
         variables,
-        customerAccessToken // 將用戶 Token 傳給後端 (若需要)
+        customerAccessToken, // 將用戶 Token 傳給後端 (若需要)
+        apiType
       }),
-      cache, 
+      cache,
       // next: { tags: ['shopify'] } // BFF 模式下，Next.js 的 tag revalidation 機制需調整，暫時移除
     });
 
     const body = await result.json();
 
     if (body.errors) {
+      console.error('[Shopify Error]', body.errors);
       throw body.errors[0];
     }
 
@@ -373,8 +377,9 @@ export interface Customer {
 
 // --- Customer Operations ---
 
+// app/lib/shopify/index.ts
+
 export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
-  // GraphQL Query: 定義變數 $token
   const query = `
     query getCustomer($customerAccessToken: String!) {
       customer(customerAccessToken: $customerAccessToken) {
@@ -400,6 +405,13 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
                   }
                 }
               }
+              # [修正] successfulFulfillments 是 List，不是 Connection
+              successfulFulfillments {
+                 trackingInfo {
+                    number
+                    url
+                 }
+              }
             }
           }
         }
@@ -407,12 +419,31 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
     }
   `;
 
-  // 呼叫 BFF
-  const response = await shopifyFetch<{ customer: Customer }>({
+  const response = await shopifyFetch<{ customer: any }>({
     query,
-    variables: { customerAccessToken }, // 將 token 傳入 variables
+    variables: { customerAccessToken },
+    customerAccessToken, 
+    apiType: 'storefront', 
     cache: 'no-store'
   });
 
-  return response.customer;
+  const rawCustomer = response.customer;
+  if (!rawCustomer) return null;
+
+  return {
+    ...rawCustomer,
+    email: rawCustomer.email, 
+    orders: {
+      edges: rawCustomer.orders.edges.map((edge: any) => ({
+        node: {
+          ...edge.node,
+          // [修正] 資料結構轉換邏輯：檢查陣列長度
+          fulfillmentStatus: (edge.node.successfulFulfillments && edge.node.successfulFulfillments.length > 0) 
+            ? 'FULFILLED' 
+            : 'UNFULFILLED',
+          statusUrl: edge.node.successfulFulfillments?.[0]?.trackingInfo?.[0]?.url || ''
+        }
+      }))
+    }
+  };
 }
