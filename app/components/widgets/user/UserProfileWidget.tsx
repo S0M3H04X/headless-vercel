@@ -7,7 +7,8 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 
 export default function UserProfileWidget({ id }: BaseWidgetProps) {
   const { customer, loading, error } = useShopifyCustomer();
-  const logout = useAuthStore((s) => s.logout);
+  const { user, isAuthenticated, checkAuth, logout, login } = useAuthStore();
+  
   console.log('UserProfileWidget error:', error); 
   console.log('Customer data:', customer);
 
@@ -31,9 +32,9 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
       <div className="h-full flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
         <div className="text-red-500 mb-2">⚠️</div>
         <p className="text-gray-600 text-sm mb-4">{error || 'Session expired'}</p>
-        <button
-          onClick={logout}
-          className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 text-xs"
+        <button 
+          onClick={login} // [修正] 改為 login，觸發 OAuth 跳轉
+          className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
         >
           Re-login
         </button>

@@ -362,6 +362,8 @@ export interface Order {
   }
 }
 
+
+// --- Customer Operations ---
 export interface Customer {
   id: string;
   firstName: string;
@@ -375,7 +377,7 @@ export interface Customer {
   };
 }
 
-// --- Customer Operations ---
+
 export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
   // [關鍵修正 1] 移除 ($customerAccessToken) 參數
   // Customer Account API 直接從 HTTP Header 讀取 Token，不需要在 Query 中傳遞
