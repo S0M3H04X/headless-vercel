@@ -18,6 +18,7 @@ export const WidgetKind = {
   PDFViewer: 'pdf_viewer',
   Cart: 'cart_manager',
   UserProfile: 'user_profile',
+  Auth: 'auth',
   
 } as const;
 

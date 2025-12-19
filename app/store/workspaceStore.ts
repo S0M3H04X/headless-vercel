@@ -6,6 +6,9 @@ import { AnalyticsService } from '@/lib/services/analytics';
 interface WorkspaceState {
   windows: Record<string, WindowInstance>;
   stackOrder: string[];
+  // [新增] 系統狀態
+  installedApps: string[]; // 當前用戶可用的 App ID 清單
+  isBooted: boolean;
   
   openWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   closeWindow: (id: string) => void;
@@ -15,7 +18,7 @@ interface WorkspaceState {
   updateInternalState: (id: string, stateUpdate: Record<string, any>) => void;
   minimizeWindow: (id: string) => void;
   restoreWindow: (id: string) => void;
-  
+  bootSystem: (config: any) => void;
 
 }
 
@@ -24,6 +27,40 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     (set, get) => ({
       windows: {},
       stackOrder: [],
+
+      // [新增] 預設狀態
+      installedApps: [], 
+      isBooted: false,
+      bootSystem: (config) => {
+        const { dock, autoStart } = config;
+        
+        set((state) => {
+          // 策略 C (Hybrid):
+          // 1. Dock (Installed Apps) -> 強制使用 Server 設定
+          const newApps = dock || [];
+
+          // 2. Windows -> 檢查 LocalStorage 是否有殘留視窗
+          const hasExistingWindows = Object.keys(state.windows).length > 0;
+          let newWindows = { ...state.windows };
+          let newStack = [...state.stackOrder];
+
+          // 若是用戶首次訪問 (無殘留視窗)，則執行 autoStart
+          if (!hasExistingWindows && autoStart && autoStart.length > 0) {
+             autoStart.forEach((winConfig: any) => {
+                // 這裡簡化邏輯，需呼叫內部的 openWindow 邏輯 (或在 Component 層處理)
+                // 為保持 Store 純粹，我們通常建議由 Component 觸發 openWindow
+                // 但為了方便，我們可以在這裡標記 "pendingAutoStart" 讓 UI 處理
+                // 或者直接在這裡操作 windows 物件 (需引入 uuid)
+             });
+          }
+
+          return {
+            installedApps: newApps,
+            isBooted: true,
+            // windows 與 stackOrder 保持 LocalStorage 的狀態 (除非我們決定清除)
+          };
+        });
+      },
 
       openWindow: ({ title, content, initialGeometry }) => {
 
@@ -171,7 +208,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       }
     }),
     {
-      name: 'headless-os-workspace',
+      name: 'headless-workspace-storage',
+      // [重要] 設定 persist 白名單，確保 installedApps 不被持久化 (每次開機都要重抓)
+      // 或者：我們希望它持久化以加速下次載入？
+      // 建議：只持久化 windows，installedApps 每次重抓以確保權限正確
+      partialize: (state) => ({ windows: state.windows, stackOrder: state.stackOrder }),
     }
   )
 );

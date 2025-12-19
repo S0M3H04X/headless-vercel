@@ -4,6 +4,12 @@ import React, { Suspense, lazy } from 'react';
 import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
 
+// [新增] 引入現有的 AuthWidget 作為視窗內容
+// 注意：如果 AuthWidget 原本是 position:absolute 的 overlay，這裡可能需要稍微調整樣式以適應視窗
+const AuthWidgetWrapper = () => {
+    const AuthWidget = lazy(() => import('../desktop/AuthWidget').then(m => ({ default: m.AuthWidget })));
+    return <AuthWidget />;
+};
 const CartWidgetPlaceholder = () => <div className="p-4">Cart Widget Loading...</div>;
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
@@ -24,7 +30,16 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.VideoVisual]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
   [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
 
-  
+  // [修正] 註冊 Auth
+  [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({ 
+      // 假設 AuthWidget 是 default export，或是 named export
+      // 這裡做一個適配器，因為 AuthWidget 可能沒有接收 BaseWidgetProps
+      default: (props: any) => {
+          const { AuthWidget } = m;
+          // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
+          return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
+      } 
+  }))),
   
 };
 

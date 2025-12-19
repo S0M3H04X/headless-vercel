@@ -1,0 +1,23 @@
+{
+  "guest": {
+    "role": "guest",
+    "dock": ["launcher", "product_browser", "video_studio"],
+    "autoStart": [
+      { 
+        "title": "Member Login", 
+        "content": { "kind": "auth", "sourceId": "login-flow" }, 
+        "initialGeometry": { "x": "center", "y": "center", "width": 320, "height": 400 } 
+      }
+    ]
+  },
+  "member": {
+    "role": "member",
+    "dock": ["launcher", "product_browser", "video_studio", "cart", "profile", "pdf_viewer"],
+    "autoStart": [] 
+  },
+  "admin": {
+    "role": "admin",
+    "dock": ["launcher", "product_browser", "video_studio", "cart", "profile", "pdf_viewer"],
+    "autoStart": []
+  }
+}
