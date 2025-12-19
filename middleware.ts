@@ -1,59 +1,60 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 1. 定義需要受保護的路徑 (Matcher)
-// 注意：Next.js 的 matcher 語法不支援變數，必須寫死字串
-export const config = {
-  matcher: [
-    /* * 受保護的 API 路由
-     * 攔截所有 /api/shopify/ 開頭的請求
-     */
-    '/api/shopify/:path*',
-
-    /* * 受保護的靜態資產 (High Value Assets)
-     * 攔截 PDF 與 MP4，防止未登入使用者直接下載
-     */
-    '/assets/pdf/:path*',
-    '/assets/mp4/:path*',
-
-    // 3. [Reserved] Future WebAssembly Widgets
-    // '/api/wasm/:path*',
-  ],
-};
-
 export function middleware(request: NextRequest) {
-  // 2. 檢查身分憑證
-  // 讀取 HttpOnly Cookie: 'shopify_access_token'
-  const accessToken = request.cookies.get('shopify_access_token');
-  const isAuth = !!accessToken;
+  const path = request.nextUrl.pathname;
 
-  // 3. 如果已登入，直接放行 (Pass-through)
-  if (isAuth) {
+  // 1. 定義公開路徑 (Whitelist)
+  // 關鍵修正：必須包含 path === '/'，否則會導致首頁無限重導向
+  const isPublicPath = 
+    path === '/' ||                        // [关键] 允許加載 PWA Shell
+    path.startsWith('/_next') ||           // Next.js 系統資源
+    path.startsWith('/assets') ||          // 公開靜態資源 (非受保護部分)
+    path.startsWith('/favicon.ico') ||
+    path.startsWith('/api/auth') ||        // 登入/登出/Callback 流程
+    path === '/api/shopify/query';         // BFF 查詢 (由 BFF 內部處理權限)
+
+  // 如果是公開路徑，直接放行
+  if (isPublicPath) {
     return NextResponse.next();
   }
 
-  // 4. 如果未登入，根據請求類型回傳 401
-  const path = request.nextUrl.pathname;
+  // 2. 檢查身分憑證
+  // 注意：請確認這裡的 Cookie 名稱與 login/route.ts 設定的一致
+  // 通常建議使用 'shopify_customer_access_token'
+  const token = request.cookies.get('shopify_customer_access_token')?.value;
 
-  // Case A: API 請求 (回傳 JSON)
-  if (path.startsWith('/api/')) {
-    return NextResponse.json(
-      { 
-        error: 'Unauthorized', 
-        message: 'Valid shopify_access_token required',
-        code: 'AUTH_REQUIRED' // 給前端判斷的錯誤碼 
-      },
-      { status: 401 }
-    );
+  // 3. 未登入攔截邏輯
+  if (!token) {
+    // Case A: API 請求 -> 回傳 401 JSON
+    if (path.startsWith('/api/')) {
+        return NextResponse.json(
+          { error: 'Unauthorized', message: 'Session expired' }, 
+          { status: 401 }
+        );
+    }
+
+    // Case B: 受保護的靜態資源 (PDF/MP4) -> 回傳 403 禁止訪問
+    // 這裡不建議 Redirect，因為瀏覽器對資源檔的 Redirect 處理不一定會顯示登入頁
+    if (path.startsWith('/assets/pdf') || path.startsWith('/assets/mp4')) {
+        return new NextResponse('Access Denied: Please login via Desktop.', {
+            status: 403,
+            headers: { 'Content-Type': 'text/plain' },
+        });
+    }
+
+    // Case C: 其他頁面路由 -> 導回首頁 (讓 Desktop UI 處理登入)
+    // 這裡導向 '/' 是安全的，因為 '/' 已經在 isPublicPath 中
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
-  // Case B: 靜態資源請求 (PDF/MP4)
-  // 這裡回傳 401 純文字，瀏覽器會顯示錯誤頁面，達到「阻擋下載」的目的
-  // 未來可改為 Rewrite 到一個 "Please Login" 的佔位圖片或頁面
-  return new NextResponse('Access Denied: Please login to view this content.', {
-    status: 401,
-    headers: {
-      'Content-Type': 'text/plain',
-    },
-  });
+  // 4. 已登入 -> 放行
+  return NextResponse.next();
 }
+
+// 設定 Matcher：攔截所有路徑，除了 Next.js 靜態資源
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
+};

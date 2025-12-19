@@ -1,8 +1,6 @@
 // app/lib/shopify/index.ts
 
-// --- 1. 基礎設定 (保留您原有的 shopifyFetch) ---
-const domain = `https://${process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN}`;
-const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
+const BFF_ENDPOINT = '/api/shopify/query';
 
 export async function shopifyFetch<T>({
   query,
@@ -15,25 +13,21 @@ export async function shopifyFetch<T>({
   cache?: RequestCache;
   customerAccessToken?: string; // [新增] 支援會員權杖
 }): Promise<T> {
-  const endpoint = `${domain}/api/2024-10/graphql.json`;
-  const key = JSON.stringify({ query, variables });
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'X-Shopify-Storefront-Access-Token': storefrontAccessToken!,
-  };
-
-  // [新增] 若有會員權杖，加入 Header
-  if (customerAccessToken) {
-    headers['X-Shopify-Customer-Access-Token'] = customerAccessToken;
-  }
-
   try {
-    const result = await fetch(endpoint, {
+    // [修改] 改為呼叫 Next.js BFF API
+    const result = await fetch(BFF_ENDPOINT, {
       method: 'POST',
-      headers, // 使用動態 headers
-      body: JSON.stringify({ query, variables }),
-      cache,
-      next: { tags: ['shopify'] }
+      headers: {
+        'Content-Type': 'application/json',
+        // 注意：這裡不再需要傳送 Storefront Access Token，因為它在後端
+      },
+      body: JSON.stringify({ 
+        query, 
+        variables,
+        customerAccessToken // 將用戶 Token 傳給後端 (若需要)
+      }),
+      cache, 
+      // next: { tags: ['shopify'] } // BFF 模式下，Next.js 的 tag revalidation 機制需調整，暫時移除
     });
 
     const body = await result.json();
@@ -44,7 +38,7 @@ export async function shopifyFetch<T>({
 
     return body.data;
   } catch (e) {
-    console.error('[ShopifyFetch Error]', e);
+    console.error('[Shopify Fetch Error]', e);
     throw {
       error: e,
       query
@@ -380,6 +374,7 @@ export interface Customer {
 // --- Customer Operations ---
 
 export async function getCustomer(customerAccessToken: string): Promise<Customer | null> {
+  // GraphQL Query: 定義變數 $token
   const query = `
     query getCustomer($customerAccessToken: String!) {
       customer(customerAccessToken: $customerAccessToken) {
@@ -387,16 +382,12 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
         firstName
         lastName
         email
-        phone
         orders(first: 10, reverse: true) {
           edges {
             node {
               id
               orderNumber
-              processedAt
               financialStatus
-              fulfillmentStatus
-              statusUrl
               currentTotalPrice {
                 amount
                 currencyCode
@@ -409,16 +400,6 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
                   }
                 }
               }
-              successfulFulfillments(first: 1) {
-               edges {
-                  node {
-                      trackingInfo {
-                          number
-                          url
-                      }
-                  }
-               }
-              }
             }
           }
         }
@@ -426,10 +407,10 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
     }
   `;
 
-  // 注意：這裡必須傳入 customerAccessToken 並且不快取 (涉及私密資料)
+  // 呼叫 BFF
   const response = await shopifyFetch<{ customer: Customer }>({
     query,
-    variables: { customerAccessToken },
+    variables: { customerAccessToken }, // 將 token 傳入 variables
     cache: 'no-store'
   });
 

@@ -29,12 +29,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         const data = await res.json();
         // 如果後端回傳 { authenticated: true }
         if (data.authenticated) {
-            set({ 
-                isAuthenticated: true, 
-                customerAccessToken: data.accessToken || null,
-                isLoading: false,
-                user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
-            });
+          set({ 
+            isAuthenticated: true, 
+            customerAccessToken: data.accessToken || null,
+            isLoading: false,
+            user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
+          });
         } else {
             set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
         }

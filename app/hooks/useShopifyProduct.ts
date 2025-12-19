@@ -20,10 +20,10 @@ export function useShopifyProduct(handle: string) {
         if (isMounted) {
           setProduct(data);
         }
-      } catch (err) {
-        console.error("Failed to fetch product:", err);
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
         if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Unknown error');
+          setError(error instanceof Error ? error.message : 'Unknown error');
         }
       } finally {
         if (isMounted) {

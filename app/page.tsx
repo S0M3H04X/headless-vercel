@@ -8,7 +8,6 @@ import { WidgetRenderer } from '@/components/widgets/Registry';
 import { WorkspaceRepository } from '@/lib/persistence/storage';
 import { Desktop } from '@/components/workspace/Desktop';
 import { Launcher } from '@/components/system/Launcher';
-// import { AuthWidget } from '@/components/desktop/AuthWidget';
 import { MenuBar } from '@/components/system/MenuBar'; // [新增]
 
 

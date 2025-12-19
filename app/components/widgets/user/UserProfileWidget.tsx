@@ -8,6 +8,8 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 export default function UserProfileWidget({ id }: BaseWidgetProps) {
   const { customer, loading, error } = useShopifyCustomer();
   const logout = useAuthStore((s) => s.logout);
+  console.log('UserProfileWidget error:', error); 
+  console.log('Customer data:', customer);
 
   const getFulfillmentStatus = (order: any) => {
     return order.successfulFulfillments?.edges?.length > 0
@@ -24,6 +26,7 @@ export default function UserProfileWidget({ id }: BaseWidgetProps) {
   }
 
   if (error || !customer) {
+    
     return (
       <div className="h-full flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
         <div className="text-red-500 mb-2">⚠️</div>

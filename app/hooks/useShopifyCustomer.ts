@@ -26,8 +26,8 @@ export function useShopifyCustomer() {
       } else {
         setCustomer(data);
       }
-    } catch (err) {
-      console.error('Failed to fetch customer:', err);
+    } catch (error) {
+      console.error('Failed to fetch customer:', error);
       setError('Failed to load profile');
     } finally {
       setLoading(false);

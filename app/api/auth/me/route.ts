@@ -5,6 +5,7 @@ export async function GET() {
   const cookieStore = cookies();
   const accessToken = cookieStore.get('shopify_access_token')?.value;
   const refreshToken = cookieStore.get('shopify_refresh_token')?.value;
+  // 讀取 HttpOnly Cookie (名稱需與 Login Route 設定的一致)
 
   // 情況 A: Access Token 有效 -> 直接通過
   if (accessToken) {
