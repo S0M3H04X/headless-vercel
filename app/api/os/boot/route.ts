@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import bootConfig from '@/config/boot.json'; // 直接 Import JSON
+import bootConfig from '../../../config/boot.json'; // 直接 Import JSON
 
 export async function GET() {
   const cookieStore = cookies();
