@@ -1,7 +1,7 @@
 {
   "guest": {
     "role": "guest",
-    "dock": ["launcher", "product_browser", "video_studio"],
+    "dock": ["launcher", "video_studio"],
     "autoStart": [
       { 
         "title": "Member Login", 

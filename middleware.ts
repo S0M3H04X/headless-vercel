@@ -13,7 +13,8 @@ export function middleware(request: NextRequest) {
     path.startsWith('/favicon.ico') ||
     path.startsWith('/api/auth') ||        // 登入/登出/Callback 流程
     path === '/api/shopify/query' ||
-    path.includes('pdf.worker.min');         // BFF 查詢 (由 BFF 內部處理權限)
+    path.includes('pdf.worker.min') ||
+    path === '/api/os/boot';         // BFF 查詢 (由 BFF 內部處理權限)
 
   // 如果是公開路徑，直接放行
   if (isPublicPath) {

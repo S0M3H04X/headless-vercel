@@ -4,7 +4,7 @@ import bootConfig from '../../../config/boot.json'; // 直接 Import JSON
 
 export async function GET() {
   const cookieStore = cookies();
-  const token = cookieStore.get('shopify_customer_access_token')?.value;
+  const token = cookieStore.get('shopify_access_token')?.value;
 
   // 1. 身分判斷邏輯
   let role: 'guest' | 'member' | 'admin' = 'guest';

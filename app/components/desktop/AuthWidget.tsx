@@ -40,9 +40,9 @@ export const AuthWidget: React.FC = () => {
           <button
             onClick={login}
             // [修正] 移除特定黑色背景，改為基礎按鈕樣式，請自行套用專案 Button Class
-            className="px-4 py-2 border rounded shadow-sm bg-white text-black hover:bg-gray-50 transition-colors"
+            className="px-2 py-2 border rounded bg-white text-black hover:bg-gray-50 transition-colors"
           >
-            Login with Shopify
+            Login with Email
           </button>
         </div>
       )}
