@@ -8,7 +8,7 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 export default function ProductWidget({ id, content, internalState }: BaseWidgetProps) {
   // 模擬：未來這裡會呼叫 Shopify API
   return (
-    <div className="h-full w-full flex flex-col p-4 bg-white">
+    <div className="h-full w-full flex flex-col">
       <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-400">
         Product Image Placeholder
       </div>

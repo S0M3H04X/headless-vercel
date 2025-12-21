@@ -1,8 +1,10 @@
 import './polyfills';
 import './global.css';
+import { Inter } from "next/font/google";
+import 'winbox/dist/css/winbox.min.css';
+import "@sakun/system.css";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
 export const metadata = {
   title: 'ONE CREDIT by 1313<3',

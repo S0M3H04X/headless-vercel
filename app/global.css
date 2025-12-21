@@ -12,6 +12,7 @@
 /* 關鍵：重置邊距並確保滿版，否則 Winbox 計算座標會偏移 */
 html,
 body {
+  font-family: monospace !important;
   padding: 0;
   margin: 0;
   height: 100%;

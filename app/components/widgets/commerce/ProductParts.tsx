@@ -74,7 +74,7 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
   if (loading) return <div className="p-4">Loading...</div>;
 
   return (
-    <div className="h-full w-full bg-white p-4 flex flex-col justify-center text-center border-l-4 border-blue-600">
+    <div className="flex flex-col justify-center">
       <h1 className="text-2xl font-black uppercase tracking-widest leading-tight">
         {product?.title || 'Product Not Found'}
       </h1>
@@ -122,7 +122,7 @@ export const ProductDescWidget = ({ content, internalState }: BaseWidgetProps) =
   }
 
   return (
-    <div className="h-full w-full bg-white p-6 overflow-y-auto">
+    <div className="overflow-y-auto">
       {/* C. 渲染真實描述 */}
       <div 
         style={{ fontSize: state.fontSize }} 
@@ -133,7 +133,7 @@ export const ProductDescWidget = ({ content, internalState }: BaseWidgetProps) =
 
       {/* 狀態控制的額外資訊 */}
       {state.showDetails && (
-        <div className="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-mono">
+        <div className="mt-6 pt-4 border-gray-100 text-xs text-gray-400 font-mono">
           Product ID: {content.sourceId}<br/>
           Source: Shopify Storefront API
         </div>
