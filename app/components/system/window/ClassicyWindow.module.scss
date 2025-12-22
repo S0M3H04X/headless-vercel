@@ -8,7 +8,7 @@
   border: 1px solid #000; /* 外框 */
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 簡單陰影，未來可更換為像素陰影 */
   overflow: hidden;
-  
+  border-radius: 4px;
   // Platinum 邊框效果 (Bevel)
   box-shadow: 
     inset 1px 1px 0px #fff,
@@ -75,7 +75,7 @@
   border-top: 1px solid #000;
   
   // 內容區內陰影
-  box-shadow: inset 1px 1px 0px #000; 
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.2) inset;
 }
 
 // --- Window Buttons (Customizable via variables) ---

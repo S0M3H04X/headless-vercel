@@ -2,6 +2,7 @@
 'use client';
 import React, { useRef, useEffect } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { useDraggable } from '@/hooks/useDraggable';
 import styles from './ClassicyWindow.module.scss';
 
 interface ClassicyWindowProps {
@@ -24,37 +25,46 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
   const { closeWindow, focusWindow, updateWindowGeometry } = useWorkspaceStore();
   const windowRef = useRef<HTMLDivElement>(null);
 
-  // 簡單的拖曳邏輯 (Native React Drag)
-  // 注意：Phase 8 可升級為 @dnd-kit 或 react-draggable
-  const handleMouseDown = (e: React.MouseEvent) => {
-    focusWindow(id); // 點擊即聚焦
-  };
-
-  const handleDragStart = (e: React.MouseEvent) => {
-    // 簡單實作：記錄初始位置，mousemove 計算 delta
-    // 為了代碼簡潔，這裡暫時略過完整 Drag 實作，
-    // 建議在下一步整合 useDraggable Hook 或直接使用現成庫。
-    // 目前僅聚焦。
-    focusWindow(id);
-  };
+  // [修正] 傳入寬高以進行邊界計算
+  const { position, handleDragStart, isDragging } = useDraggable(
+    id,
+    { x: geometry.x, y: geometry.y },
+    { width: geometry.width, height: geometry.height }, // Dimensions
+    (winId, newPos) => {
+        updateWindowGeometry(winId, { x: newPos.x, y: newPos.y });
+    },
+    zIndex,
+    focusWindow
+  );
 
   return (
     <div
-      ref={windowRef}
       className={`${styles.windowFrame} ${isActive ? 'active' : ''}`}
       style={{
-        left: geometry.x,
-        top: geometry.y,
+        left: position.x,
+        top: position.y,
         width: geometry.width,
         height: geometry.height,
         zIndex: zIndex,
+        // 拖曳時加上 shadow 強化浮動感
+        boxShadow: isDragging ? '0 10px 20px rgba(0,0,0,0.3)' : undefined, 
       }}
-      onMouseDown={handleMouseDown}
+      // 點擊視窗本體聚焦 (桌面版) / 手機版 TouchStart 也觸發聚焦
+      onMouseDown={() => focusWindow(id)} 
+      onTouchStart={() => focusWindow(id)}
     >
-      {/* Title Bar */}
-      <div className={`${styles.titleBar} ${isActive ? styles.active : ''}`} onMouseDown={handleDragStart}>
+      {/* Title Bar: 綁定 Mouse 與 Touch */}
+      <div 
+        className={`${styles.titleBar} ${isActive ? styles.active : ''}`}
+        onMouseDown={handleDragStart} // 滑鼠
+        onTouchStart={handleDragStart} // [修正] 手機觸控
+        style={{ cursor: 'default', touchAction: 'none' }} // [修正] 禁止瀏覽器預設手勢
+      >
         <button 
           className={`${styles.controlBtn} ${styles.closeBtn}`} 
+          // 阻止事件冒泡，避免按鈕觸發拖曳
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); closeWindow(id); }}
         />
         
@@ -65,8 +75,9 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
         <button className={`${styles.controlBtn} ${styles.collapseBtn}`} />
       </div>
 
-      {/* Content Area */}
       <div className={styles.windowBody}>
+        {/* 遮罩層：防止 iframe 在拖曳時吞掉事件 */}
+        {isDragging && <div className="absolute inset-0 z-50 bg-transparent" />}
         {children}
       </div>
     </div>
