@@ -6,8 +6,8 @@ import { createPortal } from 'react-dom';
 import { WindowInstance } from '@/lib/types/workspace';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 
-import '@/styles/winbox-controls.css';
-import '@/styles/winbox-retro.css';
+// import '@/styles/winbox-controls.css';
+// import '@/styles/winbox-retro.css';
 
 interface WinboxProviderProps {
   windowInstance: WindowInstance;

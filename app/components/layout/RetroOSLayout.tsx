@@ -1,6 +1,6 @@
 import React from 'react';
-import 'winbox/dist/css/winbox.min.css';
-import '@/styles/winbox-retro.css'; // 這裡引入我們定義的 system.css 覆寫
+// import 'winbox/dist/css/winbox.min.css';
+// import '@/styles/winbox-retro.css'; // 這裡引入我們定義的 system.css 覆寫
 
 interface RetroOSLayoutProps {
   children: React.ReactNode;
