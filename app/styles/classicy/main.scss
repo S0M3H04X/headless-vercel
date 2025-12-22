@@ -15,3 +15,49 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
+
+
+/* --- Platinum Scrollbars --- */
+:root {
+  --scrollbar-size: 16px;
+  --scrollbar-track: #e0e0e0; /* 淺灰軌道 */
+  --scrollbar-thumb: #c0c0c0; /* 深灰按鈕 */
+  --scrollbar-border: #ffffff;
+}
+
+* {
+  /* Webkit Browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background:
+      repeating-linear-gradient(
+        45deg,
+        #fff,
+        #fff 2px,
+        #ddd 2px,
+        #ddd 4px
+      ); /* 模擬軌道紋理 (Pattern) */
+    border-left: 1px solid #888;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    box-shadow: inset 1px 1px 0 #dfdfdf; /* Bevel */
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #a0a0a0; /* 按下變深 */
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+  }
+}
