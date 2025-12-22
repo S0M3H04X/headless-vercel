@@ -1,0 +1,26 @@
+// app/styles/classicy/_variables.scss
+
+// --- 1. Colors (Platinum Theme) ---
+$color-platinum-light: #dfdfdf;
+$color-platinum-dark: #cdcdcd;
+$color-highlight: #000080; // 預設反白顏色 (Classic Blue)
+$color-highlight-text: #ffffff;
+$color-window-bg: #ffffff;
+$color-text: #000000;
+
+// --- 2. Fonts ---
+// 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
+$font-system: 'Segoe UI', 'San Francisco', 'Helvetica Neue', sans-serif; 
+$font-pixel: 'Courier New', monospace; // 暫代像素字體
+
+// --- 3. Assets Paths (Customizable) ---
+$asset-path: '/assets/classicy/img/ui';
+
+// Window Controls (Close/Zoom/Collapse)
+// 這裡允許您未來替換為自己的圖片
+$btn-close-bg: url('#{$asset-path}/window/close-box.png'); 
+$btn-zoom-bg: url('#{$asset-path}/window/zoom-box.png');
+$btn-collapse-bg: url('#{$asset-path}/window/collapse-box.png');
+
+// Window Textures
+$window-stripes: url('#{$asset-path}/window/stripes.png'); // 標題列橫紋

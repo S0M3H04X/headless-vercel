@@ -1,0 +1,109 @@
+@import '../../../styles/classicy/variables';
+
+.windowFrame {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: $color-platinum-light;
+  border: 1px solid #000; /* 外框 */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 簡單陰影，未來可更換為像素陰影 */
+  overflow: hidden;
+  
+  // Platinum 邊框效果 (Bevel)
+  box-shadow: 
+    inset 1px 1px 0px #fff,
+    inset -1px -1px 0px #888,
+    2px 2px 0px rgba(0,0,0,0.2); 
+}
+
+.titleBar {
+  height: 24px; // Mac OS 8 標準高度
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  background: $color-platinum-dark;
+  border-bottom: 1px solid #888;
+  position: relative;
+  cursor: default;
+
+  // 標題列橫紋 (Stripes)
+  &::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.1) 50%,
+      transparent 50%
+    );
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &.active {
+    background: $color-platinum-light;
+    // Active 狀態的標題列樣式...
+  }
+}
+
+.titleText {
+  position: relative;
+  z-index: 1;
+  background-color: $color-platinum-light; // 遮住橫紋
+  padding: 0 8px;
+  font-family: $font-pixel;
+  font-weight: bold;
+  font-size: 13px;
+  color: #333;
+  margin: 0 auto; // 置中
+  
+  &.active {
+    color: #000;
+  }
+}
+
+.windowBody {
+  flex: 1;
+  position: relative;
+  background-color: $color-window-bg;
+  overflow: auto;
+  border-top: 1px solid #000;
+  
+  // 內容區內陰影
+  box-shadow: inset 1px 1px 0px #000; 
+}
+
+// --- Window Buttons (Customizable via variables) ---
+.controlBtn {
+  width: 13px;
+  height: 13px;
+  border: 1px solid #555;
+  background-color: #fff;
+  z-index: 2;
+  margin-top: -1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  
+  &:active {
+    background-color: #999;
+    border-color: #000;
+  }
+}
+
+.closeBtn {
+  margin-right: auto; // 靠左
+  // background-image: $btn-close-bg; // 當資源準備好時啟用
+}
+
+.collapseBtn {
+  margin-left: auto; // 靠右
+}

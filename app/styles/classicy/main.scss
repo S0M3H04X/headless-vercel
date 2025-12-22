@@ -1,0 +1,17 @@
+// app/styles/classicy/main.scss
+@import 'variables';
+
+// 全域 Reset 與字體設定
+body {
+  font-family: $font-system;
+  background-color: #808080; // 預設桌面灰
+  overflow: hidden; /* 禁止捲動 */
+  margin: 0;
+  cursor: default; // 之後會替換為自定義 cursor
+}
+
+/* 用來讓文字無法選取，模擬 OS 介面 */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
