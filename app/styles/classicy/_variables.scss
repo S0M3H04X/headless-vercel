@@ -5,12 +5,12 @@ $color-platinum-light: #dfdfdf;
 $color-platinum-dark: #cdcdcd;
 $color-highlight: #000080; // 預設反白顏色 (Classic Blue)
 $color-highlight-text: #ffffff;
-$color-window-bg: #b7e498;
+$color-window-bg: #f2f2f2;
 $color-text: #000000;
 
 // --- 2. Fonts ---
 // 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
-$font-system: 'Segoe UI', 'San Francisco', 'Helvetica Neue', sans-serif; 
+$font-system: 'Chicago', 'Geneva', 'Helvetica Neue', sans-serif; 
 $font-pixel: 'Courier New', monospace; // 暫代像素字體
 
 // --- 3. Assets Paths (Customizable) ---
@@ -23,4 +23,4 @@ $btn-zoom-bg: url('#{$asset-path}/window/zoom-box.png');
 $btn-collapse-bg: url('#{$asset-path}/window/collapse-box.png');
 
 // Window Textures
-$window-stripes: url('#{$asset-path}/window/stripes.png'); // 標題列橫紋
+$window-stripes: url('#{$asset-path}/window/stripes.svg'); // 標題列橫紋

@@ -1,16 +1,22 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import React, { Suspense, lazy } from 'react';
 import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
 
 // [新增] 引入現有的 AuthWidget 作為視窗內容
 // 注意：如果 AuthWidget 原本是 position:absolute 的 overlay，這裡可能需要稍微調整樣式以適應視窗
-const AuthWidgetWrapper = () => {
-    const AuthWidget = lazy(() => import('../desktop/AuthWidget').then(m => ({ default: m.AuthWidget })));
-    return <AuthWidget />;
-};
-const CartWidgetPlaceholder = () => <div className="p-4">Cart Widget Loading...</div>;
+// const AuthWidgetWrapper = () => {
+//     const AuthWidget = lazy(() => import('../desktop/AuthWidget').then(m => ({ default: m.AuthWidget })));
+//     return <AuthWidget />;
+// };
+// const CartWidgetPlaceholder = () => <div className="p-4">Cart Widget Loading...</div>;
+
+const CollectionWidget = dynamic(
+  () => import('./commerce/CollectionWidget').then((mod) => mod.CollectionWidget),
+  { ssr: false }
+);
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼

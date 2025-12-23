@@ -17,6 +17,8 @@ export async function GET(request: Request) {
 
   // 2. 從 Cookie 取出 Verifier 與原 State
   const cookieStore = cookies();
+  const accessToken = cookieStore.get('shopify_customer_access_token')?.value;
+  const refreshToken = cookieStore.get('shopify_refresh_token')?.value;
   const storedVerifier = cookieStore.get('shopify_auth_verifier')?.value;
   const storedState = cookieStore.get('shopify_auth_state')?.value;
 
@@ -54,7 +56,9 @@ export async function GET(request: Request) {
 
     // 4. 登入成功！將 Token 存入 HttpOnly Cookie
     // 注意：Access Token 通常效期很短，Refresh Token 效期較長
-    cookieStore.set('shopify_access_token', access_token, {
+    // 刷新失敗（例如 Refresh Token 也過期或被撤銷），必須清除所有殘留，強制登出
+    cookieStore.delete('shopify_customer_access_token');
+    cookieStore.set('shopify_customer_access_token', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -65,6 +69,7 @@ export async function GET(request: Request) {
     // 2. [新增] 存入 Refresh Token (長期)
     // 雖然 API 可能沒回傳 refresh_token 的 expires_in，但通常較長，我們設為 30 天
     if (refresh_token) {
+        // 交換成功！寫入新的 Cookies
         cookieStore.set('shopify_refresh_token', refresh_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

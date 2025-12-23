@@ -2,13 +2,13 @@ import { create } from 'zustand';
 
 interface AuthState {
   isAuthenticated: boolean;
-  customerAccessToken: string | null;
+  // customerAccessToken: string | null; // [Security] 移除前端 Token 儲存
   isLoading: boolean;
   user: {
     name?: string;
     email?: string;
   } | null; // 預留未來擴充 User Info
-  
+
   checkAuth: () => Promise<void>;
   login: () => void;
   logout: () => void; // 暫時只做前端狀態清除
@@ -16,7 +16,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
-  customerAccessToken: null,
+  // customerAccessToken: null,
   isLoading: true, // 初始狀態設為 true，避免畫面閃爍
   user: null,
 
@@ -24,27 +24,27 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ isLoading: true });
       const res = await fetch('/api/auth/me');
-      
+
       if (res.ok) {
         const data = await res.json();
         // 如果後端回傳 { authenticated: true }
         if (data.authenticated) {
-          set({ 
-            isAuthenticated: true, 
-            customerAccessToken: data.accessToken || null,
+          set({
+            isAuthenticated: true,
+            // customerAccessToken: data.accessToken || null, // [Security] 不再儲存
             isLoading: false,
             user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
           });
         } else {
-            set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+          set({ isAuthenticated: false, isLoading: false, user: null });
         }
       } else {
         // 401 或其他錯誤視為未登入
-        set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+        set({ isAuthenticated: false, isLoading: false, user: null });
       }
     } catch (error) {
       console.error('[AuthStore] Check failed', error);
-      set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+      set({ isAuthenticated: false, isLoading: false, user: null });
     }
   },
 
@@ -55,15 +55,15 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: async () => {
     try {
-        // [新增] 呼叫後端清除 Cookie
-        await fetch('/api/auth/logout', { method: 'POST' });
+      // [新增] 呼叫後端清除 Cookie
+      await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {
-        console.error('Logout failed:', e);
+      console.error('Logout failed:', e);
     } finally {
-        // 無論後端成功與否，前端都要重置狀態
-        set({ isAuthenticated: false, customerAccessToken: null, user: null });
-        // 可選：強制重整頁面以確保乾淨
-        window.location.reload(); 
+      // 無論後端成功與否，前端都要重置狀態
+      set({ isAuthenticated: false, user: null });
+      // 可選：強制重整頁面以確保乾淨
+      window.location.reload();
     }
   }
 }));

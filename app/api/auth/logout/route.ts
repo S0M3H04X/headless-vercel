@@ -3,10 +3,10 @@ import { cookies } from 'next/headers';
 
 export async function POST() {
   const cookieStore = cookies();
-  
+
   // 定義要刪除的 Cookie 名稱列表
   const cookiesToDelete = [
-    'shopify_access_token',
+    'shopify_customer_access_token',
     'shopify_refresh_token',
     'shopify_id_token'
   ];
@@ -15,7 +15,7 @@ export async function POST() {
   cookiesToDelete.forEach((cookieName) => {
     // 嘗試標準刪除
     cookieStore.delete(cookieName);
-    
+
     // [雙重保險] 強制覆蓋為立即過期
     // 注意：必須與當初 Set 時的 path 一致 ('/')
     cookieStore.set(cookieName, '', {
@@ -25,8 +25,8 @@ export async function POST() {
     });
   });
 
-  return NextResponse.json({ 
-    status: 'success', 
-    message: 'Session cleared' 
+  return NextResponse.json({
+    status: 'success',
+    message: 'Session cleared'
   });
 }

@@ -1,5 +1,7 @@
 // app/lib/types/workspace.ts
 
+import { CollectionFinder } from "@/components/widgets/finder/CollectionFinder";
+
 // 使用 const object 來模擬 Enum (比 TypeScript Enum 更輕量且容易整合)
 export const WidgetKind = {
   // Commerce Context
@@ -19,6 +21,8 @@ export const WidgetKind = {
   Cart: 'cart_manager',
   UserProfile: 'user_profile',
   Auth: 'auth',
+
+  Collection: 'collection',
   
 } as const;
 

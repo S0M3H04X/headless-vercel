@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
@@ -14,16 +15,16 @@ async function getCustomerAccountEndpoint(shopDomain: string): Promise<string | 
   // 1. 確保網域格式乾淨
   const cleanDomain = shopDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
   const discoveryUrl = `https://${cleanDomain}/.well-known/customer-account-api`;
-  
+
   console.log(`[Discovery] Fetching config from: ${discoveryUrl}`);
 
   try {
-    const response = await fetch(discoveryUrl, { 
+    const response = await fetch(discoveryUrl, {
       next: { revalidate: 3600 },
       method: 'GET',
       headers: { 'User-Agent': 'NextJS-BFF' }
     });
-    
+
     if (!response.ok) {
       console.warn(`[Discovery] Failed with status: ${response.status}`);
       return null;
@@ -47,14 +48,21 @@ export async function POST(req: Request) {
   // 1. 基礎環境變數檢查
   if (!domain || !storefrontAccessToken) {
     return NextResponse.json(
-      { error: 'Server Config Error: Missing Shopify Credentials' }, 
+      { error: 'Server Config Error: Missing Shopify Credentials' },
       { status: 500 }
     );
   }
 
   try {
     const body = await req.json();
-    const { query, variables, customerAccessToken, apiType = 'storefront' } = body;
+    let { query, variables, customerAccessToken, apiType = 'storefront' } = body;
+
+    // [Security Fix] 如果前端沒有傳送 Token (預期行為)，嘗試從 HttpOnly Cookie 讀取
+    if (!customerAccessToken && apiType === 'customer') {
+      const cookieStore = cookies();
+      customerAccessToken = cookieStore.get('shopify_customer_access_token')?.value;
+      console.log(`[BFF] Loaded token from cookie: ${!!customerAccessToken}`);
+    }
 
     let endpoint: string | null = null;
     const headers: Record<string, string> = {
@@ -67,14 +75,14 @@ export async function POST(req: Request) {
 
       // [除錯關鍵] 印出 Token 的前綴，確認 BFF 到底收到了什麼
       // 若顯示 undefined 或非 shcat_ 開頭，則問題在前端
-      const tokenPreview = customerAccessToken 
-        ? `${customerAccessToken.substring(0, 10)}...` 
+      const tokenPreview = customerAccessToken
+        ? `${customerAccessToken.substring(0, 10)}...`
         : 'UNDEFINED/NULL';
       console.log(`[BFF Debug] Received Customer Token: ${tokenPreview}`);
-      
+
       // A. 嘗試動態發現
       endpoint = await getCustomerAccountEndpoint(domain);
-      
+
       // B. Fallback 機制 (若發現失敗且有設定 Shop ID)
       if (!endpoint && shopId) {
         console.warn('[Discovery] Falling back to manual URL construction');
@@ -85,14 +93,14 @@ export async function POST(req: Request) {
       if (!endpoint) {
         return NextResponse.json({ error: 'Configuration Error: No Endpoint' }, { status: 500 });
       }
-      
+
       // [修正 2] 確保 Token 存在才加入 Header，且格式正確
       if (customerAccessToken) {
         headers['Authorization'] = customerAccessToken; // 嘗試 1: 直接傳送 (部分文件建議)
         // headers['Authorization'] = `Bearer ${customerAccessToken}`; // 嘗試 2: 標準 OAuth
       }
 
-      
+
       console.log(`[BFF] Final Endpoint -> ${endpoint}`);
 
     } else {
@@ -112,7 +120,7 @@ export async function POST(req: Request) {
 
     const text = await result.text();
     let json;
-    
+
     // 嘗試解析 JSON
     try {
       json = JSON.parse(text);
@@ -139,7 +147,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('[BFF Critical]', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' }, 
+      { error: error.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
