@@ -19,6 +19,10 @@ export const WidgetKind = {
   Cart: 'cart_manager',
   UserProfile: 'user_profile',
   Auth: 'auth',
+
+  // [新增] Finder & App Context
+  Folder: 'folder_browser',      // 用於瀏覽檔案系統
+  Collection: 'collection_app',  // 用於展示商品系列的 App
   
 } as const;
 

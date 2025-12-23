@@ -1,24 +1,23 @@
 'use client';
+import React from 'react';
+import { RetroOSLayout } from '@/components/layout/RetroOSLayout';
+import { MenuBar } from '@/components/system/MenuBar';
+import { Launcher } from '@/components/system/Launcher'; // Dock
+import { WindowManager } from '@/components/system/WindowManager';
+import { Finder } from '@/components/system/Finder'; // [新增] 背景與桌面圖示層
 
-import React, { useRef } from 'react';
-import { LAYOUT } from '@/lib/constants/ui';
-
-interface DesktopProps {
-  children?: React.ReactNode;
-}
-
-export const Desktop: React.FC<DesktopProps> = ({ children }) => {
-  const desktopRef = useRef<HTMLDivElement>(null);
-
+export const Desktop = () => {
   return (
-    <div 
-      ref={desktopRef} 
-      className="relative w-full h-full overflow-hidden bg-gray-100"
-      // [重構] 使用常數定義安全區域，確保不被 MenuBar 遮擋
-      style={{ paddingTop: LAYOUT.MENU_BAR_HEIGHT }}
-    >
-      <div className="absolute inset-0 z-0 bg-[#3a6ea5]" />
-      {children}
-    </div>
+    <RetroOSLayout>
+      {/* Layer 1: Background & Desktop Icons (The Finder) */}
+      <Finder />
+
+      {/* Layer 2: Window Manager (Independent) */}
+      <WindowManager />
+
+      {/* Layer 3: System UI */}
+      <MenuBar />
+      <Launcher />
+    </RetroOSLayout>
   );
 };

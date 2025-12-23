@@ -19,6 +19,7 @@ interface WorkspaceState {
   minimizeWindow: (id: string) => void;
   restoreWindow: (id: string) => void;
   bootSystem: (config: any) => void;
+  updateWindowTitle: (id: string, title: string) => void;
 
 }
 
@@ -205,7 +206,19 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               };
           });
           get().focusWindow(id);
-      }
+      },
+      updateWindowTitle: (id, title) => {
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {};
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { ...win, title },
+            },
+          };
+        });
+      },
     }),
     {
       name: 'headless-workspace-storage',

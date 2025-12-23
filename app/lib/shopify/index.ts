@@ -450,3 +450,107 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
     }
   };
 }
+
+// app/lib/shopify/index.ts
+
+// ... (現有的 imports 與 Product/Cart/Customer 定義)
+
+// [新增] Collection 介面定義
+export interface Collection {
+  id: string;
+  handle: string;
+  title: string;
+  description?: string;
+  image?: {
+    url: string;
+    altText: string;
+  };
+  updatedAt: string;
+}
+
+// [新增] 獲取所有 Collections (模擬資料夾列表)
+export async function getCollections(): Promise<Collection[]> {
+  const query = `
+    query getCollections {
+      collections(first: 20) {
+        edges {
+          node {
+            id
+            title
+            handle
+            updatedAt
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  `;
+  
+  const response = await shopifyFetch<{ collections: { edges: Array<{ node: Collection }> } }>({ 
+    query, 
+    cache: 'force-cache' 
+  });
+  
+  return response.collections.edges.map((edge) => edge.node);
+}
+
+// [新增] 獲取特定 Collection 內的商品 (模擬資料夾內容)
+export async function getCollectionProducts(handle: string): Promise<Product[]> {
+  const query = `
+    query getCollectionProducts($handle: String!) {
+      collection(handle: $handle) {
+        products(first: 50) {
+          edges {
+            node {
+              id
+              title
+              handle
+              featuredImage {
+                url
+                altText
+              }
+              priceRange {
+                minVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
+              images(first: 1) {
+                edges {
+                  node {
+                    url
+                    altText
+                  }
+                }
+              }
+              variants(first: 1) {
+                edges {
+                  node {
+                    id
+                    title
+                    price {
+                      amount
+                      currencyCode
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await shopifyFetch<{ collection: { products: { edges: Array<{ node: Product }> } } }>({ 
+    query, 
+    variables: { handle },
+    cache: 'no-store' // 確保庫存狀態即時
+  });
+  
+  if (!response.collection) return [];
+  return response.collection.products.edges.map((edge) => edge.node);
+}
