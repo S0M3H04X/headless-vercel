@@ -1,0 +1,68 @@
+@import '../../styles/classicy/variables';
+
+.folderContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+  font-family: $font-system;
+  
+  /* 視窗內部的 bevel */
+  box-shadow: inset 1px 1px 0 #000; 
+}
+
+.gridContent {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  grid-auto-rows: min-content;
+  gap: 16px;
+  
+  /* 經典 Mac 視窗背景網格點 */
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  padding: 4px;
+  border: 1px solid transparent;
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 11px;
+    text-align: center;
+    color: #000;
+    word-break: break-word;
+    line-height: 1.1;
+    padding: 1px 3px;
+  }
+
+  &:hover {
+    /* Hover 效果 */
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+  }
+
+  &:active {
+    /* Selected 效果 */
+    img {
+      filter: brightness(0.6);
+    }
+    span {
+      background-color: $color-highlight;
+      color: $color-highlight-text;
+    }
+  }
+}

@@ -1,102 +1,119 @@
 @import '../../../styles/classicy/variables';
 
-.finderContainer {
+.appContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #fff;
-  font-family: $font-system;
+  background-color: $color-platinum-light; /* App 背景色通常是灰的 */
 }
 
+/* --- Toolbar Area --- */
 .toolbar {
-  display: flex;
-  align-items: center;
-  padding: 4px;
-  border-bottom: 1px solid #888;
-  background-color: $color-platinum-light;
-  height: 36px;
-}
-
-.pathBar {
-  flex: 1;
-  background: #fff;
-  border: 1px solid #888;
-  padding: 2px 6px;
-  font-size: 12px;
-  margin-left: 8px;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.gridArea {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  grid-auto-rows: 90px;
-  gap: 8px;
-  background-image: 
-    linear-gradient(#f0f0f0 1px, transparent 1px),
-    linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
-  background-size: 20px 20px; /* 網格線背景 (可選) */
-}
-
-.gridItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  cursor: default;
-  padding: 4px;
-  border: 1px solid transparent;
-
-  &:hover {
-    background-color: rgba(0, 0, 128, 0.1);
-    border-radius: 4px;
-  }
-
-  &:active {
-    background-color: $color-highlight;
-    
-    .itemLabel {
-      color: #fff;
-      background-color: $color-highlight;
-    }
-    
-    img {
-      filter: brightness(0.8); /* 點擊變暗 */
-    }
-  }
-}
-
-.iconWrapper {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 4px;
-}
-
-.itemLabel {
-  font-size: 11px;
-  text-align: center;
-  line-height: 1.2;
-  max-width: 100%;
-  word-wrap: break-word;
-  padding: 0 2px;
-}
-
-.statusBar {
-  height: 20px;
-  border-top: 1px solid #888;
-  background-color: $color-platinum-light;
-  font-size: 11px;
+  height: 34px;
   display: flex;
   align-items: center;
   padding: 0 8px;
+  border-bottom: 1px solid #888;
+  background-color: #ddd;
+  box-shadow: inset 0 1px 0 #fff; /* Top highlight */
+  gap: 8px;
+}
+
+.addressBar {
+  flex: 1;
+  height: 20px;
+  background: #fff;
+  border: 1px solid #888;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  
+  /* Icon inside address bar */
+  .addressIcon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+    opacity: 0.5;
+  }
+  
+  span {
+    font-size: 11px;
+    color: #333;
+  }
+}
+
+/* --- Main View --- */
+.viewArea {
+  flex: 1;
+  background-color: #fff; /* 內容區是白的 */
+  border: 1px solid #888;
+  margin: 0 2px; /* 留邊框 */
+  overflow-y: auto;
+  
+  /* Platinum 內凹效果 */
+  box-shadow: inset 1px 1px 0 #000, inset 2px 2px 0 #888;
+}
+
+.productGrid {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+}
+
+/* --- Product Item --- */
+.productItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  
+  &:active .productThumb {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+  }
+}
+
+.productThumb {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #000;
+  background: #fff;
+  padding: 2px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  margin-bottom: 6px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.productName {
+  font-family: $font-pixel;
+  font-size: 11px;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.productPrice {
+  font-size: 10px;
+  color: #666;
+  background: #eee;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+/* --- Status Bar --- */
+.statusBar {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 10px;
   color: #444;
+  border-top: 1px solid #fff;
 }
