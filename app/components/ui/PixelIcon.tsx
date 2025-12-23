@@ -3,6 +3,7 @@ import React from 'react';
 // 備註：若 Pixel Icon Library 是以 CSS Class 或其他方式運作，請在此調整
 // 這裡假設我們使用它作為 SVG 或 Font 的封裝，目前先提供 SVG Fallback 確保能看
 // 您可以查閱 node_modules/@hackernoon/pixel-icon-library 的文件來精確對接
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 interface PixelIconProps {
   name: string;
@@ -23,7 +24,7 @@ export const PixelIcon: React.FC<PixelIconProps> = ({ name, className = '', size
       case 'cart': // Shopping Cart
         return <path d="M2 4h4l2 10h10v2h-12z M16 16h2v2h-2z M8 16h2v2h-2z M6 6h14v8h-10z" />;
       case 'profile': // User / Account
-        return <i className="hn hn-user-solid"></i>;
+        return <embed src="@hackernoon/pixel-icon-library/icons/SVG/regular/user.svg" />;
       case 'pdf_viewer': // Document
         return <path d="M6 2h8l4 4v14h-12z M13 3v4h4 M8 10h8 M8 13h8 M8 16h6" />;
       case 'launcher': // Start / Grid
