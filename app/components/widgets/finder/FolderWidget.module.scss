@@ -1,4 +1,4 @@
-@import '../../styles/classicy/variables';
+@import '../../../styles/classicy/variables';
 
 .folderContainer {
   display: flex;
@@ -22,7 +22,7 @@
   
   /* 經典 Mac 視窗背景網格點 */
   background-image: radial-gradient(#ccc 1px, transparent 1px);
-  background-size: 4px 4px;
+  background-size: 5px 5px;
 }
 
 .item {

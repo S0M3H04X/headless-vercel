@@ -29,6 +29,12 @@ export const WidgetKind = {
 // 衍生型別
 export type WidgetKindType = typeof WidgetKind[keyof typeof WidgetKind];
 
+// 為了讓 TypeScript 通過 BaseWidgetProps 檢查，確保 content.kind 是 string
+export interface WidgetContent {
+  kind: string; // 放寬限制，允許動態字串
+  sourceId: string;
+}
+
 // 更新 ContentDescriptor
 export interface ContentDescriptor {
   kind: WidgetKindType | string; // 允許 string 是為了容錯，但建議用 WidgetKind

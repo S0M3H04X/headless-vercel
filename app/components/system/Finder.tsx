@@ -3,6 +3,7 @@ import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { INITIAL_FILE_SYSTEM } from '@/lib/filesystem/data';
 import { FileSystemNode } from '@/lib/filesystem/types';
+import { WidgetKind } from '@/lib/types/workspace';
 import styles from './Finder.module.scss'; // 需建立對應樣式
 
 export const Finder = () => {
@@ -19,10 +20,10 @@ export const Finder = () => {
       openWindow({
         title: node.name,
         content: { 
-            kind: 'Folder', 
+            kind: WidgetKind.Folder,
             sourceId: node.metadata?.targetPath || node.id // 傳遞路徑或ID
         },
-        initialGeometry: { x: 100, y: 100, width: 600, height: 400 }
+        initialGeometry: { x: 'center', y: 'center', width: 600, height: 400 }
       });
     } else if (node.type === 'app') {
       // 開啟 "App Widget"
@@ -30,9 +31,9 @@ export const Finder = () => {
         title: node.name,
         content: { 
             kind: node.appId || 'Unknown', 
-            sourceId: node.metadata?.handle 
+            sourceId: node.metadata?.handle || 'root'
         },
-        initialGeometry: { x: 'center', y: 'center', width: 800, height: 600 }
+        initialGeometry: { x:'center' , y: 'center', width: 800, height: 600 }
       });
     }
   };

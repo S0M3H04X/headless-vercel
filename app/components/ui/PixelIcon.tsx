@@ -23,7 +23,7 @@ export const PixelIcon: React.FC<PixelIconProps> = ({ name, className = '', size
       case 'cart': // Shopping Cart
         return <path d="M2 4h4l2 10h10v2h-12z M16 16h2v2h-2z M8 16h2v2h-2z M6 6h14v8h-10z" />;
       case 'profile': // User / Account
-        return <path d="M8 4h8v8h-8z M4 16h16v4h-16z" />;
+        return <i className="hn hn-user-solid"></i>;
       case 'pdf_viewer': // Document
         return <path d="M6 2h8l4 4v14h-12z M13 3v4h4 M8 10h8 M8 13h8 M8 16h6" />;
       case 'launcher': // Start / Grid

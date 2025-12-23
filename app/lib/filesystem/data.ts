@@ -1,4 +1,7 @@
 import { FileSystemNode } from './types';
+import { WidgetKind } from '../types/workspace';
+
+const Kinds = WidgetKind
 
 export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
   {
@@ -17,7 +20,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
             name: 'Applications',
             type: 'folder',
             children: [
-              { id: 'radio', name: 'Radio', type: 'app', appId: 'MediaPlayer', icon: '/assets/classicy/img/icons/system/files/sound.png' },
+              { id: 'radio', name: 'Radio', type: 'app', appId: Kinds.MediaPlayer, icon: '/assets/classicy/img/icons/system/files/sound.png' },
               { id: 'chat', name: 'Chat', type: 'app', appId: 'Chatroom', icon: '/assets/classicy/img/icons/system/files/232.Messages.png' }
             ]
           },
@@ -32,15 +35,15 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
                 id: 'col_tees', 
                 name: 'Tees', 
                 type: 'app', 
-                appId: 'Collection', // 這是 Collection Widget (App)
-                metadata: { handle: 'tees' },
+                appId: Kinds.Product, // 這是 Collection Widget (App)
+                metadata: { handle: 'tee' },
                 icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
               },
               { 
                 id: 'col_pants', 
                 name: 'Pants', 
                 type: 'app', 
-                appId: 'Collection', 
+                appId: Kinds.Product, // 這是 Collection Widget (App)
                 metadata: { handle: 'pants' },
                 icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
               }
