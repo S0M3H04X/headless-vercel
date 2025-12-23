@@ -13,3 +13,8 @@ __tests__
 /playwright/.cache/
 /playwright/.auth/
 /public/assets/classicy
+.agent
+.github
+.vscode
+.idea
+
