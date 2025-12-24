@@ -453,7 +453,6 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
 
 // app/lib/shopify/index.ts
 
-// ... (現有的 imports 與 Product/Cart/Customer 定義)
 
 // [新增] Collection 介面定義
 export interface Collection {
