@@ -6,7 +6,8 @@
     "start": "next start",
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "vitest",
-    "test:backend": "cd api && pytest"
+    "test:backend": "cd api && pytest",
+    "test:bdd": "bddgen && playwright test"
   },
   "dependencies": {
     "@hackernoon/pixel-icon-library": "^1.0.6",
@@ -32,6 +33,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.23",
     "jsdom": "^24.0.0",
+    "playwright-bdd": "^8.4.2",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.9.3",
