@@ -11,7 +11,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
     children: [
       {
         id: 'hd',
-        name: 'Macintosh HD',
+        name: '1313 HD',
         type: 'folder',
         icon: '/assets/classicy/img/icons/system/drives/disk.png',
         children: [
@@ -54,7 +54,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
       // 放在桌面的捷徑
       {
         id: 'shortcut_shop',
-        name: 'Shop Collections',
+        name: '1CR3DIT',
         type: 'link', // 指向 /Macintosh HD/Shop
         metadata: { targetPath: '/Macintosh HD/Shop' },
         icon: '/assets/classicy/img/icons/system/folders/favorites.png'

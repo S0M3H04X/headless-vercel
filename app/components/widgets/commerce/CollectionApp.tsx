@@ -97,6 +97,7 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
 
   // 2. 互動處理
   const handleItemDoubleClick = (item: GridItem) => {
+    console.log('[CollectionApp] Clicked:', item);
     if (item.kind === 'collection') {
       // 開啟該 Collection 的視窗 (遞迴開啟自己，但 sourceId 不同)
       openWindow({
@@ -105,7 +106,7 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
           kind: WidgetKind.Collection, 
           sourceId: item.handle 
         },
-        initialGeometry: { x: 150, y: 150, width: 640, height: 400 } // 層疊開啟
+        initialGeometry: { x: 150, y: 150, width: 100, height: 200 } // 層疊開啟
       });
     } else {
       // 開啟商品詳情 (Product Widget)
@@ -115,7 +116,7 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
           kind: WidgetKind.Product, 
           sourceId: item.handle 
         },
-        initialGeometry: { x: 'center', y: 'center', width: 900, height: 650 }
+        initialGeometry: { x: 'center', y: 'center', width: 400, height: 400 }
       });
     }
   };

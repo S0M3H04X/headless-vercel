@@ -15,6 +15,7 @@ export async function shopifyFetch<T>({
   customerAccessToken?: string; // [新增] 支援會員權杖
   apiType?: 'storefront' | 'customer';
 }): Promise<T> {
+  console.log(`[BFF Client] Fetching ${apiType}:`, variables);
   try {
     // [修改] 改為呼叫 Next.js BFF API
     const result = await fetch(BFF_ENDPOINT, {
@@ -549,6 +550,11 @@ export async function getCollectionProducts(handle: string): Promise<Product[]> 
     variables: { handle },
     cache: 'no-store' // 確保庫存狀態即時
   });
+
+  if (!response.collection) {
+    console.warn(`[Shopify] Collection not found: ${handle}`);
+    return [];
+  }
   
   if (!response.collection) return [];
   return response.collection.products.edges.map((edge) => edge.node);

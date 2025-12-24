@@ -5,10 +5,14 @@
   display: flex;
   flex-direction: column;
   background-color: $color-platinum-light;
+  border-radius: 4px;
   border: 1px solid #000; /* 外框 */
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 20px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 簡單陰影，未來可更換為像素陰影 */
   overflow: hidden;
-  border-radius: 4px;
+  
   // Platinum 邊框效果 (Bevel)
   box-shadow: 
     inset 1px 1px 0px #fff,
@@ -23,7 +27,7 @@
   justify-content: space-between;
   padding: 0 4px;
   background: $color-platinum-dark;
-  border-bottom: 1px solid #888;
+  // border-bottom: 1px solid #888;
   position: relative;
   cursor: default;
 
@@ -57,8 +61,8 @@
   background-color: $color-platinum-light; // 遮住橫紋
   padding: 0 8px;
   font-family: $font-pixel;
-  font-weight: bold;
-  font-size: 13px;
+  font-weight: 100;
+  font-size: 14px;
   color: #333;
   margin: 0 auto; // 置中
   
@@ -72,7 +76,8 @@
   position: relative;
   background-color: $color-window-bg;
   overflow: auto;
-  border-top: 1px solid #000;
+  border: 1px solid #000;
+  border-radius: 4px;
   
   // 內容區內陰影
   box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.2) inset;
@@ -82,7 +87,7 @@
 .controlBtn {
   width: 13px;
   height: 13px;
-  border: 1px solid #555;
+  border: 1px solid #000000;
   background-color: #fff;
   z-index: 2;
   margin-top: -1px;

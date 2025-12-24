@@ -10,8 +10,27 @@ $color-text: #000000;
 
 // --- 2. Fonts ---
 // 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
-$font-system: 'Chicago', 'Geneva', 'Helvetica Neue', sans-serif; 
-$font-pixel: 'Courier New', monospace; // 暫代像素字體
+$font-path: '/assets/fonts/'; // 字體資源路徑
+@font-face {
+  font-family: 'ChicagoKare';
+  src: url('#{$font-path}/ChicagoKare-Regular.woff2') format('woff2'),
+       url('#{$font-path}/ChicagoKare-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+  font-family: 'Ishmeria';
+  src: url('#{$font-path}/Ishmeria.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+
+$font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
+$font-pixel: 'Ishmeria', monospace; // 暫代像素字體
 
 // --- 3. Assets Paths (Customizable) ---
 $asset-path: '/assets/classicy/img/ui';
