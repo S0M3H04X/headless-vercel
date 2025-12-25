@@ -1,4 +1,4 @@
-export type FileType = 'folder' | 'app' | 'link';
+export type FileType = 'folder' | 'app' | 'link' | 'widget';
 
 export interface FileSystemNode {
   id: string;

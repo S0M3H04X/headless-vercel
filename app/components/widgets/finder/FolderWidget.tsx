@@ -1,92 +1,77 @@
 'use client';
 import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
-import { resolvePath } from '@/lib/filesystem/data';
+import { ScenarioService } from '@/lib/services/scenarioService';
+import { getNodeById } from '@/lib/filesystem/data'; // [修正] 引入新函式
 import { BaseWidgetProps, WidgetKind } from '@/lib/types/workspace';
-import styles from './FolderWidget.module.scss'; // 確保樣式被正確引入
+import styles from './FolderWidget.module.scss';
 
 export const FolderWidget: React.FC<BaseWidgetProps> = ({ id, content }) => {
-    const { openWindow } = useWorkspaceStore();
+  const { openWindow } = useWorkspaceStore();
+  const nodeId = content.sourceId; // 這裡接收到的會是 'shop'
+  
+  // [修正] 使用 ID 查找節點
+  const node = getNodeById(nodeId);
+  const items = node?.children || [];
 
-    // 1. 解析路徑獲取資料
-    const path = content.sourceId;
-    const node = resolvePath(path);
-    const items = node?.children || [];
+  const handleDoubleClick = (item: any) => {
+      // 互動邏輯
+      if (item.type === 'widget' && item.appId === WidgetKind.Product) {
+          // 情境 A: 點擊 Product Icon -> 調用 ScenarioService
+          ScenarioService.launchProductSuite(item.metadata.handle);
+      } 
+      else if (item.type === 'app' && item.appId === WidgetKind.Collection) {
+          // 情境 B: 點擊 Collection Icon -> 開啟 CollectionApp
+          openWindow({
+              title: item.name,
+              content: { 
+                  kind: WidgetKind.Collection, 
+                  sourceId: item.metadata.handle 
+              },
+              initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
+          });
+      }
+      else if (item.type === 'folder') {
+          // 情境 C: 進入子資料夾
+          openWindow({
+              title: item.name,
+              content: { kind: WidgetKind.Folder, sourceId: item.id } // 傳遞 ID
+          });
+      }
+  };
 
-    // 2. 處理雙擊互動
-    const handleDoubleClick = (item: any) => {
-        console.log('[Folder] Double click:', item); // Debug Log
-        if (item.type === 'app') {
-            // 啟動應用程式 (如 Collection Widget)
-            openWindow({
-                title: item.name,
-                content: {
-                    kind: item.appId || WidgetKind.Collection,
-                    sourceId: item.metadata?.handle || 'root'
-                },
-                initialGeometry: { x: 'center', y: 'center', width: 500, height: 500 }
-            });
-        } else if (item.type === 'folder' || item.type === 'link') {
-            // 進入子資料夾 (MVP: 開啟新視窗，未來可改為原地導航)
-            // 注意: 這裡假設 data.ts 的 resolvePath 能處理這種路徑拼接
-            // 若使用靜態 path 判斷，需確保 item.id 對應到 data.ts 的邏輯
-            const nextPath = path === '/' ? `/${item.name}` : `${path}/${item.name}`;
+  if (!node) {
+      return (
+        <div className="flex items-center justify-center h-full text-red-500 font-mono text-sm">
+            Error: Path not found "{nodeId}"
+        </div>
+      );
+  }
 
-            openWindow({
-                title: item.name,
-                content: { 
-                    kind: WidgetKind.Folder, 
-                    sourceId: nextPath 
-                },
-                initialGeometry: { x: 'center', y: 'center', width: 400, height: 400 }
-            });
-        }
-    };
+  return (
+    <div className={styles.folderContainer}>
+        {/* Status Bar / Info */}
+        <div className="px-2 py-1 text-xs border-b border-gray-400 bg-gray-100 flex gap-2">
+            <span>{items.length} items</span>
+        </div>
 
-    // 3. 錯誤處理 (找不到路徑)
-    if (!node) {
-        return (
-            <div className="flex items-center justify-center h-full text-red-500 font-mono">
-                Error: Path not found "{path}"
-            </div>
-        );
-    }
-
-    // 4. 渲染內容 (Grid Layout)
-    return (
-        <div className={styles.folderContainer}>
-            {/* Status Bar (Optional) */}
-            <div className="bg-gray-100 border-b border-gray-400 px-2 py-1 text-xs flex justify-between">
-                <span>{items.length} items</span>
-                <span>{path}</span>
-            </div>
-
-            {/* Content Area */}
-            <div className={styles.gridContent}>
-                {items.length === 0 && (
-                    <div className="w-full text-center mt-10 text-gray-400 italic">
-                        (Empty Folder)
-                    </div>
-                )}
-
-                {items.map((item: any) => (
-                    <div
-                        key={item.id}
-                        className={styles.item}
+        <div className={styles.gridContent}>
+            {items.length === 0 ? (
+                <div className="w-full text-center text-gray-400 text-xs mt-4">(Empty)</div>
+            ) : (
+                items.map(item => (
+                    <div 
+                        key={item.id} 
+                        className={styles.item} 
                         onDoubleClick={() => handleDoubleClick(item)}
                         title={item.name}
                     >
-                        {/* Icon */}
-                        <img
-                            src={item.icon || '/assets/classicy/img/icons/system/folders/folder-generic.png'}
-                            alt={item.name}
-                            className="w-8 h-8 object-contain pixelated"
-                        />
-                        {/* Label */}
+                        <img src={item.icon || '/assets/classicy/img/icons/system/files/file.png'} alt={item.name} />
                         <span>{item.name}</span>
                     </div>
-                ))}
-            </div>
+                ))
+            )}
         </div>
-    );
+    </div>
+  );
 };
