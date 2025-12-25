@@ -2,7 +2,7 @@
 
 .appContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   background-color: $color-platinum-light; /* App 背景色通常是灰的 */
 }

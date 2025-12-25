@@ -2,70 +2,53 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ScenarioService } from '@/lib/services/scenarioService'; // [新增]
-import { getCollectionProducts, Product } from '@/lib/shopify';
+// import { getCollectionProducts, Product } from '@/lib/shopify';
 import { BaseWidgetProps } from '@/lib/types/workspace';
+import { useCollectionData } from '@/hooks/useCollectionData'; // [Hook]
+import { CollectionVisualizer } from './CollectionVisualizer';
 import styles from './CollectionApp.module.scss';
 
 export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
   const { updateWindowTitle } = useWorkspaceStore();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const canvasRef = useRef<HTMLCanvasElement>(null); // [US-07-05-03] Canvas Ref
+  const { products, isLoading, error } = useCollectionData(content.sourceId);
 
+  // 2. 副作用：更新視窗標題
   useEffect(() => {
-    const init = async () => {
-      try {
-        const handle = content.sourceId;
-        const data = await getCollectionProducts(handle);
-        setProducts(data);
-        updateWindowTitle(id, `${handle.toUpperCase()} (${data.length})`);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    init();
-  }, [content.sourceId, id]);
+    if (!isLoading && products.length > 0) {
+      updateWindowTitle(id, `${content.sourceId.toUpperCase()} (${products.length})`);
+    } else if (error) {
+      updateWindowTitle(id, 'Connection Error');
+    }
+  }, [isLoading, products, error, id, content.sourceId, updateWindowTitle]);
 
-  // [US-07-05-03] Initialize Canvas (Placeholder for Phase 8)
-  useEffect(() => {
-      if (canvasRef.current && !isLoading) {
-          const ctx = canvasRef.current.getContext('2d');
-          if (ctx) {
-              ctx.fillStyle = '#000';
-              ctx.fillText('3D VIEW READY', 10, 50);
-              // Future: new Three.Scene()...
-          }
-      }
-  }, [isLoading]);
-
+  // 3. 互動：開啟商品詳情
   const handleProductClick = (handle: string) => {
-      // [修正] 點擊商品 -> 開啟全新的獨立視窗 (ProductPartsWidget)
       ScenarioService.launchProductSuite(handle);
   };
 
   return (
     <div className={styles.appContainer}>
-      {/* 1. Canvas Area (Top Half) */}
-      <div className="h-48 bg-black border-b border-gray-600 relative overflow-hidden">
-          <canvas ref={canvasRef} className="w-full h-full block" />
-          <div className="absolute bottom-2 right-2 text-white text-xs font-mono opacity-50">
-              Interactive View
-          </div>
-      </div>
+      {/* Visual Layer */}
+      <CollectionVisualizer isLoading={isLoading} />
 
-      {/* 2. Product Grid (Bottom Half) */}
+      {/* Content Layer */}
       <div className={styles.viewArea}>
         {isLoading ? (
-            <div className="p-4 text-center">Loading Data...</div>
+            <div className="p-4 text-center text-xs text-gray-500 font-mono">
+                Connecting to Commerce Cloud...
+            </div>
+        ) : error ? (
+            <div className="p-4 text-center text-red-600 text-xs font-mono">
+                Error loading collection.
+            </div>
         ) : (
             <div className={styles.productGrid}>
               {products.map((p) => (
                 <div 
                   key={p.id} 
                   className={styles.productItem}
-                  onDoubleClick={() => handleProductClick(p.handle)} // 雙擊開啟
+                  onDoubleClick={() => handleProductClick(p.handle)}
+                  title={p.title}
                 >
                   <div className={styles.productThumb}>
                     {p.featuredImage && <img src={p.featuredImage.url} alt={p.title} />}

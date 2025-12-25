@@ -1,44 +1,73 @@
 // app/lib/services/systemService.ts
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { ScenarioService } from './scenarioService';
+import { WidgetKind } from '@/lib/types/workspace';
+import { FileSystemNode } from '@/lib/filesystem/types';
 
-type SystemWindowType = 'ABOUT' | 'SETTINGS' | 'SOCIAL';
-
-/**
- * SystemService: 負責處理全域系統指令與視窗工廠邏輯
- * 解耦 UI (SystemMenu) 與 業務邏輯 (Window Creation)
- */
 export const SystemService = {
-  openSystemWindow: (type: SystemWindowType) => {
-    // 直接存取 Store (Zustand 允許在元件外使用 getState)
-    const openWindow = useWorkspaceStore.getState().openWindow;
+  /**
+   * 核心方法：開啟檔案/應用
+   * 這是 OS 的 Dispatcher，負責根據檔案類型決定行為
+   */
+  openFile: (node: FileSystemNode) => {
+    const { openWindow } = useWorkspaceStore.getState();
 
+    console.log(`[System] Opening: ${node.name} (${node.type})`);
+
+    switch (node.type) {
+      case 'folder':
+        // 開啟資料夾視窗
+        openWindow({
+          title: node.name,
+          content: { kind: WidgetKind.Folder, sourceId: node.id }
+        });
+        break;
+
+      case 'app':
+        // 處理各類 App 的啟動參數
+        if (node.appId === WidgetKind.Collection) {
+           openWindow({
+              title: node.name,
+              content: { 
+                kind: WidgetKind.Collection, 
+                sourceId: node.metadata?.handle || 'root' 
+              },
+              initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
+           });
+        }
+        // 未來可在此擴充其他 App (如 MediaPlayer)
+        break;
+
+      case 'widget':
+      case 'link':
+        // 處理特殊捷徑與場景 (Scenarios)
+        if (node.appId === WidgetKind.Product) {
+           ScenarioService.launchProductSuite(node.metadata?.handle);
+        }
+        break;
+        
+      default:
+        console.warn(`[System] Unknown file type: ${node.type}`);
+    }
+  },
+  // 2. [新增] 系統視窗開啟邏輯
+  openSystemWindow: (type: 'ABOUT' | 'SETTINGS' | 'SOCIAL') => {
+    const { openWindow } = useWorkspaceStore.getState();
+    
     switch (type) {
       case 'ABOUT':
         openWindow({
-          title: 'About Headless OS',
-          content: { 
-            kind: 'text_viewer', // 需確保 Registry 有對應或 Fallback
-            sourceId: 'system_about',
-            initialMeta: { text: 'Headless OS v1.0\nPowered by Next.js & Python' }
-          },
-          initialGeometry: { x: 150, y: 150, width: 320, height: 240 }
+          title: 'About 1313',
+          content: { kind: WidgetKind.PDFViewer, sourceId: 'about_doc' }, // 範例：開啟說明文件
+          initialGeometry: { width: 400, height: 300, x: 'center', y: 'center' }
         });
         break;
-
       case 'SETTINGS':
-        openWindow({
-          title: 'Control Panels',
-          content: { 
-            kind: 'settings_panel', 
-            sourceId: 'system_settings' 
-          },
-          initialGeometry: { x: 200, y: 100, width: 500, height: 400 }
-        });
+        // 未來可開啟控制台 Widget
+        alert("Control Panel is under construction (Phase 9)");
         break;
-
       case 'SOCIAL':
-        // 未來可改為開啟瀏覽器或 Social Widget
-        console.log('[SystemService] Social command executed');
+        window.open('https://instagram.com/1313heart', '_blank');
         break;
     }
   }

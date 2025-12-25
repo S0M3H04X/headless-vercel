@@ -1,43 +1,21 @@
 'use client';
 import React from 'react';
-import { useWorkspaceStore } from '@/store/workspaceStore';
-import { ScenarioService } from '@/lib/services/scenarioService';
+import { SystemService } from '@/lib/services/systemService'; 
 import { getNodeById } from '@/lib/filesystem/data'; // [修正] 引入新函式
 import { BaseWidgetProps, WidgetKind } from '@/lib/types/workspace';
 import styles from './FolderWidget.module.scss';
 
 export const FolderWidget: React.FC<BaseWidgetProps> = ({ id, content }) => {
-  const { openWindow } = useWorkspaceStore();
+
   const nodeId = content.sourceId; // 這裡接收到的會是 'shop'
   
   // [修正] 使用 ID 查找節點
   const node = getNodeById(nodeId);
   const items = node?.children || [];
 
+  // [重構後] 互動邏輯完全委派
   const handleDoubleClick = (item: any) => {
-      // 互動邏輯
-      if (item.type === 'widget' && item.appId === WidgetKind.Product) {
-          // 情境 A: 點擊 Product Icon -> 調用 ScenarioService
-          ScenarioService.launchProductSuite(item.metadata.handle);
-      } 
-      else if (item.type === 'app' && item.appId === WidgetKind.Collection) {
-          // 情境 B: 點擊 Collection Icon -> 開啟 CollectionApp
-          openWindow({
-              title: item.name,
-              content: { 
-                  kind: WidgetKind.Collection, 
-                  sourceId: item.metadata.handle 
-              },
-              initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
-          });
-      }
-      else if (item.type === 'folder') {
-          // 情境 C: 進入子資料夾
-          openWindow({
-              title: item.name,
-              content: { kind: WidgetKind.Folder, sourceId: item.id } // 傳遞 ID
-          });
-      }
+      SystemService.openFile(item);
   };
 
   if (!node) {
