@@ -12,8 +12,8 @@ export const WindowStateSchema = z.object({
   id: z.string(),
   title: z.string(),
   geometry: z.object({
-    x: z.number(),
-    y: z.number(),
+    x: z.union([z.number(), z.literal('center'), z.literal('left'), z.literal('right')]),
+    y: z.union([z.number(), z.literal('center'), z.literal('top'), z.literal('bottom')]),
     width: z.number(),
     height: z.number(),
   }),

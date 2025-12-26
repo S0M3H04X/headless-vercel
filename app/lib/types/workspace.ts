@@ -7,13 +7,13 @@ export const WidgetKind = {
   ProductImage: 'product_image',
   ProductTitle: 'product_title',
   ProductDesc: 'product_desc',
-  
+
   // Content Context
   MediaPlayer: 'media_player',
   VideoControl: 'video_control',
   VideoVisual: 'video_visual',
   VideoMixer: 'video_mixer',
-  
+
   // Asset Context
   PDFViewer: 'pdf_viewer',
   Cart: 'cart_manager',
@@ -23,7 +23,7 @@ export const WidgetKind = {
   // [新增] Finder & App Context
   Folder: 'folder_browser',      // 用於瀏覽檔案系統
   Collection: 'collection_app',  // 用於展示商品系列的 App
-  
+
 } as const;
 
 // 衍生型別
@@ -47,8 +47,8 @@ export interface WindowInstance {
   id: string;
   title: string;
   geometry: {
-    x: number;
-    y: number;
+    x: number | 'center' | 'left' | 'right';
+    y: number | 'center' | 'top' | 'bottom';
     width: number;
     height: number;
   };
