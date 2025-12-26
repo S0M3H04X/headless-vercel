@@ -1,54 +1,59 @@
+// app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { generateCodeVerifier, generateCodeChallenge, generateState } from '@/api/auth/pkce';
+import { shopifyFetch } from '@/lib/shopify'; // 使用既有的 Storefront Client
 
-export async function GET() {
-  const clientId = process.env.SHOPIFY_CLIENT_ID;
-  const shopAuthUrl = process.env.SHOPIFY_CUSTOMER_ACCOUNT_URL; // 例如: https://shopify.com/<shop_id>/auth
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+export async function POST(request: Request) {
+  try {
+    const { email, password } = await request.json(); // password 在這裡是 Access Key
 
-  if (!clientId || !shopAuthUrl || !baseUrl) {
-    return NextResponse.json({ error: 'Missing environment variables' }, { status: 500 });
+    // 1. 呼叫 Storefront API 換 Token
+    const query = `
+      mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+        customerAccessTokenCreate(input: $input) {
+          customerAccessToken {
+            accessToken
+            expiresAt
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+
+    const response = await shopifyFetch<any>({
+      query,
+      variables: { input: { email, password } },
+      cache: 'no-store'
+    });
+
+    const tokenData = response?.customerAccessTokenCreate?.customerAccessToken;
+    const errors = response?.customerAccessTokenCreate?.userErrors;
+
+    if (errors && errors.length > 0) {
+      return NextResponse.json({ error: 'Invalid Access Key' }, { status: 401 });
+    }
+
+    if (!tokenData?.accessToken) {
+      return NextResponse.json({ error: 'Login failed' }, { status: 500 });
+    }
+
+    // 2. 寫入 HttpOnly Cookie (真實 Token!)
+    const cookieStore = cookies();
+    cookieStore.set('shopify_access_token', tokenData.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      expires: new Date(tokenData.expiresAt)
+    });
+
+    return NextResponse.json({ success: true });
+
+  } catch (e) {
+    console.error('[Login Error]', e);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  // 1. 生成 PKCE 參數
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = generateCodeChallenge(codeVerifier);
-  const state = generateState();
-
-  // 2. 將 Verifier 與 State 存入 HttpOnly Cookie (安全關鍵！)
-  // 這些 Cookie 必須在 Callback 時取出驗證
-  const cookieStore = cookies();
-  
-  cookieStore.set('shopify_auth_verifier', codeVerifier, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // 本地開發若用 Tunnel 也是 HTTPS，所以通常設 true
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 300, // 5分鐘內必須完成登入
-  });
-
-  cookieStore.set('shopify_auth_state', state, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 300,
-  });
-
-  // 3. 建構 Shopify OAuth URL
-  const redirectUri = `${baseUrl}/api/auth/callback`;
-  const scope = 'openid email customer-account-api:full';
-
-  const authUrl = new URL(`${shopAuthUrl}/oauth/authorize`);
-  authUrl.searchParams.append('client_id', clientId);
-  authUrl.searchParams.append('response_type', 'code');
-  authUrl.searchParams.append('redirect_uri', redirectUri);
-  authUrl.searchParams.append('scope', scope);
-  authUrl.searchParams.append('state', state);
-  authUrl.searchParams.append('code_challenge', codeChallenge);
-  authUrl.searchParams.append('code_challenge_method', 'S256');
-
-  // 4. 重導向
-  return NextResponse.redirect(authUrl.toString());
 }
