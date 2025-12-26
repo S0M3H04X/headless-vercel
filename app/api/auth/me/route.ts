@@ -11,7 +11,7 @@ export async function GET() {
   if (accessToken) {
     return NextResponse.json({ 
       authenticated: true,
-      accessToken: accessToken,
+      // accessToken: accessToken,
       user: {
         name: 'Member'  // 可擴充更多用戶資訊
       } 
