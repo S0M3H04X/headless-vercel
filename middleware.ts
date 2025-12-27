@@ -15,6 +15,7 @@ export function middleware(request: NextRequest) {
     path === '/api/shopify/query' ||
     path.includes('pdf.worker.min') ||
     path === '/api/os/boot' ||
+    path.startsWith('/api/debug') ||
     path === '/api/setup';                 // [新增] 允許執行資料庫初始化
 
   // 如果是公開路徑，直接放行

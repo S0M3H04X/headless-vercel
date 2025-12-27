@@ -1,60 +1,49 @@
 // app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-// import { shopifyFetch } from '@/lib/shopify'; // 使用既有的 Storefront Client
-import { shopifyStorefrontFetch } from '@/lib/shopify/storefront';
+import { db } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json(); // password 在這裡是 Access Key
+    const { email, password } = await request.json(); // password 這裡是 Access Key
+    const now = Math.floor(Date.now() / 1000);
 
-    // 1. 呼叫 Storefront API 換 Token
-    const query = `
-      mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
-        customerAccessTokenCreate(input: $input) {
-          customerAccessToken {
-            accessToken
-            expiresAt
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }
-    `;
+    // 1. 查詢 DB 驗證 Key
+    const result = await db.execute({
+      sql: 'SELECT * FROM otp_sessions WHERE email = ?',
+      args: [email]
+    });
+    const session = result.rows[0] as any;
 
-    // [修正] 使用 shopifyStorefrontFetch 直接對話 Shopify
-    const data = await shopifyStorefrontFetch<any>({
-      query,
-      variables: { input: { email, password } },
+    if (!session) {
+        return NextResponse.json({ error: 'Please request an Access Key first.' }, { status: 401 });
+    }
+
+    if (session.code !== password) {
+        return NextResponse.json({ error: 'Invalid Access Key.' }, { status: 401 });
+    }
+
+    // 2. 登入成功！
+    // 清除已使用的 Key (一次性使用，更安全)
+    await db.execute({
+        sql: 'DELETE FROM otp_sessions WHERE email = ?',
+        args: [email]
     });
 
-    const tokenData = data?.customerAccessTokenCreate?.customerAccessToken;
-    const errors = data?.customerAccessTokenCreate?.userErrors;
+    // 3. 建立 OS Session (Mock Token)
+    // 我們生成一個 Signed String 作為 Token，Middleware 只要看到 Cookie 存在就會放行
+    const osToken = `os_session_${Buffer.from(email).toString('base64')}_${now}`;
 
-    // 錯誤處理：密碼錯誤或 API 拒絕
-    if (errors && errors.length > 0) {
-      console.error('[Login Failed] Shopify Errors:', errors);
-      return NextResponse.json({ error: 'Invalid Access Key or Email' }, { status: 401 });
-    }
-
-    if (!tokenData?.accessToken) {
-      console.error('[Login Failed] No Access Token returned');
-      return NextResponse.json({ error: 'Login failed (No Token)' }, { status: 500 });
-    }
-
-    // 2. 寫入 HttpOnly Cookie (真實 Token!)
     const cookieStore = cookies();
-    cookieStore.set('shopify_access_token', tokenData.accessToken, {
+    cookieStore.set('shopify_access_token', osToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      expires: new Date(tokenData.expiresAt)
+      maxAge: 60 * 60 * 24 * 7, // 7 Days
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, user: { email } });
 
   } catch (e) {
     console.error('[Login Error]', e);

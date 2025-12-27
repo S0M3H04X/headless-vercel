@@ -1,12 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { SystemButton } from '@/components/ui/SystemButton';
 
-type AuthStep = 'email' | 'key'; // Renamed 'otp' to 'key'
+type AuthStep = 'email' | 'key';
 
 export const AuthWidget: React.FC = () => {
-  const { login } = useAuthStore(); // 注意：需確保 store 的 login 支援重整狀態
+  const { login, logout, isAuthenticated, user } = useAuthStore();
+  
   const [step, setStep] = useState<AuthStep>('email');
   const [email, setEmail] = useState('');
   const [accessKey, setAccessKey] = useState('');
@@ -14,11 +15,15 @@ export const AuthWidget: React.FC = () => {
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
 
-  // 1. 請求 Access Key
+  // 當 user 變更時，自動切換顯示
+  useEffect(() => {
+      if (isAuthenticated) {
+          setLoading(false);
+      }
+  }, [isAuthenticated]);
+
   const handleRequestKey = async () => {
-    setLoading(true);
-    setError('');
-    setMsg('');
+    setLoading(true); setError(''); setMsg('');
     try {
       const res = await fetch('/api/auth/key/request', {
         method: 'POST',
@@ -27,42 +32,64 @@ export const AuthWidget: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      
       setStep('key');
       setMsg('Key sent to your email.');
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+    } catch (e: any) { setError(e.message); } 
+    finally { setLoading(false); }
   };
 
-  // 2. 登入 (Login with Key)
   const handleLogin = async () => {
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
-      // 呼叫新的 Login API (Proxy)
       const res = await fetch('/api/auth/login', {
-        method: 'POST', // 確保 login route 支援 POST
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: accessKey }), // Key as password
+        body: JSON.stringify({ email, password: accessKey }),
       });
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error);
-
-      // 成功：觸發全域狀態重整
-      window.location.reload(); // 簡單暴力，確保所有 Widget 拿到最新 Token
-      // 或使用 await login() 如果 store 支援 soft reset
       
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+      // 登入成功，刷新狀態
+      window.location.reload();
+    } catch (e: any) { setError(e.message); setLoading(false); }
   };
 
+  const handleLogout = async () => {
+      await logout();
+      window.location.reload();
+  };
+
+  // [Fix] 登入後顯示會員資訊 (My Account View)
+  if (isAuthenticated) {
+      return (
+        <div className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-1 shadow-outset border border-gray-400">
+            <div className="bg-[#000080] text-white px-2 py-1 font-bold text-sm mb-4 flex justify-between">
+                <span>My Account</span>
+                <span>Active</span>
+            </div>
+            <div className="px-4 pb-4 text-center">
+                <div className="mb-4">
+                    <img src="/assets/classicy/img/icons/system/users/user.png" className="w-12 h-12 mx-auto mb-2 opacity-80" alt="User" />
+                    <div className="font-bold text-sm">Member Access Granted</div>
+                    <div className="text-xs text-gray-600 font-mono mt-1">{user?.email || 'Authenticated User'}</div>
+                </div>
+                
+                <div className="bg-white p-2 border border-gray-400 shadow-inset text-left text-xs font-mono mb-4 h-24 overflow-y-auto">
+                    <p>{`> Session Type: OS_NATIVE`}</p>
+                    <p>{`> Permissions: READ_WRITE`}</p>
+                    <p>{`> Status: CONNECTED`}</p>
+                    <p>{`> Encrypted: YES`}</p>
+                </div>
+
+                <SystemButton onClick={handleLogout}>
+                    Log Out
+                </SystemButton>
+            </div>
+        </div>
+      );
+  }
+
+  // 未登入視圖 (保持不變)
   return (
     <div className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-1 shadow-outset border border-gray-400">
       <div className="bg-[#000080] text-white px-2 py-1 font-bold text-sm mb-4 flex justify-between">
@@ -90,7 +117,7 @@ export const AuthWidget: React.FC = () => {
             <div>
                 <label className="block text-xs mb-1">Access Key</label>
                 <input
-                  type="password" // 隱藏輸入
+                  type="password"
                   placeholder="******"
                   className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm tracking-widest"
                   value={accessKey}
