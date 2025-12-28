@@ -1,7 +1,10 @@
 // app/lib/services/systemService.ts
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { useAuthStore } from '@/store/authStore';
+
 import { ScenarioService } from './scenarioService';
 import { WidgetKind } from '@/lib/types/workspace';
+
 import { FileSystemNode } from '@/lib/filesystem/types';
 
 export const SystemService = {
@@ -11,8 +14,25 @@ export const SystemService = {
    */
   openFile: (node: FileSystemNode) => {
     const { openWindow } = useWorkspaceStore.getState();
+    const authStore = useAuthStore.getState();
 
     console.log(`[System] Opening: ${node.name} (${node.type})`);
+    // [US-08-01] 核心攔截邏輯
+    if (node.locked && !authStore.isAuthenticated) {
+      console.warn(`[Access Denied] ${node.name} is locked for guests.`);
+      
+      // 1. 播放拒絕音效 (Optional)
+      // playSound('error');
+
+      // 2. 觸發登入視窗 (假設 AuthWidget 也是一個視窗或全域 Modal)
+      // 如果您的 AuthWidget 是一個 desktop window:
+      // useWidgetStore.getState().openWindow('auth-login'); 
+      
+      // 或者呼叫 AuthStore 的 login 導向
+      authStore.login(); 
+      
+      return; // 中斷開啟流程
+    }
 
     switch (node.type) {
       case 'folder':

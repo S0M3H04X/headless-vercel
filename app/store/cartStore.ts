@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { Cart, createCart, addToCart, removeFromCart, updateCartLine, getCart } from '@/lib/shopify';
+import { Cart, createCart, addToCart, removeFromCart, updateCartLine, getCart, updateCartBuyerIdentity } from '@/lib/shopify';
 import { error } from 'node:console';
 
 interface CartState {
@@ -9,6 +9,7 @@ interface CartState {
   isOpen: boolean;
   isLoading: boolean;
   error: string | null;
+  associateUser: (accessToken: string, email?: string) => Promise<void>;
   
   // Actions
   initialize: () => Promise<void>;
@@ -106,6 +107,40 @@ export const useCartStore = create<CartState>()(
           set({ cart: updatedCart });
         } catch (error) {
           set({ error: 'Failed to update quantity.' });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+      // [核心實作] US-08-02: 身份綁定
+      associateUser: async (accessToken, email) => {
+        const { cartId, cart } = get();
+        
+        // 情況 A: 目前沒有購物車 (因為訪客不能購物)
+        // 策略: 暫不動作，等到使用者真的 addItem 時，我們再帶入 Token (需修改 addItem)
+        // 或者: 在此直接建立一個帶有 Identity 的空購物車 (推薦，為了 UX 順暢)
+        
+        if (!cartId) {
+            // 可選：預先建立購物車邏輯，或單純將 Token 存入 store 等待下次使用
+            // 這裡示範「若有車則綁定，若無車則 pass」的保守策略
+            return;
+        }
+
+        // 情況 B: 已有購物車 (可能是舊 Session 殘留)
+        // 執行綁定
+        set({ isLoading: true });
+        try {
+          console.log('[Cart] Binding identity to cart...');
+          const updatedCart = await updateCartBuyerIdentity(cartId, {
+            customerAccessToken: accessToken,
+            email: email
+          });
+          
+          if (updatedCart) {
+            set({ cart: updatedCart });
+          }
+        } catch (error) {
+          console.error('[Cart] Association failed:', error);
+          // 如果 Token 失效 (Customer is invalid)，可能需要通知 AuthStore 登出
         } finally {
           set({ isLoading: false });
         }

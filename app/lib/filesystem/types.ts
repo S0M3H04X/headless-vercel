@@ -1,7 +1,8 @@
-export type FileType = 'folder' | 'app' | 'link' | 'widget';
+export type FileType = 'folder' | 'app' | 'link' | 'widget' | 'file';
 
 export interface FileSystemNode {
   id: string;
+  parentId?: string | null; // 根目錄的 parentId 為 null
   name: string;
   type: FileType;
   icon?: string; // 自定義 icon 路徑
@@ -9,4 +10,5 @@ export interface FileSystemNode {
   appId?: string; // 對應 Registry 中的 WidgetKind (例如 'Collection')
   metadata?: Record<string, any>; // 例如 collection handle
   children?: FileSystemNode[]; // 只有 folder 有 children
+  locked?: boolean; // 是否鎖定 (不可編輯/刪除)
 }

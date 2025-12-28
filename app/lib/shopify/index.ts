@@ -1,4 +1,7 @@
 // app/lib/shopify/index.ts
+import { updateCartBuyerIdentityMutation } from './graphql/cart';
+import { shopifyStorefrontFetch } from './storefront';
+
 
 const BFF_ENDPOINT = '/api/shopify/query';
 
@@ -558,4 +561,30 @@ export async function getCollectionProducts(handle: string): Promise<Product[]> 
   
   if (!response.collection) return [];
   return response.collection.products.edges.map((edge) => edge.node);
+}
+
+
+export async function updateCartBuyerIdentity(
+  cartId: string, 
+  buyerIdentity: { 
+    customerAccessToken: string; 
+    email?: string;
+  }
+) {
+  const res = await shopifyStorefrontFetch<any>({
+    query: updateCartBuyerIdentityMutation,
+    variables: {
+      cartId,
+      buyerIdentity,
+    },
+  });
+
+  if (res.cartBuyerIdentityUpdate?.userErrors?.length > 0) {
+    console.error('[Shopify] Identity Update Error:', res.cartBuyerIdentityUpdate.userErrors);
+    // 這裡可以選擇 throw error 或回傳 null，視您希望前端如何處理
+    // 如果 Token 失效，通常建議讓前端知道以便觸發重新登入
+    throw new Error(res.cartBuyerIdentityUpdate.userErrors[0].message);
+  }
+
+  return res.cartBuyerIdentityUpdate.cart;
 }

@@ -1,9 +1,13 @@
 // app/lib/shopify/storefront.ts
-const domain = process.env.SHOPIFY_STORE_DOMAIN;
-const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+// const domain = process.env.SHOPIFY_STORE_DOMAIN;
+// const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
+// 使用 NEXT_PUBLIC_ 前綴以允許瀏覽器端存取
+const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
 if (!domain || !storefrontAccessToken) {
-  throw new Error('Missing SHOPIFY_STORE_DOMAIN or SHOPIFY_STOREFRONT_ACCESS_TOKEN');
+  throw new Error('Missing NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN or NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN');
 }
 
 const GRAPHQL_URL = `https://${domain}/api/2025-10/graphql.json`;

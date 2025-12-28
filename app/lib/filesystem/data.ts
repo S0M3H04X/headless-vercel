@@ -13,6 +13,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
         name: '1CR3DIT',
         type: 'folder',
         icon: '/assets/classicy/img/icons/system/drives/disk.png',
+        locked: true,
         children: [
           {
             id: 'apps',
@@ -23,6 +24,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
                   id: 'radio', 
                   name: 'Radio', 
                   type: 'app', 
+                  locked: true,
                   appId: WidgetKind.MediaPlayer, 
                   icon: '/assets/classicy/img/icons/system/files/sound.png' 
               },
@@ -33,6 +35,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
             name: 'Shop',
             type: 'folder',
             icon: '/assets/classicy/img/icons/system/folders/favorites.png',
+            locked: true,
             children: [
               // 1. Collection App Shortcut
               { 
@@ -41,6 +44,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
                 type: 'app', 
                 appId: WidgetKind.Collection, 
                 metadata: { handle: '1cr3dit' }, 
+                locked: true,
                 icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
               },
               // 2. Product Shortcut
@@ -49,6 +53,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
                 name: 'Basic Tee', 
                 type: 'widget', 
                 appId: WidgetKind.Product, 
+                locked: true,
                 metadata: { handle: 'basic-tee' }, 
                 icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
               }

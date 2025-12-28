@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useCartStore } from './cartStore';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -28,13 +29,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (res.ok) {
         const data = await res.json();
         // 如果後端回傳 { authenticated: true }
-        if (data.authenticated) {
+        if (data.authenticated && data.accessToken) {
           set({ 
             isAuthenticated: true, 
             customerAccessToken: data.accessToken || null,
             isLoading: false,
-            user: { name: 'Member' } // 暫時 Mock，未來可從 API 獲取
+            user: data.user 
           });
+          // [Trigger] US-08-02: 登入成功，立即綁定購物車
+          // 這會確保如果此瀏覽器已經有殘留的 cartId，它會被歸戶給這個使用者
+          useCartStore.getState().associateUser(data.accessToken, data.user?.email);
         } else {
             set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
         }
