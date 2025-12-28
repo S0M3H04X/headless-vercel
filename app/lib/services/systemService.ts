@@ -1,6 +1,7 @@
 // app/lib/services/systemService.ts
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useAuthStore } from '@/store/authStore';
+import { useWidgetStore } from '@/store/widgetStore';
 
 import { ScenarioService } from './scenarioService';
 import { WidgetKind } from '@/lib/types/workspace';
@@ -13,8 +14,8 @@ export const SystemService = {
    * 這是 OS 的 Dispatcher，負責根據檔案類型決定行為
    */
   openFile: (node: FileSystemNode) => {
-    const { openWindow } = useWorkspaceStore.getState();
     const authStore = useAuthStore.getState();
+    const { openWindow } = useWorkspaceStore.getState();
 
     console.log(`[System] Opening: ${node.name} (${node.type})`);
     // [US-08-01] 核心攔截邏輯
@@ -33,6 +34,8 @@ export const SystemService = {
       
       return; // 中斷開啟流程
     }
+
+    console.log(`[System] Opening ${node.name}`);
 
     switch (node.type) {
       case 'folder':

@@ -3,23 +3,26 @@ import { useCartStore } from './cartStore';
 
 interface AuthState {
   isAuthenticated: boolean;
-  customerAccessToken: string | null;
+  // customerAccessToken: string | null;
   isLoading: boolean;
   user: {
-    name?: string;
+    // name?: string;
     email?: string;
   } | null; // 預留未來擴充 User Info
   
+  isAuthOpen: boolean;
   checkAuth: () => Promise<void>;
   login: () => void;
-  logout: () => void; // 暫時只做前端狀態清除
+  logout: () => Promise<void>; // 暫時只做前端狀態清除
+  closeAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
-  customerAccessToken: null,
+  // customerAccessToken: null,
   isLoading: true, // 初始狀態設為 true，避免畫面閃爍
   user: null,
+  isAuthOpen: false,
 
   checkAuth: async () => {
     try {
@@ -29,32 +32,38 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (res.ok) {
         const data = await res.json();
         // 如果後端回傳 { authenticated: true }
-        if (data.authenticated && data.accessToken) {
+        if (data.authenticated) {
           set({ 
             isAuthenticated: true, 
-            customerAccessToken: data.accessToken || null,
+            // customerAccessToken: data.accessToken || null,
             isLoading: false,
             user: data.user 
           });
           // [Trigger] US-08-02: 登入成功，立即綁定購物車
           // 這會確保如果此瀏覽器已經有殘留的 cartId，它會被歸戶給這個使用者
-          useCartStore.getState().associateUser(data.accessToken, data.user?.email);
+          if (data.user?.email) {
+            useCartStore.getState().associateUser(data.accessToken, data.user?.email);
+          }
         } else {
-            set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+            set({ isAuthenticated: false, isLoading: false, user: null });
         }
       } else {
         // 401 或其他錯誤視為未登入
-        set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+        set({ isAuthenticated: false, isLoading: false, user: null });
       }
     } catch (error) {
       console.error('[AuthStore] Check failed', error);
-      set({ isAuthenticated: false, customerAccessToken: null, isLoading: false, user: null });
+      set({ isAuthenticated: false, isLoading: false, user: null });
     }
   },
 
   login: () => {
     // 全頁重導向至後端登入路由
-    window.location.href = '/api/auth/login';
+    set({ isAuthOpen: true });
+  },
+
+  closeAuth: () => {
+    set({ isAuthOpen: false });
   },
 
   logout: async () => {
@@ -65,7 +74,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         console.error('Logout failed:', e);
     } finally {
         // 無論後端成功與否，前端都要重置狀態
-        set({ isAuthenticated: false, customerAccessToken: null, user: null });
+        set({ isAuthenticated: false, user: null });
         // 可選：強制重整頁面以確保乾淨
         window.location.reload(); 
     }

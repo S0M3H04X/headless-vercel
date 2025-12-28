@@ -571,12 +571,15 @@ export async function updateCartBuyerIdentity(
     email?: string;
   }
 ) {
+  const variables: any = {
+    cartId,
+    buyerIdentity: {
+      email: buyerIdentity.email
+    }
+  };
   const res = await shopifyStorefrontFetch<any>({
     query: updateCartBuyerIdentityMutation,
-    variables: {
-      cartId,
-      buyerIdentity,
-    },
+    variables
   });
 
   if (res.cartBuyerIdentityUpdate?.userErrors?.length > 0) {
