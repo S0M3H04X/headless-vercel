@@ -11,13 +11,15 @@ $color-text: #000000;
 // --- 2. Fonts ---
 // 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
 $font-path: '/assets/fonts/'; // 字體資源路徑
+
 @font-face {
   font-family: 'ChicagoKare';
   src: url('#{$font-path}/ChicagoKare-Regular.woff2') format('woff2'),
-       url('#{$font-path}/ChicagoKare-Regular.woff') format('woff');
+  url('#{$font-path}/ChicagoKare-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-  font-display: swap; /* Recommended for performance */
+  font-display: swap;
+  /* Recommended for performance */
 }
 
 @font-face {
@@ -25,11 +27,12 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
   src: url('#{$font-path}/Ishmeria.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-  font-display: swap; /* Recommended for performance */
+  font-display: swap;
+  /* Recommended for performance */
 }
 
 
-$font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
+$font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif;
 $font-pixel: 'Ishmeria', monospace; // 暫代像素字體
 
 // --- 3. Assets Paths (Customizable) ---
@@ -37,9 +40,54 @@ $asset-path: '/assets/classicy/img/ui';
 
 // Window Controls (Close/Zoom/Collapse)
 // 這裡允許您未來替換為自己的圖片
-$btn-close-bg: url('#{$asset-path}/window/close-box.png'); 
+$btn-close-bg: url('#{$asset-path}/window/close-box.png');
 $btn-zoom-bg: url('#{$asset-path}/window/zoom-box.png');
 $btn-collapse-bg: url('#{$asset-path}/window/collapse-box.png');
 
 // Window Textures
 $window-stripes: url('#{$asset-path}/window/stripes.png'); // 標題列橫紋
+
+// --- 4. Design System CSS Custom Properties ---
+// These variables can be overridden by JavaScript for theme customization
+// Use var(--ds-*) in components to enable dynamic theming
+
+:root {
+  // Color tokens
+  --ds-color-primary: #{$color-platinum-light};
+  --ds-color-primary-light: #efefef;
+  --ds-color-primary-dark: #{$color-platinum-dark};
+  --ds-color-secondary: #{$color-window-bg};
+  --ds-color-accent: #{$color-highlight};
+  --ds-color-background: #{$color-window-bg};
+  --ds-color-background-alt: #a8d589;
+  --ds-color-surface: #ffffff;
+  --ds-color-text: #{$color-text};
+  --ds-color-text-muted: #666666;
+  --ds-color-text-inverse: #{$color-highlight-text};
+  --ds-color-highlight: #{$color-highlight};
+  --ds-color-highlight-text: #{$color-highlight-text};
+  --ds-color-success: #2e8b57;
+  --ds-color-warning: #ffa500;
+  --ds-color-error: #dc143c;
+  --ds-color-info: #4169e1;
+
+  // Font tokens
+  --ds-font-system: #{$font-system};
+  --ds-font-display: #{$font-system};
+  --ds-font-mono: #{$font-pixel};
+  --ds-font-pixel: #{$font-pixel};
+  --ds-font-size-xs: 0.75rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.125rem;
+  --ds-font-size-xl: 1.25rem;
+  --ds-font-size-2xl: 1.5rem;
+
+  // Spacing tokens
+  --ds-spacing-xs: 4px;
+  --ds-spacing-sm: 8px;
+  --ds-spacing-md: 16px;
+  --ds-spacing-lg: 24px;
+  --ds-spacing-xl: 32px;
+  --ds-spacing-xxl: 48px;
+}

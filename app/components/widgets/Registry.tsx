@@ -3,6 +3,8 @@
 import React, { Suspense, lazy } from 'react';
 import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/workspace';
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
+import { useMembershipStore } from '@/store/membershipStore';
+import { LockedContent } from '@/components/system/LockedContent';
 
 
 // --- 1. 動態導入映射表 (Code Splitting) ---
@@ -11,10 +13,10 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.Product]: lazy(() => import('./commerce/ProductWidget')),
   [WidgetKind.MediaPlayer]: lazy(() => import('./content/MediaPlayerWidget')),
   [WidgetKind.PDFViewer]: lazy(() => import('./assets/PDFViewerWidget')),
-  
+
   [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
   [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
-  [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
+  [WidgetKind.ProductDesc]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
   [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
   [WidgetKind.UserProfile]: lazy(() => import('./user/UserProfileWidget')),
 
@@ -24,23 +26,23 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
 
   // [修正] 註冊 Auth
-  [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({ 
-      // 假設 AuthWidget 是 default export，或是 named export
-      // 這裡做一個適配器，因為 AuthWidget 可能沒有接收 BaseWidgetProps
-      default: (props: any) => {
-          const { AuthWidget } = m;
-          // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
-          return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
-      } 
+  [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({
+    // 假設 AuthWidget 是 default export，或是 named export
+    // 這裡做一個適配器，因為 AuthWidget 可能沒有接收 BaseWidgetProps
+    default: (props: any) => {
+      const { AuthWidget } = m;
+      // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
+      return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
+    }
   }))),
 
   // [修正] 使用 lazy 動態導入，並指向 named export
-  [WidgetKind.Folder]: lazy(() => 
+  [WidgetKind.Folder]: lazy(() =>
     import('./finder/FolderWidget').then(module => ({ default: module.FolderWidget }))
   ),
-  
+
   // [修正] 將 Collection 指向 CollectionFinder (App)
-  [WidgetKind.Collection]: lazy(() => 
+  [WidgetKind.Collection]: lazy(() =>
     import('./commerce/CollectionApp').then(module => ({ default: module.CollectionApp }))
   ),
 
@@ -75,9 +77,23 @@ interface WidgetRendererProps {
 // --- 4. 統一渲染入口 (Facade Pattern) ---
 export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ id, content, internalState }) => {
   const WidgetComponent = WIDGET_MAP[content.kind];
+  const { canAccessWidget } = useMembershipStore();
 
   if (!WidgetComponent) {
     return <UnknownWidget kind={content.kind} />;
+  }
+
+  // [新增] Permission check for widget access
+  if (!canAccessWidget(content.kind)) {
+    return (
+      <LockedContent
+        requiredTier="tier1"
+        resourceType="widget"
+        resourceId={content.kind}
+        title={`${content.kind}`}
+        message="This widget requires a higher membership tier."
+      />
+    );
   }
 
   return (
