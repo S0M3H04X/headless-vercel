@@ -4,6 +4,9 @@
 import React from 'react';
 import { MembershipTier, ResourceType } from '@/lib/types/permissions';
 import { usePermissions } from '@/hooks/usePermissions';
+import { SystemButton } from '@/components/ui/SystemButton'; // [新增]
+import { useWorkspaceStore } from '@/store/workspaceStore'; // [新增]
+import { WidgetKind } from '@/lib/types/workspace'; // [新增]
 
 interface LockedContentProps {
   requiredTier: MembershipTier;
@@ -11,6 +14,7 @@ interface LockedContentProps {
   resourceId?: string;
   title?: string;
   message?: string;
+  showLoginButton?: boolean; // [新增] 可選：是否顯示登入按鈕 (預設 true)
 }
 
 /**
@@ -23,13 +27,31 @@ export const LockedContent: React.FC<LockedContentProps> = ({
   resourceId,
   title,
   message,
+  showLoginButton = true, // Default to true
 }) => {
-  const { tier } = usePermissions();
+  const { tier, isGuest } = usePermissions();
+  const { openWindow } = useWorkspaceStore();
+
+  const handleLogin = () => {
+    openWindow({
+      title: 'Member Login',
+      content: { kind: WidgetKind.Auth, sourceId: 'auth-locked' },
+      initialGeometry: { width: 320, height: 400, x: 'center', y: 'center' }
+    });
+  };
+
+  const handleUpgrade = () => {
+    openWindow({
+      title: 'Upgrade Membership',
+      content: { kind: WidgetKind.Auth, sourceId: 'auth-upgrade' },
+      initialGeometry: { width: 320, height: 400, x: 'center', y: 'center' }
+    });
+  };
 
   const tierLabels: Record<MembershipTier, string> = {
     guest: 'Guest',
-    tier1: 'Member',
-    tier2: 'Premium',
+    tier1: 'Tier 1',
+    tier2: 'Tier 2',
   };
 
   const defaultTitle = resourceId
@@ -100,21 +122,29 @@ export const LockedContent: React.FC<LockedContentProps> = ({
           borderRadius: '12px',
           fontSize: 'var(--ds-font-size-xs)',
           fontFamily: 'var(--ds-font-mono)',
+          marginBottom: 'var(--ds-spacing-md)',
         }}
       >
         Current: {tierLabels[tier]}
       </div>
 
-      {/* Upgrade hint */}
-      <p
-        style={{
-          marginTop: 'var(--ds-spacing-md)',
-          fontSize: 'var(--ds-font-size-xs)',
-          opacity: 0.7,
-        }}
-      >
-        Upgrade to unlock this feature
-      </p>
+      {/* Login Button (Only for guests) */}
+      {isGuest && showLoginButton && (
+        <div style={{ marginTop: 'var(--ds-spacing-sm)' }}>
+          <SystemButton onClick={handleLogin}>
+            Login to Access
+          </SystemButton>
+        </div>
+      )}
+
+      {/* Upgrade Button (for non-guests) */}
+      {(!isGuest || !showLoginButton) && (
+        <div style={{ marginTop: 'var(--ds-spacing-sm)' }}>
+          <SystemButton onClick={handleUpgrade}>
+            Upgrade Tier
+          </SystemButton>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,6 +12,12 @@ import {
   THEME_PRESETS,
 } from '@/lib/types/designSystem';
 import { useMembershipStore } from './membershipStore';
+import { ComponentTokens } from '@/lib/types/designSystem';
+
+// Helper type for nested partial updates
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
 
 interface DesignSystemState {
   // Current theme state
@@ -27,6 +33,7 @@ interface DesignSystemState {
   // Token customization (tier-gated)
   customizeColors: (colors: Partial<ColorTokens>) => boolean;
   customizeFonts: (fonts: Partial<FontTokens>) => boolean;
+  customizeComponents: (components: DeepPartial<ComponentTokens>) => boolean;
   resetCustomizations: () => void;
 
   // CSS variable sync
@@ -46,6 +53,11 @@ function mergeTokens(
     colors: { ...base.colors, ...overrides.colors },
     fonts: { ...base.fonts, ...overrides.fonts },
     spacing: { ...base.spacing, ...overrides.spacing },
+    components: {
+      window: { ...base.components.window, ...overrides.components?.window },
+      menu: { ...base.components.menu, ...overrides.components?.menu },
+      button: { ...base.components.button, ...overrides.components?.button },
+    }
   };
 }
 
@@ -70,6 +82,13 @@ function syncCssVariables(tokens: ThemeTokens) {
   // Apply spacing variables
   Object.entries(tokens.spacing).forEach(([key, value]) => {
     root.style.setProperty(`--ds-spacing-${key}`, value);
+  });
+
+  // [新增] Apply component variables
+  Object.entries(tokens.components).forEach(([componentName, props]) => {
+    Object.entries(props).forEach(([prop, value]) => {
+      root.style.setProperty(`--ds-comp-${componentName}-${kebabCase(prop)}`, value as string);
+    });
   });
 }
 
@@ -137,6 +156,28 @@ export const useDesignSystemStore = create<DesignSystemState>()(
           customTokens: {
             ...state.customTokens,
             fonts: { ...state.customTokens?.fonts, ...fonts },
+          },
+        }));
+        get().applyCssVariables();
+        return true;
+      },
+
+      customizeComponents: (components) => {
+        const { canCustomizeColors } = useMembershipStore.getState(); // [Updated] Tier 1 Access
+        if (!canCustomizeColors()) {
+          console.warn('[DesignSystem] Component customization requires Tier 1');
+          return false;
+        }
+
+        set((state) => ({
+          customTokens: {
+            ...state.customTokens,
+            components: {
+              // Default to empty objects if undefined to ensure spread works
+              window: { ...(state.customTokens?.components?.window || {}), ...components.window },
+              menu: { ...(state.customTokens?.components?.menu || {}), ...components.menu },
+              button: { ...(state.customTokens?.components?.button || {}), ...components.button },
+            } as any
           },
         }));
         get().applyCssVariables();

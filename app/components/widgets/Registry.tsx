@@ -32,7 +32,7 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
     default: (props: any) => {
       const { AuthWidget } = m;
       // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
-      return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
+      return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget content={props.content} /></div>;
     }
   }))),
 
@@ -44,6 +44,11 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   // [修正] 將 Collection 指向 CollectionFinder (App)
   [WidgetKind.Collection]: lazy(() =>
     import('./commerce/CollectionApp').then(module => ({ default: module.CollectionApp }))
+  ),
+
+  // [新增] 註冊 StyleEditor
+  [WidgetKind.StyleEditor]: lazy(() =>
+    import('../system/StyleEditor').then(module => ({ default: module.StyleEditor }))
   ),
 
 };

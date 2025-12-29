@@ -21,17 +21,17 @@ export const SystemService = {
     // [US-08-01] 核心攔截邏輯
     if (node.locked && !authStore.isAuthenticated) {
       console.warn(`[Access Denied] ${node.name} is locked for guests.`);
-      
+
       // 1. 播放拒絕音效 (Optional)
       // playSound('error');
 
       // 2. 觸發登入視窗 (假設 AuthWidget 也是一個視窗或全域 Modal)
       // 如果您的 AuthWidget 是一個 desktop window:
       // useWidgetStore.getState().openWindow('auth-login'); 
-      
+
       // 或者呼叫 AuthStore 的 login 導向
-      authStore.login(); 
-      
+      authStore.login();
+
       return; // 中斷開啟流程
     }
 
@@ -49,14 +49,14 @@ export const SystemService = {
       case 'app':
         // 處理各類 App 的啟動參數
         if (node.appId === WidgetKind.Collection) {
-           openWindow({
-              title: node.name,
-              content: { 
-                kind: WidgetKind.Collection, 
-                sourceId: node.metadata?.handle || 'root' 
-              },
-              initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
-           });
+          openWindow({
+            title: node.name,
+            content: {
+              kind: WidgetKind.Collection,
+              sourceId: node.metadata?.handle || 'root'
+            },
+            initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
+          });
         }
         // 未來可在此擴充其他 App (如 MediaPlayer)
         break;
@@ -65,10 +65,10 @@ export const SystemService = {
       case 'link':
         // 處理特殊捷徑與場景 (Scenarios)
         if (node.appId === WidgetKind.Product) {
-           ScenarioService.launchProductSuite(node.metadata?.handle);
+          ScenarioService.launchProductSuite(node.metadata?.handle);
         }
         break;
-        
+
       default:
         console.warn(`[System] Unknown file type: ${node.type}`);
     }
@@ -76,7 +76,7 @@ export const SystemService = {
   // 2. [新增] 系統視窗開啟邏輯
   openSystemWindow: (type: 'ABOUT' | 'SETTINGS' | 'SOCIAL') => {
     const { openWindow } = useWorkspaceStore.getState();
-    
+
     switch (type) {
       case 'ABOUT':
         openWindow({
@@ -86,8 +86,11 @@ export const SystemService = {
         });
         break;
       case 'SETTINGS':
-        // 未來可開啟控制台 Widget
-        alert("Control Panel is under construction (Phase 9)");
+        openWindow({
+          title: 'Control Panels',
+          content: { kind: WidgetKind.StyleEditor, sourceId: 'sys-settings' },
+          initialGeometry: { width: 400, height: 600, x: 'center', y: 'center' }
+        });
         break;
       case 'SOCIAL':
         window.open('https://instagram.com/1313heart', '_blank');

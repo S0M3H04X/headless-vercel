@@ -48,46 +48,4 @@ $btn-collapse-bg: url('#{$asset-path}/window/collapse-box.png');
 $window-stripes: url('#{$asset-path}/window/stripes.png'); // 標題列橫紋
 
 // --- 4. Design System CSS Custom Properties ---
-// These variables can be overridden by JavaScript for theme customization
-// Use var(--ds-*) in components to enable dynamic theming
-
-:root {
-  // Color tokens
-  --ds-color-primary: #{$color-platinum-light};
-  --ds-color-primary-light: #efefef;
-  --ds-color-primary-dark: #{$color-platinum-dark};
-  --ds-color-secondary: #{$color-window-bg};
-  --ds-color-accent: #{$color-highlight};
-  --ds-color-background: #{$color-window-bg};
-  --ds-color-background-alt: #a8d589;
-  --ds-color-surface: #ffffff;
-  --ds-color-text: #{$color-text};
-  --ds-color-text-muted: #666666;
-  --ds-color-text-inverse: #{$color-highlight-text};
-  --ds-color-highlight: #{$color-highlight};
-  --ds-color-highlight-text: #{$color-highlight-text};
-  --ds-color-success: #2e8b57;
-  --ds-color-warning: #ffa500;
-  --ds-color-error: #dc143c;
-  --ds-color-info: #4169e1;
-
-  // Font tokens
-  --ds-font-system: #{$font-system};
-  --ds-font-display: #{$font-system};
-  --ds-font-mono: #{$font-pixel};
-  --ds-font-pixel: #{$font-pixel};
-  --ds-font-size-xs: 0.75rem;
-  --ds-font-size-sm: 0.875rem;
-  --ds-font-size-md: 1rem;
-  --ds-font-size-lg: 1.125rem;
-  --ds-font-size-xl: 1.25rem;
-  --ds-font-size-2xl: 1.5rem;
-
-  // Spacing tokens
-  --ds-spacing-xs: 4px;
-  --ds-spacing-sm: 8px;
-  --ds-spacing-md: 16px;
-  --ds-spacing-lg: 24px;
-  --ds-spacing-xl: 32px;
-  --ds-spacing-xxl: 48px;
-}
+// Moved to main.scss to avoid "Selector :root is not pure" error in SCSS modules

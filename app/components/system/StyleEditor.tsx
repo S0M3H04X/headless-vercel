@@ -16,6 +16,53 @@ import { SystemButton } from '@/components/ui/SystemButton';
  * - Color picker (Tier 1+)
  * - Font selector (Tier 2 only)
  */
+
+const ComponentEditor: React.FC = () => {
+  const { getActiveTheme, customizeComponents } = useDesignSystemStore();
+  const theme = getActiveTheme();
+
+  // Initialize state from current theme (defaults to Classicy if missing)
+  const [winBg, setWinBg] = useState(theme.components?.window.background || '#dfdfdf');
+  const [menuBg, setMenuBg] = useState(theme.components?.menu.background || '#e0e0e0');
+  const [btnBg, setBtnBg] = useState(theme.components?.button.background || '#dfdfdf');
+
+  const handleApply = () => {
+    customizeComponents({
+      window: { background: winBg },
+      menu: { background: menuBg },
+      button: { background: btnBg },
+    });
+  };
+
+  const Row = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
+    <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--ds-spacing-sm)' }}>
+      <span style={{ width: '100px', fontSize: '11px' }}>{label}:</span>
+      <input
+        type="color"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ width: '30px', height: '20px', border: 'none', cursor: 'pointer' }}
+      />
+      <code style={{ fontSize: '10px', opacity: 0.7 }}>{value}</code>
+    </label>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--ds-spacing-sm)' }}>
+      <Row label="Window Bg" value={winBg} onChange={setWinBg} />
+      <Row label="Menu Bg" value={menuBg} onChange={setMenuBg} />
+      <Row label="Button Bg" value={btnBg} onChange={setBtnBg} />
+
+      <div style={{ marginTop: '4px' }}>
+        <SystemButton onClick={handleApply}>Apply Styles</SystemButton>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * StyleEditor - UI for customizing design tokens (tier-gated)
+ */
 export const StyleEditor: React.FC = () => {
   const { colors: canColors, fonts: canFonts, tier } = useStylePermissions();
   const { meetsMinimumTier } = useMembershipStore();
@@ -149,6 +196,27 @@ export const StyleEditor: React.FC = () => {
             Upgrade to Tier 1 to customize colors
           </div>
         )}
+
+        {/* ... existing color/font sections ... */}
+        {/* Component Customization Section */}
+        <section style={{ marginBottom: 'var(--ds-spacing-lg)' }}>
+          <h4 style={{
+            margin: '0 0 var(--ds-spacing-sm) 0',
+            fontSize: 'var(--ds-font-size-sm)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--ds-spacing-xs)',
+          }}>
+            Components
+            {!canColors && <span style={{ opacity: 0.6 }}>🔒 Tier 1+</span>}
+          </h4>
+
+          {canColors ? (
+            <ComponentEditor />
+          ) : (
+            <div style={{ opacity: 0.7, padding: '8px', background: '#eee' }}>Upgrade to Tier 1</div>
+          )}
+        </section>
       </section>
 
       {/* Font Customization Section */}
@@ -201,6 +269,6 @@ export const StyleEditor: React.FC = () => {
       }}>
         Current tier: <strong>{tier}</strong>
       </div>
-    </div>
+    </div >
   );
 };

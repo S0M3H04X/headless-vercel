@@ -4,20 +4,22 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  background-color: $color-platinum-light;
+  background-color: var(--ds-comp-window-background, $color-platinum-light);
   border-radius: 4px;
-  border: 1px solid #000; /* 外框 */
+  border: 1px solid var(--ds-comp-window-border-color, #000);
+  /* 外框 */
   padding-right: 5px;
   padding-left: 5px;
   padding-bottom: 20px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 簡單陰影，未來可更換為像素陰影 */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  /* 簡單陰影，未來可更換為像素陰影 */
   overflow: hidden;
-  
+
   // Platinum 邊框效果 (Bevel)
-  box-shadow: 
+  box-shadow:
     inset 1px 1px 0px #fff,
     inset -1px -1px 0px #888,
-    2px 2px 0px rgba(0,0,0,0.2); 
+    2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 .titleBar {
@@ -26,12 +28,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 4px;
-  background: $color-platinum-dark;
+  background: var(--ds-comp-window-title-bar-background, $color-platinum-dark);
   // border-bottom: 1px solid #888;
   position: relative;
   cursor: default;
 
-  // 標題列橫紋 (Stripes)
+  // 標題列橫紋 (Stripes) - 僅在未自定義背景時顯示? 
+  // 這裡使用 mix-blend-mode 或透明度來疊加
   &::before {
     content: '';
     position: absolute;
@@ -39,35 +42,33 @@
     left: 4px;
     right: 4px;
     bottom: 4px;
-    background-image: linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.1) 50%,
-      transparent 50%
-    );
+    background-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 50%,
+        transparent 50%);
     background-size: 100% 2px;
     pointer-events: none;
     z-index: 0;
   }
 
   &.active {
-    background: $color-platinum-light;
-    // Active 狀態的標題列樣式...
+    // Active 狀態通常顏色不同，這裡簡單處理
+    background: var(--ds-active-color...);
   }
 }
 
 .titleText {
   position: relative;
   z-index: 1;
-  background-color: $color-platinum-light; // 遮住橫紋
+  background-color: var(--ds-comp-window-background, $color-platinum-light); // 遮住橫紋
   padding: 0 8px;
   font-family: $font-pixel;
   font-weight: 100;
   font-size: 14px;
-  color: #333;
+  color: var(--ds-comp-window-title-bar-text, #333);
   margin: 0 auto; // 置中
-  
+
   &.active {
-    color: #000;
+    color: var(--ds-comp-window-title-bar-text, #000);
   }
 }
 
@@ -78,7 +79,7 @@
   overflow: auto;
   border: 1px solid #000;
   border-radius: 4px;
-  
+
   // 內容區內陰影
   box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.2) inset;
 }
@@ -97,7 +98,7 @@
   justify-content: center;
   font-size: 10px;
   line-height: 1;
-  
+
   &:active {
     background-color: #999;
     border-color: #000;

@@ -43,6 +43,7 @@ export const TIER_PERMISSIONS: Record<MembershipTier, TierPermissions> = {
     accessibleWidgets: [
       'streaming_widget',   // [修正] Guest 只能用 Streaming Widget (尚未實作)
       'folder_browser',     // 保留基本瀏覽
+      'auth',               // [新增] Guest 必須能訪問登入 Widget
     ],
     accessibleApps: ['finder'],
     accessibleFolders: ['/public'],
@@ -60,9 +61,13 @@ export const TIER_PERMISSIONS: Record<MembershipTier, TierPermissions> = {
       'media_player',       // [修正] Media 是 Tier 1
       'pdf_viewer',         // [修正] PDF 是 Tier 1
       'shopify_product',
+      'product_image',      // [新增] Commercial
+      'product_title',      // [新增] Commercial
+      'product_desc',       // [新增] Commercial
       'cart_manager',
       'collection_app',
       'user_profile',
+      'style_editor',       // [新增] Control Panel
     ],
     accessibleApps: ['finder', 'shop', 'profile'],
     accessibleFolders: ['/public', '/members', '/shop'],
@@ -90,6 +95,7 @@ export const TIER_PERMISSIONS: Record<MembershipTier, TierPermissions> = {
       'video_control',
       'video_visual',
       'video_mixer',
+      'style_editor',
     ],
     accessibleApps: ['*'], // Wildcard for all apps
     accessibleFolders: ['*'], // Wildcard for all folders

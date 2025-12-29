@@ -1,5 +1,6 @@
 import './polyfills';
 import './global.css';
+import './styles/classicy/main.scss';
 import { Inter } from "next/font/google";
 // import 'winbox/dist/css/winbox.min.css';
 // import "@sakun/system.css";

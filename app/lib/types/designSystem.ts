@@ -73,10 +73,39 @@ export interface SpacingTokens {
 /**
  * Complete theme tokens
  */
+/**
+ * Component token schema
+ */
+export interface ComponentTokens {
+  window: {
+    background: string;
+    titleBarBackground: string;
+    titleBarText: string;
+    borderColor: string;
+  };
+  menu: {
+    background: string;
+    text: string;
+    itemHoverBackground: string;
+    itemHoverText: string;
+    separator: string;
+  };
+  button: {
+    background: string;
+    text: string;
+    border: string;
+    shadow: string;
+  };
+}
+
+/**
+ * Complete theme tokens
+ */
 export interface ThemeTokens {
   colors: ColorTokens;
   fonts: FontTokens;
   spacing: SpacingTokens;
+  components: ComponentTokens; // [新增]
 }
 
 /**
@@ -138,6 +167,27 @@ export const CLASSICY_THEME: ThemeTokens = {
     xl: '32px',
     xxl: '48px',
   },
+  components: {
+    window: {
+      background: '#dfdfdf',
+      titleBarBackground: '#808080', // [Modified] Default Gray as requested
+      titleBarText: '#ffffff',
+      borderColor: '#000000',
+    },
+    menu: {
+      background: '#e0e0e0',
+      text: '#000000',
+      itemHoverBackground: '#000080',
+      itemHoverText: '#ffffff',
+      separator: '#a0a0a0',
+    },
+    button: {
+      background: '#dfdfdf',
+      text: '#000000',
+      border: '#000000',
+      shadow: 'inset 1px 1px 0px #ffffff, inset -1px -1px 0px #000000',
+    },
+  },
 };
 
 /**
@@ -169,6 +219,27 @@ export const DARK_THEME: ThemeTokens = {
   spacing: {
     ...CLASSICY_THEME.spacing,
   },
+  components: {
+    window: {
+      background: '#2d2d2d',
+      titleBarBackground: '#1a1a2e',
+      titleBarText: '#e4e4e4',
+      borderColor: '#4a90a4',
+    },
+    menu: {
+      background: '#1a1a2e',
+      text: '#e4e4e4',
+      itemHoverBackground: '#4a90a4',
+      itemHoverText: '#000000',
+      separator: '#444444',
+    },
+    button: {
+      background: '#3d3d3d',
+      text: '#e4e4e4',
+      border: '#4a90a4',
+      shadow: 'none',
+    },
+  },
 };
 
 /**
@@ -199,6 +270,27 @@ export const NATURE_THEME: ThemeTokens = {
   },
   spacing: {
     ...CLASSICY_THEME.spacing,
+  },
+  components: {
+    window: {
+      background: '#f0f7f0',
+      titleBarBackground: '#228b22',
+      titleBarText: '#ffffff',
+      borderColor: '#228b22',
+    },
+    menu: {
+      background: '#e8f5e8',
+      text: '#2d4a2d',
+      itemHoverBackground: '#228b22',
+      itemHoverText: '#ffffff',
+      separator: '#8fbc8f',
+    },
+    button: {
+      background: '#d4e7d4',
+      text: '#2d4a2d',
+      border: '#228b22',
+      shadow: 'inset 1px 1px 0px #ffffff, inset -1px -1px 0px #8fbc8f',
+    },
   },
 };
 

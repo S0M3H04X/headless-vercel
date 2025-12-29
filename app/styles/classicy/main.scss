@@ -5,7 +5,8 @@
 body {
   font-family: $font-system;
   background-color: #808080; // 預設桌面灰
-  overflow: hidden; /* 禁止捲動 */
+  overflow: hidden;
+  /* 禁止捲動 */
   margin: 0;
   cursor: default; // 之後會替換為自定義 cursor
 }
@@ -20,12 +21,55 @@ body {
 /* --- Platinum Scrollbars --- */
 :root {
   --scrollbar-size: 16px;
-  --scrollbar-track: #e0e0e0; /* 淺灰軌道 */
-  --scrollbar-thumb: #c0c0c0; /* 深灰按鈕 */
+  --scrollbar-track: #e0e0e0;
+  /* 淺灰軌道 */
+  --scrollbar-thumb: #c0c0c0;
+  /* 深灰按鈕 */
   --scrollbar-border: #ffffff;
+
+  // --- Design System CSS Custom Properties ---
+  // Color tokens
+  --ds-color-primary: #{$color-platinum-light};
+  --ds-color-primary-light: #efefef;
+  --ds-color-primary-dark: #{$color-platinum-dark};
+  --ds-color-secondary: #{$color-window-bg};
+  --ds-color-accent: #{$color-highlight};
+  --ds-color-background: #{$color-window-bg};
+  --ds-color-background-alt: #a8d589;
+  --ds-color-surface: #ffffff;
+  --ds-color-text: #{$color-text};
+  --ds-color-text-muted: #666666;
+  --ds-color-text-inverse: #{$color-highlight-text};
+  --ds-color-highlight: #{$color-highlight};
+  --ds-color-highlight-text: #{$color-highlight-text};
+  --ds-color-success: #2e8b57;
+  --ds-color-warning: #ffa500;
+  --ds-color-error: #dc143c;
+  --ds-color-info: #4169e1;
+
+  // Font tokens
+  --ds-font-system: #{$font-system};
+  --ds-font-display: #{$font-system};
+  --ds-font-mono: #{$font-pixel};
+  --ds-font-pixel: #{$font-pixel};
+  --ds-font-size-xs: 0.75rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.125rem;
+  --ds-font-size-xl: 1.25rem;
+  --ds-font-size-2xl: 1.5rem;
+
+  // Spacing tokens
+  --ds-spacing-xs: 4px;
+  --ds-spacing-sm: 8px;
+  --ds-spacing-md: 16px;
+  --ds-spacing-lg: 24px;
+  --ds-spacing-xl: 32px;
+  --ds-spacing-xxl: 48px;
 }
 
 * {
+
   /* Webkit Browsers (Chrome, Safari, Edge) */
   &::-webkit-scrollbar {
     width: var(--scrollbar-size);
@@ -34,13 +78,12 @@ body {
 
   &::-webkit-scrollbar-track {
     background:
-      repeating-linear-gradient(
-        45deg,
+      repeating-linear-gradient(45deg,
         #fff,
         #fff 2px,
         #ddd 2px,
-        #ddd 4px
-      ); /* 模擬軌道紋理 (Pattern) */
+        #ddd 4px);
+    /* 模擬軌道紋理 (Pattern) */
     border-left: 1px solid #888;
   }
 
@@ -50,11 +93,13 @@ body {
     border-left: 1px solid #fff;
     border-right: 1px solid #555;
     border-bottom: 1px solid #555;
-    box-shadow: inset 1px 1px 0 #dfdfdf; /* Bevel */
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    /* Bevel */
   }
 
   &::-webkit-scrollbar-thumb:active {
-    background-color: #a0a0a0; /* 按下變深 */
+    background-color: #a0a0a0;
+    /* 按下變深 */
   }
 
   &::-webkit-scrollbar-corner {

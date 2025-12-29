@@ -10,11 +10,11 @@ import { Z_INDEX } from '@/lib/constants/ui';
 export const SystemMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  
+
   // Auth Store 整合
   // [修正] 加入 checkAuth 以便在元件載入時確認狀態
   const { isAuthenticated, user, login, logout, checkAuth } = useAuthStore();
-  
+
   const focusOrOpenWindow = useWorkspaceStore((state) => state.focusOrOpenWindow);
 
   // [新增] 初始化檢查登入狀態
@@ -78,22 +78,29 @@ export const SystemMenu: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div 
-          className="absolute top-full left-0 mt-[1px] w-56 bg-[#e0e0e0] border border-gray-500 shadow-xl py-1 text-sm font-medium text-black"
-          style={{ zIndex: Z_INDEX.MENU_BAR + 1 }} // 確保選單在 MenuBar 之上
+        <div
+          className="absolute top-full left-0 mt-[1px] w-56 border border-gray-500 shadow-xl py-1 text-sm font-medium"
+          style={{
+            zIndex: Z_INDEX.MENU_BAR + 1,
+            backgroundColor: 'var(--ds-comp-menu-background, #e0e0e0)',
+            color: 'var(--ds-comp-menu-text, #000000)'
+          }}
         >
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('ABOUT')}>
             About 1313
           </div>
-          
+
           <div className="h-[1px] bg-gray-400 my-1 mx-1" />
 
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SOCIAL')}>
             Social
           </div>
-          <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SETTINGS')}>
-            Control Panels
-          </div>
+          {/* Control Panels - Tier 1+ Only */}
+          {isAuthenticated && (
+            <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SETTINGS')}>
+              Control Panels
+            </div>
+          )}
 
           <div className="h-[1px] bg-gray-400 my-1 mx-1" />
 
