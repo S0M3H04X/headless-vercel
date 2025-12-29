@@ -56,7 +56,7 @@ export const AuthWidget: React.FC = () => {
 
   const handleLogout = async () => {
       await logout();
-      window.location.reload();
+      // window.location.reload();
   };
 
   // [Fix] 登入後顯示會員資訊 (My Account View)
@@ -69,7 +69,9 @@ export const AuthWidget: React.FC = () => {
             </div>
             <div className="px-4 pb-4 text-center">
                 <div className="mb-4">
-                    <img src="/assets/classicy/img/icons/system/users/user.png" className="w-12 h-12 mx-auto mb-2 opacity-80" alt="User" />
+                    <div className="w-12 h-12 mx-auto mb-2 bg-gray-300 border border-gray-500 flex items-center justify-center">
+                        <span className="text-2xl">👤</span>
+                    </div>
                     <div className="font-bold text-sm">Member Access Granted</div>
                     <div className="text-xs text-gray-600 font-mono mt-1">{user?.email || 'Authenticated User'}</div>
                 </div>
@@ -118,7 +120,7 @@ export const AuthWidget: React.FC = () => {
                 <label className="block text-xs mb-1">Access Key</label>
                 <input
                   type="password"
-                  placeholder="******"
+                  placeholder="********"
                   className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm tracking-widest"
                   value={accessKey}
                   onChange={(e) => setAccessKey(e.target.value)}

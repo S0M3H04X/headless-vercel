@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
-import AuthWidget from '@/components/desktop/AuthWidget';
+import { AuthWidget } from '@/components/desktop/AuthWidget'; // [修正] 加上大括號
 
 // import 'winbox/dist/css/winbox.min.css';
-// import '@/styles/winbox-retro.css'; // 這裡引入我們定義的 system.css 覆寫
+// import '@/styles/winbox-retro.css'; 
 
 interface RetroOSLayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ interface RetroOSLayoutProps {
 export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpaper }) => {
   const isAuthOpen = useAuthStore((state) => state.isAuthOpen);
   const closeAuth = useAuthStore((state) => state.closeAuth);
+
   return (
     // Layer 1: Viewport
     <div className="relative h-screen w-screen overflow-hidden font-mono text-black select-none">
@@ -26,15 +27,22 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
       {/* Layer 3, 4, 5: Injected Content */}
       <div className="relative z-10 w-full h-full">
         {children}
+        
+        {/* Global Auth Modal */}
         {isAuthOpen && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-           {/* 這裡可以是 Winbox 或是簡單的 Modal */}
-           <div className="relative">
-             <button onClick={closeAuth} className="absolute top-0 right-0 p-2 text-white">X</button>
-             <AuthWidget />
-           </div>
-        </div>
-      )}
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
+             <div className="relative">
+               {/* Close Button applied to the wrapper to avoid conflict inside Widget */}
+               <button 
+                 onClick={closeAuth} 
+                 className="absolute -top-8 right-0 text-white font-bold hover:text-gray-300"
+               >
+                 [CLOSE]
+               </button>
+               <AuthWidget />
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );
