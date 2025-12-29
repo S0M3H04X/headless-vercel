@@ -17,4 +17,5 @@ __tests__
 .github
 .vscode
 .idea
+/docs
 
