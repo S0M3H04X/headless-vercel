@@ -1,0 +1,41 @@
+@import '../../../../styles/classicy/variables';
+
+// =============================================================================
+// WINDOW TITLE BAR
+// =============================================================================
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px;
+  min-height: 24px; // Standard height
+  background: linear-gradient(to right, $color-highlight, #1084d0);
+  color: #fff;
+  font-family: $font-system;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: default;
+  user-select: none;
+
+  // Inactive state (greyed out)
+  &.inactive {
+    background: #808080;
+    color: #ccc;
+  }
+}
+
+.titleText {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.titleControls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}

@@ -29,3 +29,7 @@ export { Button } from './Button';
 export { ScrollArea } from './ScrollArea';
 export { GroupFrame, Radio, Checkbox, Select } from './Forms';
 export { Tabs } from './Tabs';
+export { Window } from './window';
+export type { WindowFrameProps, ResizeHandleProps } from './window/Frame';
+export type { WindowTitleBarProps } from './window/TitleBar';
+export type { WindowButtonProps, WindowButtonVariant } from './window/Controls';

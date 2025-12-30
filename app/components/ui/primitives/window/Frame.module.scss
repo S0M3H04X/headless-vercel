@@ -1,0 +1,53 @@
+@import '../../../../styles/classicy/variables';
+
+// =============================================================================
+// WINDOW FRAME
+// =============================================================================
+
+.windowFrame {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-platinum-light;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf; // Outset border
+  box-shadow: 1px 1px 0 #000; // Hard shadow
+  position: relative;
+
+  // High contrast active state outline (optional, can be controlled via prop)
+  &.active {
+    outline: 1px solid rgba(0, 0, 0, 0.2);
+  }
+}
+
+// =============================================================================
+// RESIZE HANDLE
+// =============================================================================
+
+.resizeHandle {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  cursor: se-resize;
+
+  // Diagonal lines pattern (CSS only)
+  background-image: linear-gradient(135deg,
+      transparent 0%, transparent 45%,
+      #888 45%, #888 55%,
+      transparent 55%, transparent 100%),
+    linear-gradient(135deg,
+      transparent 0%, transparent 45%,
+      #888 45%, #888 55%,
+      transparent 55%, transparent 100%),
+    linear-gradient(135deg,
+      transparent 0%, transparent 45%,
+      #888 45%, #888 55%,
+      transparent 55%, transparent 100%);
+
+  background-size: 10px 10px; // Repeat size
+  // Shift positions to create 3 lines
+  background-position: 2px 2px, 5px 5px, 8px 8px;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+}
