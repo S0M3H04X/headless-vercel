@@ -2,6 +2,12 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React, { useState } from 'react';
 import { SystemDialog } from '../../app/components/system/dialog/SystemDialog';
 import { Button } from '../../app/components/ui/primitives/Button';
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
+
+// Helper component for pixel icons
+const Icon: React.FC<{ name: string; className?: string }> = ({ name, className = '' }) => (
+  <i className={`hn hn-${name} ${className}`} style={{ fontSize: 14 }} />
+);
 
 const meta: Meta<typeof SystemDialog> = {
   title: 'System/SystemDialog',
@@ -52,7 +58,7 @@ export const StopDialog: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Stop dialogs (🛑) indicate errors or critical failures.',
+        story: 'Stop dialogs indicate errors or critical failures.',
       },
     },
   },
@@ -76,7 +82,7 @@ export const NoteDialog: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Note dialogs (📝) provide informational messages.',
+        story: 'Note dialogs provide informational messages.',
       },
     },
   },
@@ -101,7 +107,7 @@ export const CautionDialog: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Caution dialogs (⚠️) warn about potentially dangerous actions.',
+        story: 'Caution dialogs warn about potentially dangerous actions.',
       },
     },
   },
@@ -160,13 +166,13 @@ const InteractiveDialogDemo = () => {
   return (
     <div style={{ display: 'flex', gap: 8 }}>
       <Button buttonStyle="system" onClick={() => setOpenDialog('stop')}>
-        Show Stop
+        <Icon name="exclamation-circle" /> Stop
       </Button>
       <Button buttonStyle="system" onClick={() => setOpenDialog('note')}>
-        Show Note
+        <Icon name="info-circle" /> Note
       </Button>
       <Button buttonStyle="system" onClick={() => setOpenDialog('caution')}>
-        Show Caution
+        <Icon name="exclamation-triangle" /> Caution
       </Button>
 
       {openDialog && (

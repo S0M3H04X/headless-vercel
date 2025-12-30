@@ -5,16 +5,47 @@ import { ContentDescriptor, WidgetKind, BaseWidgetProps } from '@/lib/types/work
 import { WidgetErrorBoundary } from './WidgetErrorBoundary';
 
 
-// --- 1. 動態導入映射表 (Code Splitting) ---
+// --- 1. Tier Configuration ---
+import { UserTier, canAccess } from '@/lib/utils/tierUtils';
+import { useAuthStore } from '@/store/authStore';
+import { AccessDenied } from '@/components/ui/AccessDenied';
+
+const WIDGET_TIERS: Record<string, UserTier> = {
+  // Admin Only
+  [WidgetKind.VideoControl]: 'admin',
+  [WidgetKind.VideoVisual]: 'admin',
+  [WidgetKind.VideoMixer]: 'admin',
+
+  // Pro Only
+  [WidgetKind.MediaPlayer]: 'pro',
+
+  // Member Only
+  [WidgetKind.UserProfile]: 'member',
+  [WidgetKind.Cart]: 'member',
+  [WidgetKind.Collection]: 'member',
+  [WidgetKind.Product]: 'member', // Product Browsing is member feature
+
+  // Guest Access (Default)
+  [WidgetKind.Auth]: 'guest',
+  [WidgetKind.Folder]: 'guest', // Folders access controlled by FS node, but widget itself is open
+  [WidgetKind.PDFViewer]: 'guest', // Manuals should be readable? Or member? Let's say member based on Launcher.
+};
+
+// Override PDFViewer to member if strictly enforced, but let's keep it flexible for now unless specified.
+// Actually Launcher says PDFViewer requires 'member'. Let's match that.
+WIDGET_TIERS[WidgetKind.PDFViewer] = 'member';
+
+
+// --- 2. 動態導入映射表 (Code Splitting) ---
 // 只有當視窗被打開時，瀏覽器才會下載這些程式碼
 const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<BaseWidgetProps>>> = {
   [WidgetKind.Product]: lazy(() => import('./commerce/ProductWidget')),
   [WidgetKind.MediaPlayer]: lazy(() => import('./content/MediaPlayerWidget')),
   [WidgetKind.PDFViewer]: lazy(() => import('./assets/PDFViewerWidget')),
-  
+
   [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
   [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
-  [WidgetKind.ProductDesc]:  lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
+  [WidgetKind.ProductDesc]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
   [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
   [WidgetKind.UserProfile]: lazy(() => import('./user/UserProfileWidget')),
 
@@ -24,29 +55,29 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
 
   // [修正] 註冊 Auth
-  [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({ 
-      // 假設 AuthWidget 是 default export，或是 named export
-      // 這裡做一個適配器，因為 AuthWidget 可能沒有接收 BaseWidgetProps
-      default: (props: any) => {
-          const { AuthWidget } = m;
-          // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
-          return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
-      } 
+  [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({
+    // 假設 AuthWidget 是 default export，或是 named export
+    // 這裡做一個適配器，因為 AuthWidget 可能沒有接收 BaseWidgetProps
+    default: (props: any) => {
+      const { AuthWidget } = m;
+      // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
+      return <div className="p-4 h-full flex flex-col justify-center"><AuthWidget /></div>;
+    }
   }))),
 
   // [修正] 使用 lazy 動態導入，並指向 named export
-  [WidgetKind.Folder]: lazy(() => 
+  [WidgetKind.Folder]: lazy(() =>
     import('./finder/FolderWidget').then(module => ({ default: module.FolderWidget }))
   ),
-  
+
   // [修正] 將 Collection 指向 CollectionFinder (App)
-  [WidgetKind.Collection]: lazy(() => 
+  [WidgetKind.Collection]: lazy(() =>
     import('./commerce/CollectionApp').then(module => ({ default: module.CollectionApp }))
   ),
 
 };
 
-// --- 2. 載入中畫面 (Skeleton) ---
+// --- 3. 載入中畫面 (Skeleton) ---
 const LoadingFallback = () => (
   <div className="h-full w-full flex items-center justify-center bg-gray-50 text-gray-400 animate-pulse">
     <div className="text-center">
@@ -56,7 +87,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-// --- 3. 未知類型畫面 ---
+// --- 4. 未知類型畫面 ---
 const UnknownWidget = ({ kind }: { kind: string }) => (
   <div className="h-full w-full flex items-center justify-center bg-red-50 text-red-500 p-4">
     <div className="text-center">
@@ -72,12 +103,21 @@ interface WidgetRendererProps {
   internalState?: unknown;
 }
 
-// --- 4. 統一渲染入口 (Facade Pattern) ---
+// --- 5. 統一渲染入口 (Facade Pattern) ---
 export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ id, content, internalState }) => {
   const WidgetComponent = WIDGET_MAP[content.kind];
 
+  // Access Control Check
+  const { tier } = useAuthStore();
+  const requiredTier = WIDGET_TIERS[content.kind] || 'guest';
+  const hasAccess = canAccess(tier, requiredTier);
+
   if (!WidgetComponent) {
     return <UnknownWidget kind={content.kind} />;
+  }
+
+  if (!hasAccess) {
+    return <AccessDenied requiredTier={requiredTier} />;
   }
 
   return (

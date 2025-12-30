@@ -13,20 +13,20 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
         name: '1CR3DIT',
         type: 'folder',
         icon: '/assets/classicy/img/icons/system/drives/disk.png',
-        locked: true,
+        requiredTier: 'member',
         children: [
           {
             id: 'apps',
             name: 'Applications',
             type: 'folder',
             children: [
-              { 
-                  id: 'radio', 
-                  name: 'Radio', 
-                  type: 'app', 
-                  locked: true,
-                  appId: WidgetKind.MediaPlayer, 
-                  icon: '/assets/classicy/img/icons/system/files/sound.png' 
+              {
+                id: 'radio',
+                name: 'Radio',
+                type: 'app',
+                requiredTier: 'member',
+                appId: WidgetKind.MediaPlayer,
+                icon: '/assets/classicy/img/icons/system/files/sound.png'
               },
             ]
           },
@@ -35,26 +35,26 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
             name: 'Shop',
             type: 'folder',
             icon: '/assets/classicy/img/icons/system/folders/favorites.png',
-            locked: true,
+            requiredTier: 'member',
             children: [
               // 1. Collection App Shortcut
-              { 
-                id: 'link_tees', 
-                name: '1cr3dit', 
-                type: 'app', 
-                appId: WidgetKind.Collection, 
-                metadata: { handle: '1cr3dit' }, 
-                locked: true,
+              {
+                id: 'link_tees',
+                name: '1cr3dit',
+                type: 'app',
+                appId: WidgetKind.Collection,
+                metadata: { handle: '1cr3dit' },
+                requiredTier: 'member',
                 icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
               },
               // 2. Product Shortcut
-              { 
-                id: 'link_basic_tee', 
-                name: 'Basic Tee', 
-                type: 'widget', 
-                appId: WidgetKind.Product, 
-                locked: true,
-                metadata: { handle: 'basic-tee' }, 
+              {
+                id: 'link_basic_tee',
+                name: 'Basic Tee',
+                type: 'widget',
+                appId: WidgetKind.Product,
+                requiredTier: 'member',
+                metadata: { handle: 'basic-tee' },
                 icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
               }
             ]
@@ -82,9 +82,9 @@ export const getNodeById = (id: string): FileSystemNode | null => {
 
 // [保留] 向下相容的路徑解析 (若有需要)
 export const resolvePath = (path: string): FileSystemNode | null => {
-    // 簡易實作：如果傳入的是 ID，直接用 ID 找
-    if (!path.startsWith('/')) {
-        return getNodeById(path);
-    }
-    return null; 
+  // 簡易實作：如果傳入的是 ID，直接用 ID 找
+  if (!path.startsWith('/')) {
+    return getNodeById(path);
+  }
+  return null;
 };

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Button } from '../../app/components/ui/primitives/Button';
+import { PixelIcon } from '../../app/components/ui/PixelIcon';
 
 const meta: Meta<typeof Button> = {
   title: 'Primitives/Button',
@@ -50,9 +51,13 @@ export const SystemNormal: Story = {
 
 export const ToolButton: Story = {
   args: {
-    children: '🔧',
     buttonStyle: 'tool',
   },
+  render: (args) => (
+    <Button {...args}>
+      <PixelIcon name="product_browser" size={16} />
+    </Button>
+  ),
 };
 
 export const MenuButton: Story = {
@@ -120,10 +125,10 @@ export const AllStyles: Story = {
       <div>
         <h3 style={{ margin: '0 0 8px', fontFamily: 'monospace' }}>Tool Buttons</h3>
         <div style={{ display: 'flex', gap: '4px' }}>
-          <Button buttonStyle="tool">📁</Button>
-          <Button buttonStyle="tool">📄</Button>
-          <Button buttonStyle="tool">✂️</Button>
-          <Button buttonStyle="tool">📋</Button>
+          <Button buttonStyle="tool"><PixelIcon name="product_browser" size={16} /></Button>
+          <Button buttonStyle="tool"><PixelIcon name="pdf_viewer" size={16} /></Button>
+          <Button buttonStyle="tool"><PixelIcon name="cart" size={16} /></Button>
+          <Button buttonStyle="tool"><PixelIcon name="profile" size={16} /></Button>
         </div>
       </div>
       <div>

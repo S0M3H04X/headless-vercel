@@ -1,10 +1,29 @@
-// app/lib/email.ts
+// app/lib/services/emailService.ts
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Development helper: Logs email to console instead of sending
+const logMockEmail = (email: string, accessKey: string) => {
+  console.log('\n[Email Mock] -------------------------------');
+  console.log(`To: ${email}`);
+  console.log('Subject: Your Access Key for 1313 OS');
+  console.log(`Key: \x1b[32m${accessKey}\x1b[0m`); // Green color
+  console.log('--------------------------------------------\n');
+  return true;
+};
+
 export const EmailService = {
   sendAccessKey: async (email: string, accessKey: string) => {
+    // Enable Mock Mode if explicitly set or if RESEND_API_KEY is missing/placeholder
+    const useMock = process.env.EMAIL_MOCK_MODE === 'true' ||
+      !process.env.RESEND_API_KEY ||
+      process.env.RESEND_API_KEY === 're_123456789';
+
+    if (useMock) {
+      return logMockEmail(email, accessKey);
+    }
+
     try {
       const { data, error } = await resend.emails.send({
         from: 'onboarding@resend.dev', // 請將 domain 換成您在 Resend 驗證過的 domain
@@ -26,6 +45,11 @@ export const EmailService = {
 
       if (error) {
         console.error('[Resend Error]', error);
+        // Fallback to mock logs in development if API fails despite key being present
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[Resend Failed] Falling back to Mock Mode for dev convenience.');
+          return logMockEmail(email, accessKey);
+        }
         return false;
       }
 

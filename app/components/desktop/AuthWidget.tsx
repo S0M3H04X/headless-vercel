@@ -1,13 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
-import { SystemButton } from '@/components/ui/SystemButton';
+import { Button } from '@/components/ui/primitives/Button';
+import { GroupFrame } from '@/components/ui/primitives/Forms';
 
 type AuthStep = 'email' | 'key';
 
 export const AuthWidget: React.FC = () => {
   const { login, logout, isAuthenticated, user } = useAuthStore();
-  
+
   const [step, setStep] = useState<AuthStep>('email');
   const [email, setEmail] = useState('');
   const [accessKey, setAccessKey] = useState('');
@@ -17,9 +18,9 @@ export const AuthWidget: React.FC = () => {
 
   // 當 user 變更時，自動切換顯示
   useEffect(() => {
-      if (isAuthenticated) {
-          setLoading(false);
-      }
+    if (isAuthenticated) {
+      setLoading(false);
+    }
   }, [isAuthenticated]);
 
   const handleRequestKey = async () => {
@@ -34,7 +35,7 @@ export const AuthWidget: React.FC = () => {
       if (!res.ok) throw new Error(data.error);
       setStep('key');
       setMsg('Key sent to your email.');
-    } catch (e: any) { setError(e.message); } 
+    } catch (e: any) { setError(e.message); }
     finally { setLoading(false); }
   };
 
@@ -48,102 +49,96 @@ export const AuthWidget: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      
+
       // 登入成功，刷新狀態
       window.location.reload();
     } catch (e: any) { setError(e.message); setLoading(false); }
   };
 
   const handleLogout = async () => {
-      await logout();
-      // window.location.reload();
+    await logout();
+    // window.location.reload();
   };
 
   // [Fix] 登入後顯示會員資訊 (My Account View)
   if (isAuthenticated) {
-      return (
-        <div className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-1 shadow-outset border border-gray-400">
-            <div className="bg-[#000080] text-white px-2 py-1 font-bold text-sm mb-4 flex justify-between">
-                <span>My Account</span>
-                <span>Active</span>
+    return (
+      <GroupFrame legend="My Account" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="w-12 h-12 mx-auto mb-2 bg-gray-300 border border-gray-500 flex items-center justify-center shadow-inset">
+              <span className="text-2xl">👤</span>
             </div>
-            <div className="px-4 pb-4 text-center">
-                <div className="mb-4">
-                    <div className="w-12 h-12 mx-auto mb-2 bg-gray-300 border border-gray-500 flex items-center justify-center">
-                        <span className="text-2xl">👤</span>
-                    </div>
-                    <div className="font-bold text-sm">Member Access Granted</div>
-                    <div className="text-xs text-gray-600 font-mono mt-1">{user?.email || 'Authenticated User'}</div>
-                </div>
-                
-                <div className="bg-white p-2 border border-gray-400 shadow-inset text-left text-xs font-mono mb-4 h-24 overflow-y-auto">
-                    <p>{`> Session Type: OS_NATIVE`}</p>
-                    <p>{`> Permissions: READ_WRITE`}</p>
-                    <p>{`> Status: CONNECTED`}</p>
-                    <p>{`> Encrypted: YES`}</p>
-                </div>
+            <div className="font-bold text-sm">Member Access Granted</div>
+            <div className="text-xs text-gray-600 font-mono mt-1">{user?.email || 'Authenticated User'}</div>
+          </div>
 
-                <SystemButton onClick={handleLogout}>
-                    Log Out
-                </SystemButton>
-            </div>
+          <div className="bg-white p-2 border border-gray-400 shadow-inset text-left text-xs font-mono mb-4 h-24 overflow-y-auto">
+            <p>{`> Session Type: OS_NATIVE`}</p>
+            <p>{`> Permissions: READ_WRITE`}</p>
+            <p>{`> Status: CONNECTED`}</p>
+            <p>{`> Encrypted: YES`}</p>
+            <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
+          </div>
+
+          <Button onClick={handleLogout} className="w-full">
+            Log Out
+          </Button>
         </div>
-      );
+      </GroupFrame>
+    );
   }
 
-  // 未登入視圖 (保持不變)
+  // 未登入視圖
   return (
-    <div className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-1 shadow-outset border border-gray-400">
-      <div className="bg-[#000080] text-white px-2 py-1 font-bold text-sm mb-4 flex justify-between">
-        <span>System Login</span>
-        <span>v2.0</span>
-      </div>
+    <GroupFrame legend="System Login" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
+      {msg && <div className="mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200">{msg}</div>}
+      {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 
-      <div className="px-4 pb-4">
-        {msg && <div className="mb-3 text-green-700 text-xs">{msg}</div>}
-        {error && <div className="mb-3 text-red-700 text-xs">{error}</div>}
-
-        <div className="space-y-4">
-          {step === 'email' ? (
-            <div>
-                <label className="block text-xs mb-1">Email Address</label>
-                <input
-                  type="email"
-                  className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}
-                />
-            </div>
-          ) : (
-            <div>
-                <label className="block text-xs mb-1">Access Key</label>
-                <input
-                  type="password"
-                  placeholder="********"
-                  className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm tracking-widest"
-                  value={accessKey}
-                  onChange={(e) => setAccessKey(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-                />
-                <div className="mt-1 text-[10px] text-gray-500">Check your inbox for the key.</div>
-            </div>
-          )}
-
-          <div className="flex justify-between items-center pt-2">
-            {step === 'key' && (
-                <button onClick={() => setStep('email')} className="text-xs text-blue-800 underline">Back</button>
-            )}
-            <div className="flex-1"></div>
-            <SystemButton 
-                onClick={step === 'email' ? handleRequestKey : handleLogin}
-                disabled={loading}
-            >
-              {loading ? 'Processing...' : (step === 'email' ? 'Get Key' : 'Enter System')}
-            </SystemButton>
+      <div className="space-y-4">
+        {step === 'email' ? (
+          <div>
+            <label className="block text-xs mb-1 font-bold">Email Address</label>
+            <input
+              type="email"
+              className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm focus:outline-none focus:bg-yellow-50"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}
+              autoFocus
+            />
           </div>
+        ) : (
+          <div>
+            <label className="block text-xs mb-1 font-bold">Access Key</label>
+            <input
+              type="password"
+              placeholder="********"
+              className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm tracking-widest focus:outline-none focus:bg-yellow-50"
+              value={accessKey}
+              onChange={(e) => setAccessKey(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              autoFocus
+            />
+            <div className="mt-1 text-[10px] text-gray-500">Check your inbox for the key.</div>
+          </div>
+        )}
+
+        <div className="flex justify-between items-center pt-2 gap-2">
+          {step === 'key' && (
+            <Button onClick={() => setStep('email')} variant="default" className="w-20">Back</Button>
+          )}
+          <div className="flex-1"></div>
+          <Button
+            onClick={step === 'email' ? handleRequestKey : handleLogin}
+            disabled={loading}
+            isDefault={true}
+            className="min-w-[100px]"
+          >
+            {loading ? 'Processing...' : (step === 'email' ? 'Get Key' : 'Enter System')}
+          </Button>
         </div>
       </div>
-    </div>
+    </GroupFrame>
   );
 };

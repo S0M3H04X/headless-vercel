@@ -1,7 +1,7 @@
 // app/lib/services/systemService.ts
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useAuthStore } from '@/store/authStore';
-// import { useWidgetStore } from '@/store/widgetStore';
+import { canAccess } from '@/lib/utils/tierUtils';
 
 import { ScenarioService } from './scenarioService';
 import { WidgetKind } from '@/lib/types/workspace';
@@ -18,21 +18,15 @@ export const SystemService = {
     const { openWindow } = useWorkspaceStore.getState();
 
     console.log(`[System] Opening: ${node.name} (${node.type})`);
-    // [US-08-01] 核心攔截邏輯
-    if (node.locked && !authStore.isAuthenticated) {
-      console.warn(`[Access Denied] ${node.name} is locked for guests.`);
-      
-      // 1. 播放拒絕音效 (Optional)
-      // playSound('error');
 
-      // 2. 觸發登入視窗 (假設 AuthWidget 也是一個視窗或全域 Modal)
-      // 如果您的 AuthWidget 是一個 desktop window:
-      // useWidgetStore.getState().openWindow('auth-login'); 
-      
-      // 或者呼叫 AuthStore 的 login 導向
-      authStore.login(); 
-      
-      return; // 中斷開啟流程
+    // Tier-based access control
+    // Use requiredTier if set, fallback to legacy 'locked' (treats as 'member')
+    const requiredTier = node.requiredTier || (node.locked ? 'member' : 'guest');
+
+    if (!canAccess(authStore.tier, requiredTier)) {
+      console.warn(`[Access Denied] ${node.name} requires ${requiredTier} tier.`);
+      authStore.login();
+      return;
     }
 
     console.log(`[System] Opening ${node.name}`);
@@ -49,14 +43,14 @@ export const SystemService = {
       case 'app':
         // 處理各類 App 的啟動參數
         if (node.appId === WidgetKind.Collection) {
-           openWindow({
-              title: node.name,
-              content: { 
-                kind: WidgetKind.Collection, 
-                sourceId: node.metadata?.handle || 'root' 
-              },
-              initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
-           });
+          openWindow({
+            title: node.name,
+            content: {
+              kind: WidgetKind.Collection,
+              sourceId: node.metadata?.handle || 'root'
+            },
+            initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
+          });
         }
         // 未來可在此擴充其他 App (如 MediaPlayer)
         break;
@@ -65,10 +59,10 @@ export const SystemService = {
       case 'link':
         // 處理特殊捷徑與場景 (Scenarios)
         if (node.appId === WidgetKind.Product) {
-           ScenarioService.launchProductSuite(node.metadata?.handle);
+          ScenarioService.launchProductSuite(node.metadata?.handle);
         }
         break;
-        
+
       default:
         console.warn(`[System] Unknown file type: ${node.type}`);
     }
@@ -76,7 +70,7 @@ export const SystemService = {
   // 2. [新增] 系統視窗開啟邏輯
   openSystemWindow: (type: 'ABOUT' | 'SETTINGS' | 'SOCIAL') => {
     const { openWindow } = useWorkspaceStore.getState();
-    
+
     switch (type) {
       case 'ABOUT':
         openWindow({

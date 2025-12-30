@@ -1,0 +1,149 @@
+@import '../../../styles/classicy/variables';
+
+// =============================================================================
+// WINDOW FRAME (System 6 Style - Black Frame)
+// =============================================================================
+
+.windowFrame {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px; // Matches winbox-retro.css
+  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.2); // Retro hard shadow
+  position: relative;
+  overflow: hidden; // Ensure rounded corners clip content if needed
+
+  // High contrast active state (can be enhanced if referenced by design)
+  &.active {
+    z-index: 10;
+  }
+}
+
+// =============================================================================
+// WINDOW TITLE BAR
+// =============================================================================
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: center; // Center title by default
+  padding: 4px;
+  min-height: 20px;
+
+  // Striped background using image asset
+  background-image: $window-stripes;
+  background-repeat: repeat-x;
+  background-position: center;
+  /* background-size: 16px 16px; // Ensure stripes scale if needed, usually auto is fine */
+
+  border-bottom: 1px solid #000;
+  color: #000;
+  font-family: $font-system;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: default;
+  user-select: none;
+  position: relative;
+
+  // Inactive state (greyed out or simplified)
+  &.inactive {
+    background-image: none;
+    background-color: #fff;
+    // .titleText background becomes white to merge
+  }
+}
+
+.titleText {
+  padding: 0 8px;
+  background-color: #fff; // Mask stripes behind text
+  line-height: normal;
+}
+
+.titleControls {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  // Overlay on top of stripes? Usually buttons are part of the bar
+}
+
+// =============================================================================
+// WINDOW BUTTONS
+// =============================================================================
+
+.windowButton {
+  width: 13px;
+  height: 13px;
+  border: 1px solid #000;
+  background-color: transparent; // Default
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  cursor: pointer;
+  box-shadow: none;
+
+  &:active:not(:disabled) {
+    background-color: #000;
+    // Invert icon color? Usually specific image for active state
+    filter: invert(1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+// Close Button (Box)
+.buttonClose {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-image: $btn-close-bg;
+  border: none; // Image includes border usually, or defined by winbox
+  width: 13px;
+  height: 13px;
+}
+
+// Collapse (Minimize) 
+.buttonCollapse {
+  background-image: $btn-collapse-bg;
+  border: none;
+  width: 13px;
+  height: 13px;
+}
+
+// FullScreen (Zoom/Maximize)
+.buttonFullScreen {
+  background-image: $btn-zoom-bg;
+  border: none;
+  width: 13px;
+  height: 13px;
+}
+
+// =============================================================================
+// RESIZE HANDLE
+// =============================================================================
+
+.resizeHandle {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+
+  // Custom image or reuse striped pattern if asset not available
+  // Using icon-resize from variables if it existed, otherwise standard grip
+  background-image: linear-gradient(135deg, transparent 50%, #000 50%, #000 55%, transparent 55%, transparent 100%);
+  background-size: 4px 4px;
+}

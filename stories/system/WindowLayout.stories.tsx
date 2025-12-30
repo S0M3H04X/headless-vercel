@@ -2,6 +2,12 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { WindowLayout } from '../../app/components/system/window/WindowLayout';
 import { Button } from '../../app/components/ui/primitives/Button';
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
+
+// Helper component for pixel icons
+const Icon: React.FC<{ name: string; className?: string }> = ({ name, className = '' }) => (
+  <i className={`hn hn-${name} ${className}`} style={{ fontSize: 14 }} />
+);
 
 const meta: Meta<typeof WindowLayout> = {
   title: 'System/WindowLayout',
@@ -50,11 +56,11 @@ export const WithToolbar: Story = {
   render: () => (
     <WindowLayout>
       <WindowLayout.Toolbar>
-        <Button buttonStyle="tool">⬅️</Button>
-        <Button buttonStyle="tool">➡️</Button>
-        <Button buttonStyle="tool">⬆️</Button>
+        <Button buttonStyle="tool"><Icon name="arrow-left" /></Button>
+        <Button buttonStyle="tool"><Icon name="arrow-right" /></Button>
+        <Button buttonStyle="tool"><Icon name="arrow-up" /></Button>
         <span style={{ flex: 1 }} />
-        <Button buttonStyle="tool">🔍</Button>
+        <Button buttonStyle="tool"><Icon name="search" /></Button>
       </WindowLayout.Toolbar>
       <WindowLayout.Content>
         <p style={{ fontFamily: 'sans-serif', fontSize: 12 }}>
@@ -71,11 +77,11 @@ export const WithSidebar: Story = {
       <WindowLayout.Sidebar width={150}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 11 }}>
           <strong style={{ display: 'block', marginBottom: 8 }}>Favorites</strong>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>📁 Desktop</div>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>📄 Documents</div>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>🖼️ Pictures</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="folder" /> Desktop</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="file" /> Documents</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="image" /> Pictures</div>
           <strong style={{ display: 'block', marginTop: 12, marginBottom: 8 }}>Devices</strong>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>💽 Macintosh HD</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="hard-drive" /> Macintosh HD</div>
         </div>
       </WindowLayout.Sidebar>
       <WindowLayout.Content>
@@ -112,21 +118,21 @@ export const FullLayout: Story = {
   render: () => (
     <WindowLayout>
       <WindowLayout.Toolbar>
-        <Button buttonStyle="tool">⬅️</Button>
-        <Button buttonStyle="tool">➡️</Button>
+        <Button buttonStyle="tool"><Icon name="arrow-left" /></Button>
+        <Button buttonStyle="tool"><Icon name="arrow-right" /></Button>
         <span style={{ flex: 1 }} />
-        <Button buttonStyle="tool">📁</Button>
-        <Button buttonStyle="tool">🗑️</Button>
+        <Button buttonStyle="tool"><Icon name="folder" /></Button>
+        <Button buttonStyle="tool"><Icon name="trash" /></Button>
       </WindowLayout.Toolbar>
       <WindowLayout.Sidebar width={160}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 11 }}>
           <strong style={{ display: 'block', marginBottom: 8, color: '#666' }}>FAVORITES</strong>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>📁 Desktop</div>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>📄 Documents</div>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>⬇️ Downloads</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="folder" /> Desktop</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="file" /> Documents</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="download" /> Downloads</div>
           <strong style={{ display: 'block', marginTop: 16, marginBottom: 8, color: '#666' }}>DEVICES</strong>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>💽 Macintosh HD</div>
-          <div style={{ padding: '4px 0', cursor: 'pointer' }}>💿 Disk Image</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="hard-drive" /> Macintosh HD</div>
+          <div style={{ padding: '4px 0', cursor: 'pointer' }}><Icon name="compact-disc" /> Disk Image</div>
         </div>
       </WindowLayout.Sidebar>
       <WindowLayout.Content padding="medium">

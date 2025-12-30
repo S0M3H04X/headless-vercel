@@ -9,21 +9,23 @@ import {
   DialogActionsProps,
 } from './types';
 import styles from './SystemDialog.module.scss';
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 // =============================================================================
 // DIALOG ICON
 // =============================================================================
 
 const DialogIcon: React.FC<DialogIconProps> = ({ type, className }) => {
-  const icons: Record<DialogIconProps['type'], string> = {
-    stop: '🛑',
-    note: '📝',
-    caution: '⚠️',
+  // Map dialog types to pixel-icon-library icon names
+  const iconNames: Record<DialogIconProps['type'], string> = {
+    stop: 'exclamation-circle',
+    note: 'info-circle',
+    caution: 'exclamation-triangle',
   };
 
   return (
     <div className={`${styles.dialogIcon} ${styles[type]} ${className || ''}`}>
-      {icons[type]}
+      <i className={`hn hn-${iconNames[type]}`} style={{ fontSize: 24 }} />
     </div>
   );
 };

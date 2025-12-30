@@ -2,6 +2,12 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { alert, confirm, prompt } from '../../app/components/system/dialog';
 import { Button } from '../../app/components/ui/primitives/Button';
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
+
+// Helper component for pixel icons
+const Icon: React.FC<{ name: string; className?: string }> = ({ name, className = '' }) => (
+  <i className={`hn hn-${name} ${className}`} style={{ fontSize: 14 }} />
+);
 
 const meta: Meta = {
   title: 'System/Dialog Helpers',
@@ -195,9 +201,15 @@ const AllIconsDemo = () => {
 
   return (
     <div style={{ display: 'flex', gap: 8 }}>
-      <Button buttonStyle="system" onClick={showStop}>🛑 Stop</Button>
-      <Button buttonStyle="system" onClick={showNote}>📝 Note</Button>
-      <Button buttonStyle="system" onClick={showCaution}>⚠️ Caution</Button>
+      <Button buttonStyle="system" onClick={showStop}>
+        <Icon name="exclamation-circle" /> Stop
+      </Button>
+      <Button buttonStyle="system" onClick={showNote}>
+        <Icon name="info-circle" /> Note
+      </Button>
+      <Button buttonStyle="system" onClick={showCaution}>
+        <Icon name="exclamation-triangle" /> Caution
+      </Button>
     </div>
   );
 };

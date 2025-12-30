@@ -1,31 +1,43 @@
 'use client';
 import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { useAuthStore } from '@/store/authStore';
 import { PixelIcon } from '@/components/ui/PixelIcon';
 import { WidgetKind } from '@/lib/types/workspace';
 import { ScenarioService } from '@/lib/services/scenarioService';
+import { canAccess, type UserTier } from '@/lib/utils/tierUtils';
 import styles from '@/styles/classicy/dock.module.scss';
 
-// 定義 App 按鈕的設定 (Icon, Action, Title)
-const APP_CONFIG: Record<string, { label: string; action: () => void }> = {
+// App config with tier requirements
+interface AppConfig {
+  label: string;
+  requiredTier: UserTier;
+  action: () => void;
+}
+
+const APP_CONFIG: Record<string, AppConfig> = {
   'product_browser': {
     label: 'Store',
+    requiredTier: 'member',
     action: () => ScenarioService.launchProductSuite('tee')
   },
   'video_studio': {
     label: 'Studio',
+    requiredTier: 'member', // VideoControl/Visual/Mixer are admin-only, but Studio app is member
     action: () => ScenarioService.launchVideoStudio('01')
   },
   'pdf_viewer': {
     label: 'Files',
+    requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
       title: 'System Manual.pdf',
       content: { kind: WidgetKind.PDFViewer, sourceId: '/assets/pdf/dissertation.pdf' },
-      initialGeometry: { x: 'center', y: 'center', width: 600, height: 700 }, // 使用 'center'
+      initialGeometry: { x: 'center', y: 'center', width: 600, height: 700 },
     })
   },
   'cart': {
     label: 'Cart',
+    requiredTier: 'member',
     action: () => useWorkspaceStore.getState().focusOrOpenWindow({
       title: 'Cart',
       content: { kind: WidgetKind.Cart, sourceId: 'cart' },
@@ -34,24 +46,35 @@ const APP_CONFIG: Record<string, { label: string; action: () => void }> = {
   },
   'profile': {
     label: 'My PC',
+    requiredTier: 'member',
     action: () => useWorkspaceStore.getState().focusOrOpenWindow({
       title: 'My Account',
       content: { kind: WidgetKind.UserProfile, sourceId: 'me' }
     })
   },
   'launcher': {
-    label: 'Start', 
-    action: () => { console.log('Open Start Menu'); } // 未來可做開始選單
-  } 
+    label: 'Start',
+    requiredTier: 'guest', // Always accessible
+    action: () => { console.log('Open Start Menu'); }
+  }
 };
 
 export const Launcher = () => {
-  // [修正] 讀取 Store 中的 installedApps
   const installedApps = useWorkspaceStore((s) => s.installedApps);
   const windows = useWorkspaceStore((s) => s.windows);
+  const { tier, login } = useAuthStore();
+
   const isAppRunning = (appId: string) => {
-      // 這裡需要一個 Mapping 邏輯，目前簡化處理
-      return false; 
+    return false;
+  };
+
+  const handleAppClick = (appId: string, config: AppConfig) => {
+    if (!canAccess(tier, config.requiredTier)) {
+      console.warn(`[Dock] ${config.label} requires ${config.requiredTier} tier`);
+      login(); // Prompt login for access
+      return;
+    }
+    config.action();
   };
 
   if (!installedApps || installedApps.length === 0) return null;
@@ -63,20 +86,18 @@ export const Launcher = () => {
           const config = APP_CONFIG[appId];
           if (!config) return null;
 
+          const isLocked = !canAccess(tier, config.requiredTier);
+
           return (
             <button
               key={appId}
-              onClick={config.action}
-              className={styles.dockItem}
+              onClick={() => handleAppClick(appId, config)}
+              className={`${styles.dockItem} ${isLocked ? styles.locked : ''}`}
               aria-label={config.label}
+              title={isLocked ? `${config.label} (Login required)` : config.label}
             >
-              {/* 圖示 */}
-              <PixelIcon name={appId} size={32} className="text-black" />
-              
-              {/* Tooltip */}
+              <PixelIcon name={appId} size={32} className={isLocked ? 'opacity-50' : 'text-black'} />
               <span className={styles.tooltip}>{config.label}</span>
-
-              {/* 運行指示燈 (Running Dot) */}
               {isAppRunning(appId) && <div className={styles.runningDot} />}
             </button>
           );
