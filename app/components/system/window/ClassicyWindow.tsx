@@ -2,10 +2,11 @@
 import React, { useRef } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useDraggable } from '@/hooks/useDraggable';
-import { PolygonFrame, getClipPath } from './PolygonFrame';
+// import { PolygonFrame, getClipPath } from './PolygonFrame';
 import styles from './ClassicyWindow.module.scss';
 import { Point } from '@/hooks/usePolygon';
-import { ShapeEditor } from './ShapeEditor';
+// import { ShapeEditor } from './ShapeEditor';
+import { Button } from '@/components/ui/primitives/Button';
 
 interface ClassicyWindowProps {
   id: string;
@@ -65,16 +66,16 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
       onTouchStart={() => focusWindow(id)}
     >
       {/* Polygon Frame Background */}
-      {points && (
+      {/* {points && (
         <PolygonFrame
           points={points}
           width={geometry.width}
           height={geometry.height}
         />
-      )}
+      )} */}
 
       {/* Shape Editor Overlay */}
-      {isEditingShape && points && onUpdatePoints && (
+      {/* {isEditingShape && points && onUpdatePoints && (
         <ShapeEditor
           points={points}
           width={geometry.width}
@@ -91,10 +92,10 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
             onUpdatePoints(newPoints);
           }}
         />
-      )}
+      )} */}
 
       {/* Title Bar: Standard Windows Only */}
-      {!points && ( // Hide standard title bar for polygon windows? Or keep it? keeping for now but maybe inside?
+      {/* {!points && ( // Hide standard title bar for polygon windows? Or keep it? keeping for now but maybe inside? */}
         <div
           className={`${styles.titleBar} ${isActive ? styles.active : ''}`}
           onMouseDown={handleDragStart} // 滑鼠
@@ -115,7 +116,7 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
 
           <button className={`${styles.controlBtn} ${styles.collapseBtn}`} />
         </div>
-      )}
+      {/* )} */}
 
       <div
         className={styles.windowBody}
@@ -125,7 +126,7 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
           background: 'transparent',
           border: 'none',
           boxShadow: 'none',
-          clipPath: getClipPath(points) // Clip content to polygon
+          // clipPath: getClipPath(points) // Clip content to polygon
         } : undefined}
       >
         {/* 遮罩層：防止 iframe 在拖曳時吞掉事件 */}
