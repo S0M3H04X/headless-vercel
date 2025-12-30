@@ -1,0 +1,209 @@
+/* app/components/ui/primitives/Button.module.scss */
+@import '../../../styles/classicy/variables';
+
+// =============================================================================
+// BASE BUTTON STYLES
+// =============================================================================
+
+.button {
+  font-family: $font-pixel;
+  font-size: 13px;
+  color: #000;
+  background-color: #ddd;
+  padding: 4px 16px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  /* 模擬 3px 的複雜立體邊框 */
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    /* 內亮面 */
+    inset -1px -1px 0 #888,
+    /* 內陰影 */
+    inset -2px -2px 0 #444,
+    /* 內深陰影 */
+    1px 1px 0 #000;
+  /* 外框 */
+
+  border-radius: 3px;
+  /* 輕微圓角 */
+
+  transition: transform 0.05s ease;
+
+  &:hover:not(.disabled) {
+    background-color: #e8e8e8;
+  }
+
+  &:active:not(.disabled) {
+    background-color: #bbb;
+    box-shadow:
+      inset 1px 1px 0 #444,
+      inset 2px 2px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 0 #000;
+    transform: translateY(1px);
+    /* 按壓位移感 */
+  }
+
+  &.disabled {
+    color: #888;
+    background-color: #eee;
+    box-shadow: none;
+    border: 1px solid #aaa;
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+// =============================================================================
+// DEFAULT BUTTON (isDefault) - Pulsing Border Animation
+// =============================================================================
+
+.isDefault {
+  border: 2px solid #000;
+  /* 加粗外框 */
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow:
+      inset 1px 1px 0 #fff,
+      inset -1px -1px 0 #888,
+      inset -2px -2px 0 #444,
+      0 0 0 2px rgba(0, 0, 0, 0.15);
+  }
+
+  50% {
+    box-shadow:
+      inset 1px 1px 0 #fff,
+      inset -1px -1px 0 #888,
+      inset -2px -2px 0 #444,
+      0 0 0 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// =============================================================================
+// VARIANT: default (no special styling beyond base)
+// =============================================================================
+
+.variant-default {
+  // Base styling is sufficient
+}
+
+// =============================================================================
+// VARIANT: help (Question mark button - circular)
+// =============================================================================
+
+.variant-help {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+// =============================================================================
+// VARIANT: disclosure (Triangle/chevron toggle button)
+// =============================================================================
+
+.variant-disclosure {
+  padding: 2px 6px;
+  font-size: 10px;
+  min-width: 16px;
+}
+
+// =============================================================================
+// STYLE: system (Dialog buttons - OK, Cancel)
+// =============================================================================
+
+.style-system {
+  min-width: 80px;
+  padding: 5px 20px;
+}
+
+// =============================================================================
+// STYLE: tool (Icon-only toolbar buttons)
+// =============================================================================
+
+.style-tool {
+  padding: 4px 6px;
+  min-width: auto;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 2px;
+
+  &:hover:not(.disabled) {
+    background-color: rgba(0, 0, 0, 0.08);
+    box-shadow:
+      inset 1px 1px 0 #fff,
+      inset -1px -1px 0 #888;
+  }
+
+  &:active:not(.disabled) {
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow:
+      inset 1px 1px 0 #888,
+      inset -1px -1px 0 #fff;
+  }
+}
+
+// =============================================================================
+// STYLE: menu (Menu item buttons)
+// =============================================================================
+
+.style-menu {
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 4px 16px;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+
+  &:hover:not(.disabled) {
+    background-color: $color-highlight;
+    color: $color-highlight-text;
+  }
+
+  &:active:not(.disabled) {
+    background-color: darken($color-highlight, 10%);
+  }
+}
+
+// =============================================================================
+// STYLE: custom (App/Widget-specific buttons)
+// =============================================================================
+
+.style-custom {
+  background-color: $color-platinum-light;
+  border-radius: 4px;
+  padding: 6px 16px;
+
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    inset -1px -1px 0 #999,
+    1px 1px 2px rgba(0, 0, 0, 0.2);
+
+  &:hover:not(.disabled) {
+    background-color: lighten($color-platinum-light, 5%);
+  }
+
+  &:active:not(.disabled) {
+    background-color: darken($color-platinum-light, 5%);
+    box-shadow:
+      inset 1px 1px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}

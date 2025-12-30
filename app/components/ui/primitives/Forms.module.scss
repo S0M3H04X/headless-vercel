@@ -1,0 +1,319 @@
+/* app/components/ui/primitives/Forms.module.scss */
+@import '../../../styles/classicy/variables';
+
+// =============================================================================
+// GROUP FRAME (Fieldset)
+// =============================================================================
+
+.groupFrame {
+  border: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+  position: relative;
+
+  /* Platinum beveled border */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 8px 0 0 0;
+    border: 1px solid #888;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    box-shadow: inset 1px 1px 0 #ddd;
+    pointer-events: none;
+  }
+}
+
+.legend {
+  font-family: $font-pixel;
+  font-size: 12px;
+  color: $color-text;
+  background-color: $color-platinum-light;
+  padding: 0 6px;
+  margin-left: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.groupContent {
+  padding: 16px 12px 12px;
+}
+
+// =============================================================================
+// SHARED FORM CONTROL STYLES
+// =============================================================================
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// =============================================================================
+// RADIO BUTTON
+// =============================================================================
+
+.radioLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: $font-pixel;
+  font-size: 12px;
+  color: $color-text;
+  user-select: none;
+  margin-right: 16px;
+  margin-bottom: 4px;
+}
+
+.radioWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:focus+.radioControl {
+    outline: 2px solid $color-highlight;
+    outline-offset: 1px;
+  }
+}
+
+.radioControl {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Platinum 3D inset effect */
+  border: 1px solid #888;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 #fff;
+}
+
+.radioDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.1s ease;
+
+  .radioInput:checked~.radioControl & {
+    background-color: #000;
+  }
+}
+
+.radioText {
+  line-height: 1;
+}
+
+// =============================================================================
+// CHECKBOX
+// =============================================================================
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: $font-pixel;
+  font-size: 12px;
+  color: $color-text;
+  user-select: none;
+  margin-right: 16px;
+  margin-bottom: 4px;
+}
+
+.checkboxWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:focus+.checkboxControl {
+    outline: 2px solid $color-highlight;
+    outline-offset: 1px;
+  }
+}
+
+.checkboxControl {
+  width: 14px;
+  height: 14px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Platinum 3D inset effect */
+  border: 1px solid #888;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 #fff;
+}
+
+.checkmark {
+  font-size: 10px;
+  color: #000;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+
+  .checkboxInput:checked~.checkboxControl & {
+    opacity: 1;
+
+    &::before {
+      content: '✓';
+    }
+  }
+
+  /* Indeterminate state (dash) */
+  .checkboxInput:indeterminate~.checkboxControl & {
+    opacity: 1;
+
+    &::before {
+      content: '–';
+    }
+  }
+}
+
+.checkboxText {
+  line-height: 1;
+}
+
+// =============================================================================
+// SELECT (Popup Menu Style)
+// =============================================================================
+
+.selectContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.selectTrigger {
+  font-family: $font-pixel;
+  font-size: 12px;
+  color: $color-text;
+  background-color: #fff;
+  min-width: 120px;
+  padding: 4px 24px 4px 8px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  /* Platinum 3D inset effect (like text field) */
+  border: 1px solid #888;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.15),
+    inset -1px -1px 0 #fff;
+
+  &:hover:not(.disabled) {
+    background-color: #f8f8f8;
+  }
+
+  &.open {
+    background-color: #f0f0f0;
+  }
+
+  &:focus {
+    outline: 2px solid $color-highlight;
+    outline-offset: 1px;
+  }
+
+  &.disabled {
+    background-color: #eee;
+    color: #888;
+    cursor: not-allowed;
+  }
+}
+
+.selectValue {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectArrow {
+  font-size: 10px;
+  color: #444;
+  position: absolute;
+  right: 8px;
+}
+
+.selectMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+
+  /* Platinum raised border */
+  border: 1px solid #000;
+  box-shadow:
+    1px 1px 0 #888,
+    2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.selectOption {
+  font-family: $font-pixel;
+  font-size: 12px;
+  color: $color-text;
+  padding: 4px 8px 4px 20px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background-color: $color-highlight;
+    color: $color-highlight-text;
+  }
+
+  &.selected {
+    font-weight: normal;
+  }
+
+  &.optionDisabled {
+    color: #888;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+      color: #888;
+    }
+  }
+}
+
+.selectCheck {
+  position: absolute;
+  left: 4px;
+  font-size: 10px;
+}
+
+.optionLabel {
+  flex: 1;
+}

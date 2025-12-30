@@ -1,0 +1,157 @@
+// app/components/system/window/WindowLayout.module.scss
+@import '../../../styles/classicy/variables';
+
+// =============================================================================
+// WINDOW LAYOUT - CSS Grid Container
+// =============================================================================
+
+.windowLayout {
+  display: grid;
+  grid-template-areas:
+    "toolbar toolbar"
+    "sidebar content"
+    "statusbar statusbar";
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: auto 1fr;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Without sidebar
+.windowLayout.noSidebar {
+  grid-template-areas:
+    "toolbar"
+    "content"
+    "statusbar";
+  grid-template-columns: 1fr;
+}
+
+// Without toolbar
+.windowLayout.noToolbar {
+  grid-template-areas:
+    "sidebar content"
+    "statusbar statusbar";
+  grid-template-rows: 1fr auto;
+}
+
+// Without statusbar
+.windowLayout.noStatusBar {
+  grid-template-areas:
+    "toolbar toolbar"
+    "sidebar content";
+  grid-template-rows: auto 1fr;
+}
+
+// =============================================================================
+// WINDOW TOOLBAR
+// =============================================================================
+
+.windowToolbar {
+  grid-area: toolbar;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  min-height: 28px;
+  background: $color-platinum-light;
+  border-bottom: 1px solid #888;
+
+  // Platinum bevel effect
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 #999;
+}
+
+// =============================================================================
+// WINDOW SIDEBAR
+// =============================================================================
+
+.windowSidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  background: $color-platinum-light;
+  border-right: 1px solid #888;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  // Inset effect
+  box-shadow: inset -1px 0 0 #fff;
+
+  &.collapsed {
+    width: 0 !important;
+    padding: 0;
+    border-right: none;
+    overflow: hidden;
+  }
+}
+
+.sidebarContent {
+  flex: 1;
+  padding: 8px;
+}
+
+// =============================================================================
+// WINDOW CONTENT
+// =============================================================================
+
+.windowContent {
+  grid-area: content;
+  position: relative;
+  overflow: auto;
+  background: #fff;
+
+  // Inner shadow for depth
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+
+  &.paddingNone {
+    padding: 0;
+  }
+
+  &.paddingSmall {
+    padding: 4px;
+  }
+
+  &.paddingMedium {
+    padding: 8px;
+  }
+
+  &.paddingLarge {
+    padding: 16px;
+  }
+}
+
+// =============================================================================
+// WINDOW STATUS BAR
+// =============================================================================
+
+.windowStatusBar {
+  grid-area: statusbar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  min-height: 20px;
+  background: $color-platinum-light;
+  border-top: 1px solid #888;
+  font-size: 11px;
+  color: #333;
+
+  // Inset effect for status bar
+  box-shadow:
+    inset 0 1px 0 #999,
+    inset 0 2px 0 #fff;
+}
+
+.statusBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusBarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
