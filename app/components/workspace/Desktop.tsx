@@ -2,7 +2,7 @@
 import React from 'react';
 import { RetroOSLayout } from '@/components/layout/RetroOSLayout';
 import { MenuBar } from '@/components/system/MenuBar';
-import { Launcher } from '@/components/system/Launcher'; // Dock
+import { Dock } from '@/components/system/Dock'; // Dock
 import { WindowManager } from '@/components/system/WindowManager';
 import { Finder } from '@/components/system/Finder'; // [新增] 背景與桌面圖示層
 
@@ -17,7 +17,7 @@ export const Desktop = () => {
 
       {/* Layer 3: System UI */}
       <MenuBar />
-      <Launcher />
+      <Dock />
     </RetroOSLayout>
   );
 };

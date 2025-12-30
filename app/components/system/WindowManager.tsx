@@ -4,24 +4,28 @@ import React, { useEffect, useState } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ClassicyWindow } from './window/ClassicyWindow';
 import { WidgetRenderer } from '@/components/widgets/Registry';
+// [New Imports]
+import { useAuthStore } from '@/store/authStore';
+import { WidgetKind } from '@/lib/types/workspace';
 
 export const WindowManager = () => {
   const { windows, stackOrder } = useWorkspaceStore();
-  
+  const { tier } = useAuthStore();
+
   // 1. 監聽視口尺寸 (Viewport)
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
     const update = () => {
-      setViewport({ 
-        w: window.innerWidth, 
-        h: window.innerHeight 
+      setViewport({
+        w: window.innerWidth,
+        h: window.innerHeight
       });
     };
-    
+
     // 初始化
     update();
-    
+
     // 監聽 RWD 變化 (旋轉/縮放)
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
@@ -35,7 +39,7 @@ export const WindowManager = () => {
   return (
     <>
       {Object.values(windows).map((win) => {
-        const zIndex = stackOrder.indexOf(win.id) + 10;
+        let zIndex = stackOrder.indexOf(win.id) + 10;
         const isActive = stackOrder[stackOrder.length - 1] === win.id;
 
         // --- RWD Geometry Calculation Engine ---
@@ -49,13 +53,13 @@ export const WindowManager = () => {
         let finalH = baseH;
 
         if (isMobile) {
-            // Mobile: 寬度佔滿 95% 或留邊，高度適應但保留 Dock 空間
-            finalW = Math.min(baseW, viewport.w); // 左右各留 8px
-            finalH = Math.min(baseH, viewport.h - 96); // 扣除 MenuBar(30) + Dock(60) + Buffer
+          // Mobile: 寬度佔滿 95% 或留邊，高度適應但保留 Dock 空間
+          finalW = Math.min(baseW, viewport.w); // 左右各留 8px
+          finalH = Math.min(baseH, viewport.h - 96); // 扣除 MenuBar(30) + Dock(60) + Buffer
         } else {
-            // Desktop: 僅防止溢出螢幕
-            finalW = Math.min(baseW, viewport.w - 40);
-            finalH = Math.min(baseH, viewport.h - 80);
+          // Desktop: 僅防止溢出螢幕
+          finalW = Math.min(baseW, viewport.w - 40);
+          finalH = Math.min(baseH, viewport.h - 80);
         }
 
         // 3. 位置計算 (Positioning)
@@ -64,40 +68,50 @@ export const WindowManager = () => {
 
         // 解析 X
         if (win.geometry.x === 'center') {
-            finalX = (viewport.w - finalW) / 2;
+          finalX = (viewport.w - finalW) / 2;
         } else if (win.geometry.x === 'right') {
-            finalX = viewport.w - finalW - 20;
+          finalX = viewport.w - finalW - 20;
         } else if (typeof win.geometry.x === 'number') {
-            finalX = win.geometry.x;
+          finalX = win.geometry.x;
         }
 
         // 解析 Y
         if (win.geometry.y === 'center') {
-            finalY = (viewport.h - finalH) / 2;
+          finalY = (viewport.h - finalH) / 2;
         } else if (win.geometry.y === 'bottom') {
-            finalY = viewport.h - finalH - 80; // Dock space
+          finalY = viewport.h - finalH - 80; // Dock space
         } else if (typeof win.geometry.y === 'number') {
-            finalY = win.geometry.y;
+          finalY = win.geometry.y;
         }
 
         // 4. [關鍵修正] 邊界防呆 (Boundary Clamp)
         // 確保視窗不會因為計算誤差而跑出螢幕左側或上方
         // 手機版強制水平置中
         if (isMobile) {
-            finalX = (viewport.w - finalW) / 2;
-            // 確保標題列可見
-            finalY = Math.max(32, Math.min(finalY, viewport.h - finalH - 60)); 
+          finalX = (viewport.w - finalW) / 2;
+          // 確保標題列可見
+          finalY = Math.max(32, Math.min(finalY, viewport.h - finalH));
         } else {
-            // Desktop Clamp
-            finalX = Math.max(0, Math.min(finalX, viewport.w - finalW));
-            finalY = Math.max(28, Math.min(finalY, viewport.h - finalH));
+          // Desktop Clamp
+          finalX = Math.max(0, Math.min(finalX, viewport.w - finalW));
+          finalY = Math.max(28, Math.min(finalY, viewport.h - finalH));
+        }
+
+        // [Feature] Guest Mode Auth Window Override
+        // If guest, force Auth window to be full screen and top-most
+        if (tier === 'guest' && win.content.kind === WidgetKind.Auth) {
+          finalW = viewport.w;
+          finalH = viewport.h;
+          finalX = 0;
+          finalY = 0;
+          zIndex = 99999; // Topmost
         }
 
         const calculatedGeometry = {
-            x: finalX,
-            y: finalY,
-            width: finalW,
-            height: finalH,
+          x: finalX,
+          y: finalY,
+          width: finalW,
+          height: finalH,
         };
 
         return (
@@ -109,10 +123,10 @@ export const WindowManager = () => {
             geometry={calculatedGeometry}
             zIndex={zIndex}
           >
-            <WidgetRenderer 
-                id={win.id}
-                content={win.content} 
-                internalState={win.internalState} 
+            <WidgetRenderer
+              id={win.id}
+              content={win.content}
+              internalState={win.internalState}
             />
           </ClassicyWindow>
         );

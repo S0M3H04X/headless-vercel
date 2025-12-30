@@ -6,7 +6,7 @@ import { PixelIcon } from '@/components/ui/PixelIcon';
 import { WidgetKind } from '@/lib/types/workspace';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { canAccess, type UserTier } from '@/lib/utils/tierUtils';
-import styles from '@/styles/classicy/dock.module.scss';
+import styles from './Dock.module.scss';
 
 // App config with tier requirements
 interface AppConfig {
@@ -59,7 +59,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
   }
 };
 
-export const Launcher = () => {
+export const Dock = () => {
   const installedApps = useWorkspaceStore((s) => s.installedApps);
   const windows = useWorkspaceStore((s) => s.windows);
   const { tier, login } = useAuthStore();

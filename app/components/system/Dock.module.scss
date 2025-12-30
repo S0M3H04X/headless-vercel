@@ -1,15 +1,17 @@
-@import 'variables';
+@import '@/styles/classicy/_variables.scss';
 
 .dockContainer {
   position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999; /* 確保在最上層 */
+  z-index: 9;
+  /* 確保在最上層 */
   display: flex;
   align-items: flex-end;
-  padding: 0 10px; /* 左右稍微留白 */
-  
+  padding: 0 10px;
+  /* 左右稍微留白 */
+
   /* 模擬 Control Strip 的把手外觀 (可選) */
 }
 
@@ -18,20 +20,20 @@
   // gap: 2px; /* 按鈕間距 */
   // padding: 4px 6px;
   background-color: $color-platinum-light;
-  
+
   /* Platinum 3D Border (凸起效果) */
   border-top: 1px solid #fff;
   border-left: 1px solid #fff;
   border-right: 1px solid #444;
   border-bottom: 1px solid #444;
-  
-  
+
+
   /* 圓角處理 (Classic Mac 有時有圓角，有時直角，依喜好) */
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  
+
   /* 底部貼齊螢幕，不需要邊框 */
-  border-bottom: none; 
+  border-bottom: none;
 }
 
 .dockItem {
@@ -47,7 +49,7 @@
   border-left: 1px solid #fff;
   border-right: 1px solid #444;
   border-bottom: 1px solid #444;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   // border: 1px solid #000;
   outline: none;
   cursor: pointer;
@@ -57,7 +59,7 @@
     /* Hover 效果：簡單的反白或凹陷 */
     background-color: rgba(255, 255, 255, 0.5);
     // border: 1px solid #888;
-      /* 圓角處理 (Classic Mac 有時有圓角，有時直角，依喜好) */
+    /* 圓角處理 (Classic Mac 有時有圓角，有時直角，依喜好) */
     // border-top-left-radius: 4px;
     // border-top-right-radius: 4px;
   }
@@ -79,8 +81,10 @@
   width: 4px;
   height: 4px;
   background-color: #000;
-  border-radius: 50%; /* 圓點 */
-  box-shadow: 0 1px 0 rgba(255,255,255,0.8); /* 讓黑點有立體感 */
+  border-radius: 50%;
+  /* 圓點 */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  /* 讓黑點有立體感 */
 }
 
 /* Tooltip (Yellow Note Style) */
@@ -89,18 +93,19 @@
   bottom: 110%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #ffffe0; /* 經典黃 */
+  background-color: #ffffe0;
+  /* 經典黃 */
   border: 1px solid #000;
   color: #000;
   padding: 2px 6px;
   font-family: $font-pixel;
   font-size: 11px;
   white-space: nowrap;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
-  
+
   // 三角形箭頭
   &::after {
     content: '';

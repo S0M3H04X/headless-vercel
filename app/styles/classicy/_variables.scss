@@ -5,7 +5,7 @@ $color-platinum-light: #dfdfdf;
 $color-platinum-dark: #cdcdcd;
 $color-highlight: #000080; // 預設反白顏色 (Classic Blue)
 $color-highlight-text: #ffffff;
-$color-window-bg: #b7e498;
+$color-window-bg: rgba(0, 0, 0, 0.3);
 $color-text: #000000;
 
 // --- 2. Fonts ---
@@ -28,18 +28,18 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
   font-display: swap; /* Recommended for performance */
 }
 
-
 $font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
 $font-pixel: 'Ishmeria', monospace; // 暫代像素字體
 
 // --- 3. Assets Paths (Customizable) ---
-$asset-path: '/assets/classicy/img/ui';
+$asset-path-png: '/assets/classicy/img/ui';
+$asset-path-icon: '/assets/icons/SVG';
 
 // Window Controls (Close/Zoom/Collapse)
 // 這裡允許您未來替換為自己的圖片
-$btn-close-bg: url('#{$asset-path}/window/close-box.png'); 
-$btn-zoom-bg: url('#{$asset-path}/window/zoom-box.png');
-$btn-collapse-bg: url('#{$asset-path}/window/collapse-box.png');
+$btn-close-bg: url('#{$asset-path-icon}/regular/times.svg'); 
+$btn-zoom-bg: url('#{$asset-path-png}/window/zoom-box.png');
+$btn-collapse-bg: url('#{$asset-path-icon}/regular/times.svg');
 
 // Window Textures
-$window-stripes: url('#{$asset-path}/window/stripes.png'); // 標題列橫紋
+$window-stripes: url('#{$asset-path-png}/window/stripes.png'); // 標題列橫紋

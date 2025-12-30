@@ -3,10 +3,10 @@ import React, { useRef } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useDraggable } from '@/hooks/useDraggable';
 // import { PolygonFrame, getClipPath } from './PolygonFrame';
-import styles from './ClassicyWindow.module.scss';
+import styles from './ClassicyWindow.module.scss'; // Assuming we still need this for windowBody or if we want to pass custom styles
 import { Point } from '@/hooks/usePolygon';
 // import { ShapeEditor } from './ShapeEditor';
-import { Button } from '@/components/ui/primitives/Button';
+import { Window } from '@/components/ui/primitives/window';
 
 interface ClassicyWindowProps {
   id: string;
@@ -47,9 +47,12 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
   );
 
   return (
-    <div
-      className={`${styles.windowFrame} ${isActive ? 'active' : ''}`}
+    <Window.Frame
+      ref={windowRef}
+      isActive={isActive}
+      className={`${styles.windowFrame} ${isActive ? 'active' : ''}`} // Keep existing class for extra SCSS specific to ClassicyWindow if needed, or rely on WindowFrame styles
       style={{
+        position: 'absolute', // WindowFrame might not force absolute
         left: position.x,
         top: position.y,
         width: geometry.width,
@@ -96,26 +99,45 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
 
       {/* Title Bar: Standard Windows Only */}
       {/* {!points && ( // Hide standard title bar for polygon windows? Or keep it? keeping for now but maybe inside? */}
-        <div
-          className={`${styles.titleBar} ${isActive ? styles.active : ''}`}
-          onMouseDown={handleDragStart} // 滑鼠
-          onTouchStart={handleDragStart} // [修正] 手機觸控
-          style={{ cursor: 'default', touchAction: 'none' }} // [修正] 禁止瀏覽器預設手勢
-        >
-          <button
-            className={`${styles.controlBtn} ${styles.closeBtn}`}
-            // 阻止事件冒泡，避免按鈕觸發拖曳
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            onClick={(e) => { e.stopPropagation(); closeWindow(id); }}
-          />
 
-          <span className={`${styles.titleText} ${isActive ? styles.active : ''}`}>
-            {title}
-          </span>
+      {/* Using Window.TitleBar */}
+      <Window.TitleBar
+        title={title}
+        isActive={isActive}
+        onClose={() => closeWindow(id)}
+        // We pass handleDragStart to the logic that needs to drag. 
+        // Existing TitleBar doesn't natively expose 'onDragStart' prop for the whole bar, 
+        // but it spreads props. So we can pass onMouseDown/onTouchStart.
+        onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
+        style={{ cursor: 'default', touchAction: 'none' }} // [修正] 禁止瀏覽器預設手勢
+      // Note: TitleBar expects 'children' for custom controls or 'onClose', 'onMinimize' etc.
+      // We can pass children if we want to customize the buttons exactly like before
+      >
+        {/* If we want to strictly match the previous implementation which had close, title, and collapse button */}
 
-          <button className={`${styles.controlBtn} ${styles.collapseBtn}`} />
-        </div>
+        {/* Close Button */}
+        {/* We can use the simplified props: onClose={() => closeWindow(id)} passed to TitleBar above, 
+            but the previous code had specific e.stopPropagation() logic.
+            The new WindowTitleBar's auto-generated buttons use onClick. We might want to be careful about drag propagation.
+            However, usually buttons on titlebars stop propagation of drag if they are clickable.
+            Let's try using the standard props first. If we need custom buttons, we use children.
+        */}
+
+        {/* The previous code had:
+             <button closeBtn ... onClick={(e) => { e.stopPropagation(); closeWindow(id); }} />
+             <span title ... />
+             <button collapseBtn ... /> 
+        */}
+
+        {/* Let's try to match the EXACT previous layout using children to be safe, 
+            or rely on standard TitleBar if it's close enough.
+            The user wants to "Update ClassicyWindow to the UI Window Primitives".
+            Usually this means "use the standard way".
+            The standard way is passing `onClose`.
+        */}
+      </Window.TitleBar>
+
       {/* )} */}
 
       <div
@@ -133,6 +155,6 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
         {isDragging && <div className="absolute inset-0 z-50 bg-transparent" />}
         {children}
       </div>
-    </div>
+    </Window.Frame>
   );
 };
