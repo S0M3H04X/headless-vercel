@@ -9,19 +9,21 @@
   display: flex;
   flex-direction: column;
   background-color: $color-platinum-light;
-  border-radius: 4px;
-  border: 1px solid #000; /* 外框 */
-  padding-right: 5px;
-  padding-left: 5px;
-  padding-bottom: 20px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 簡單陰影，未來可更換為像素陰影 */
+  border-radius: 15px;
+  border: 1px solid #000;
+  /* 外框 */
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 4px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  /* 簡單陰影，未來可更換為像素陰影 */
   overflow: hidden;
-  
+
   // Platinum 邊框效果 (Bevel)
-  box-shadow: 
+  box-shadow:
     inset 1px 1px 0px #fff,
     inset -1px -1px 0px #888,
-    2px 2px 0px rgba(0,0,0,0.2); 
+    2px 2px 0px rgba(0, 0, 0, 0.2);
 
   // High contrast active state outline (optional, can be controlled via prop)
   &.active {
