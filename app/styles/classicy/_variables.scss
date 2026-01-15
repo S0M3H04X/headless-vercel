@@ -8,6 +8,7 @@ $color-highlight-text: #ffffff;
 $color-window-bg: rgba(0, 0, 0, 0.3);
 $color-text: #000000;
 
+
 // --- 2. Fonts ---
 // 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
 $font-path: '/assets/fonts/'; // 字體資源路徑
@@ -30,6 +31,7 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
 
 $font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
 $font-pixel: 'Ishmeria', monospace; // 暫代像素字體
+$font-button: 'Apple Garamond', serif; // 按鈕字體
 
 // --- 3. Assets Paths (Customizable) ---
 $asset-path-png: '/assets/classicy/img/ui';

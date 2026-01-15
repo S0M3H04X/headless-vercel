@@ -8,12 +8,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px;
+  padding: 1px;
   min-height: 24px; // Standard height
-  background: linear-gradient(to right, $color-highlight, #1084d0);
+  // background: linear-gradient(to right, $color-highlight, #1084d0);
   color: #fff;
   font-family: $font-system;
-  font-weight: bold;
+  font-weight: 100;
   font-size: 13px;
   cursor: default;
   user-select: none;
@@ -22,16 +22,16 @@
   &::before {
     content: '';
     position: absolute;
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
+    top: 2px;
+    left: 6rem;
+    right: 80px;
+    bottom: 2px;
     background-image: linear-gradient(to bottom,
         rgba(0, 0, 0, 0.1) 50%,
         transparent 50%);
-    background-size: 100% 2px;
+    background-size: 80% 2px;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 
   &.active {
@@ -41,7 +41,8 @@
 
   // Inactive state (greyed out)
   &.inactive {
-    background: #808080;
+    // background: #808080;
+    background: transparent;
     color: #ccc;
   }
 }
@@ -66,4 +67,5 @@
   display: flex;
   align-items: center;
   gap: 2px;
+  z-index: 1;
 }

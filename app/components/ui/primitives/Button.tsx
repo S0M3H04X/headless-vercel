@@ -63,7 +63,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         {...props}
       >
+        <span className={styles.backdrop} />
+        <span className={styles.content}>
+
         {disclosureContent}
+        </span>
       </button>
     );
   }

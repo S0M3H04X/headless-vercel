@@ -8,22 +8,29 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  background-color: $color-platinum-light;
-  border-radius: 15px;
-  border: 1px solid #000;
+  color: var(--lg-text);
+  // background-color: $color-platinum-light;
+  // background: transparent;
+  // border-radius: 15px;
+  // border: 1px solid #000;
   /* 外框 */
   padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 4px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   /* 簡單陰影，未來可更換為像素陰影 */
-  overflow: hidden;
+  // overflow: hidden;
 
   // Platinum 邊框效果 (Bevel)
-  box-shadow:
-    inset 1px 1px 0px #fff,
-    inset -1px -1px 0px #888,
-    2px 2px 0px rgba(0, 0, 0, 0.2);
+  // box-shadow:
+  //   inset 1px 1px 0px #fff,
+  //   inset -1px -1px 0px #888,
+  //   2px 2px 0px rgba(0, 0, 0, 0.2);
+
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 2.2);
 
   // High contrast active state outline (optional, can be controlled via prop)
   &.active {

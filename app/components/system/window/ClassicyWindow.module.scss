@@ -4,22 +4,29 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  background-color: $color-platinum-light;
+  // background-color: $color-platinum-light;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: blur(15px);
   border-radius: 15px;
   border: 1px solid #000;
   /* 外框 */
   padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 2px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+	box-shadow:
+		0 8px 24px rgba(0, 0, 0, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
   /* 簡單陰影，未來可更換為像素陰影 */
   overflow: hidden;
 
   // Platinum 邊框效果 (Bevel)
-  box-shadow:
-    inset 1px 1px 0px #fff,
-    inset -1px -1px 0px #888,
-    2px 2px 0px rgba(0, 0, 0, 0.2);
+  // box-shadow:
+  //   inset 1px 1px 0px #fff,
+  //   inset -1px -1px 0px #888,
+  //   2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 .titleBar {
@@ -89,6 +96,7 @@
   width: 13px;
   height: 13px;
   border: 1px solid #000000;
+  border-radius: 2rem;
   background-color: #fff;
   z-index: 2;
   margin-top: -1px;

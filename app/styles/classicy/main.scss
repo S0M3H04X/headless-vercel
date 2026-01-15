@@ -1,6 +1,9 @@
 // app/styles/classicy/main.scss
 @import 'variables';
 
+@import url("https://unpkg.com/modern-css-reset/dist/reset.min.css")
+layer(reset);
+
 // 全域 Reset 與字體設定
 body {
   font-family: $font-system;
@@ -8,6 +11,8 @@ body {
   overflow: hidden; /* 禁止捲動 */
   margin: 0;
   cursor: default; // 之後會替換為自定義 cursor
+  background: url("../../../public/assets/img/2.jpg") center/cover;
+  animation: bg-move 5s ease-in-out infinite alternate;
 }
 
 /* 用來讓文字無法選取，模擬 OS 介面 */
@@ -16,6 +21,14 @@ body {
   -webkit-user-select: none;
 }
 
+@keyframes bg-move {
+  from {
+    background-position: center center;
+  }
+  to {
+    background-position: center top;
+  }
+}
 
 /* --- Platinum Scrollbars --- */
 :root {
@@ -23,6 +36,13 @@ body {
   --scrollbar-track: #e0e0e0; /* 淺灰軌道 */
   --scrollbar-thumb: #c0c0c0; /* 深灰按鈕 */
   --scrollbar-border: #ffffff;
+  --lg-bg-color: rgba(255, 255, 255, 0.25);
+  --lg-highlight: rgba(255, 255, 255, 0.75);
+  --lg-text: #ffffff;
+  --lg-hover-glow: rgba(255, 255, 255, 0.4);
+  --lg-red: #fb4268;
+  --lg-grey: #5b5b5b;
+  --glass-pill-hue:210;
 }
 
 * {

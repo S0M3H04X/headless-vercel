@@ -11,6 +11,13 @@
   align-items: flex-end;
   padding: 0 10px;
   /* 左右稍微留白 */
+  color: var(--lg-text);
+  cursor: pointer;
+  background: transparent;
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
 
   /* 模擬 Control Strip 的把手外觀 (可選) */
 }
@@ -19,7 +26,7 @@
   display: flex;
   // gap: 2px; /* 按鈕間距 */
   // padding: 4px 6px;
-  background-color: $color-platinum-light;
+  // background-color: $color-platinum-light;
 
   /* Platinum 3D Border (凸起效果) */
   border-top: 1px solid #fff;
