@@ -3,7 +3,7 @@
 
 .menubarContainer {
   position: fixed;
-  top: 10px;
+  top: 6px;
   left: calc(100% - 10px - 95%);
   width: 95%;
   height: 2.5rem;
@@ -17,7 +17,7 @@
       hsl(var(--specular-highlight) / var(--background-gradient-opacity)) 10%),
     radial-gradient(circle, var(--light) 0%, var(--dark) 100%);
   background-size: 150% 100%;
-  background-position: var(--background-position, 50% 3%);
+  background-position: var(--background-position, 50% 10%);
   background-repeat: no-repeat;
 
 
@@ -28,7 +28,7 @@
     inset 0 -4px 6px -2px var(--medium), inset 0 5px 15px -10px var(--dark),
     inset 0 1px 2px 0.75px hsl(var(--specular-highlight) / 25%),
     var(--fill-light), var(--drop-shadow);
-    
+
   border-radius: 10px;
-  z-index: 1000;
+  z-index: 100;
 }

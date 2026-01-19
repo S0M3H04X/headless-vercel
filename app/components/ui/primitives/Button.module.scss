@@ -27,7 +27,7 @@
   font-size: 13px;
   letter-spacing: 0.02ch;
   font-weight: 100;
-  
+
   color: var(--color-text, var(--button-text));
   backdrop-filter: blur(4px);
   transition: all var(--transition-speed, 200ms) cubic-bezier(0.44, 0, 0.56, 1);
@@ -79,11 +79,11 @@
 // DEFAULT BUTTON (isDefault) - Pulsing Border Animation
 // =============================================================================
 
-.isDefault {
-  // border: 2px solid #000;
-  /* 加粗外框 */
-  // animation: pulse 1.5s ease-in-out infinite;
-}
+// .isDefault {
+//   // border: 2px solid #000;
+//   /* 加粗外框 */
+//   // animation: pulse 1.5s ease-in-out infinite;
+// }
 
 // @keyframes pulse {
 
@@ -109,9 +109,9 @@
 // VARIANT: default (no special styling beyond base)
 // =============================================================================
 
-.variant-default {
-  // Base styling is sufficient
-}
+// .variant-default {
+//   // Base styling is sufficient
+// }
 
 // =============================================================================
 // VARIANT: help (Question mark button - circular)

@@ -6,7 +6,32 @@ import { ClassicyWindow } from './window/ClassicyWindow';
 import { WidgetRenderer } from '@/components/widgets/Registry';
 // [New Imports]
 import { useAuthStore } from '@/store/authStore';
-import { WidgetKind } from '@/lib/types/workspace';
+import { WidgetKind, WidgetKindType } from '@/lib/types/workspace';
+
+// Widget-specific height configuration
+// Height can be a number (fixed) or 'auto' (use window's initialGeometry or default)
+const WIDGET_HEIGHT_CONFIG: Partial<Record<WidgetKindType | string, number | 'auto'>> = {
+  [WidgetKind.Auth]: 450,
+  [WidgetKind.Cart]: 400,
+  [WidgetKind.Product]: 500,
+  [WidgetKind.Collection]: 720,
+  [WidgetKind.Folder]: 400,
+  [WidgetKind.PDFViewer]: 600,
+  [WidgetKind.UserProfile]: 350,
+  [WidgetKind.MediaPlayer]: 480,
+  [WidgetKind.VideoVisual]: 400,
+};
+
+// Widget-specific width configuration (optional)
+const WIDGET_WIDTH_CONFIG: Partial<Record<WidgetKindType | string, number | 'auto'>> = {
+  [WidgetKind.Auth]: 320,
+  [WidgetKind.Cart]: 360,
+  [WidgetKind.Product]: 400,
+  [WidgetKind.Collection]: 500,
+  [WidgetKind.Folder]: 400,
+  [WidgetKind.PDFViewer]: 500,
+  [WidgetKind.UserProfile]: 320,
+};
 
 export const WindowManager = () => {
   const { windows, stackOrder } = useWorkspaceStore();
@@ -44,9 +69,18 @@ export const WindowManager = () => {
 
         // --- RWD Geometry Calculation Engine ---
 
-        // 1. 取得原始設定或預設值
-        let baseW = typeof win.geometry.width === 'number' ? win.geometry.width : 600;
-        let baseH = typeof win.geometry.height === 'number' ? win.geometry.height : 500;
+        // 1. Get widget-specific dimensions or fallback to window's geometry/defaults
+        const widgetKind = win.content.kind;
+        const configHeight = WIDGET_HEIGHT_CONFIG[widgetKind];
+        const configWidth = WIDGET_WIDTH_CONFIG[widgetKind];
+
+        let baseW = configWidth && configWidth !== 'auto'
+          ? configWidth
+          : (typeof win.geometry.width === 'number' ? win.geometry.width : 600);
+
+        let baseH = configHeight && configHeight !== 'auto'
+          ? configHeight
+          : (typeof win.geometry.height === 'number' ? win.geometry.height : 500);
 
         // 2. [關鍵修正] 強制尺寸約束 (Size Constraints)
         let finalW = baseW;
@@ -90,7 +124,7 @@ export const WindowManager = () => {
         if (isMobile) {
           finalX = (viewport.w - finalW) / 2;
           // 確保標題列可見
-          finalY = Math.max(32, Math.min(finalY, viewport.h - finalH));
+          finalY = Math.max(42, Math.min(finalY, viewport.h - finalH));
         } else {
           // Desktop Clamp
           finalX = Math.max(0, Math.min(finalX, viewport.w - finalW));

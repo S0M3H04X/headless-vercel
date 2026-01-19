@@ -4,8 +4,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
-  background-color: $color-platinum-light; /* App 背景色通常是灰的 */
+  // height: 100%;
+  background-color: $color-platinum-light;
+  /* App 背景色通常是灰的 */
 }
 
 /* --- Toolbar Area --- */
@@ -16,7 +17,8 @@
   padding: 0 8px;
   border-bottom: 1px solid #888;
   background-color: #ddd;
-  box-shadow: inset 0 1px 0 #fff; /* Top highlight */
+  box-shadow: inset 0 1px 0 #fff;
+  /* Top highlight */
   gap: 8px;
 }
 
@@ -25,11 +27,11 @@
   height: 20px;
   background: #fff;
   border: 1px solid #888;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   padding: 0 4px;
-  
+
   /* Icon inside address bar */
   .addressIcon {
     width: 12px;
@@ -37,7 +39,7 @@
     margin-right: 4px;
     opacity: 0.5;
   }
-  
+
   span {
     font-size: 12px;
     color: #333;
@@ -47,16 +49,18 @@
 /* --- Main View --- */
 .viewArea {
   flex: 1;
-  background-color: #fff; /* 內容區是白的 */
+  background-color: #fff;
+  /* 內容區是白的 */
   border: 1px solid #888;
-  margin: 0 2px; /* 留邊框 */
+  margin: 0 2px;
+  /* 留邊框 */
   overflow-y: auto;
-  
-  
+
+
   /* Platinum 內凹效果 */
   box-shadow: inset 1px 1px 0 #000, inset 2px 2px 0 #888;
 
-    /* 經典 Mac 視窗背景網格點 */
+  /* 經典 Mac 視窗背景網格點 */
   background-image: radial-gradient(#ccc 1px, transparent 1px);
   background-size: 3px 3px;
 }
@@ -64,7 +68,7 @@
 .productGrid {
   padding: 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   gap: 20px;
 }
 
@@ -75,7 +79,7 @@
   align-items: center;
   text-align: center;
   cursor: pointer;
-  
+
   &:active .productThumb {
     transform: scale(0.95);
     filter: brightness(0.8);
@@ -88,9 +92,9 @@
   border: 1px solid #000;
   background: #fff;
   padding: 2px;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 6px;
-  
+
   img {
     width: 100%;
     height: 100%;
