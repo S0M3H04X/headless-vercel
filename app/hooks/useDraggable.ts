@@ -48,7 +48,7 @@ export const useDraggable = (
     // 防止手機上拖曳時觸發捲動
     // 注意: 在 Passive Event Listener 中 preventDefault 可能會報錯，但 React Synthetic Event 通常已處理
     // 若有報錯，可移除 preventDefault
-    // e.preventDefault(); 
+    e.preventDefault(); 
     e.stopPropagation();
 
     focusWindow(id);

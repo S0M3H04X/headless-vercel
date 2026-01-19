@@ -7,6 +7,8 @@ import { WidgetKind } from '@/lib/types/workspace';
 import { SystemService } from '@/lib/services/systemService';
 import { Z_INDEX } from '@/lib/constants/ui';
 
+import styles from './SystemMenu.module.scss';
+
 export const SystemMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -69,8 +71,7 @@ export const SystemMenu: React.FC = () => {
     <div className="relative h-full" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`
-          flex items-center px-3 h-full font-bold select-none transition-colors text-sm
+        className={styles.menuButton + `
           ${isOpen ? 'bg-blue-900 text-white' : 'hover:bg-gray-700 hover:text-white text-black'}
         `}
       >

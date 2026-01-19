@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { AuthWidget } from '@/components/desktop/AuthWidget'; // [修正] 加上大括號
+import styles from './RetroOSLayout.module.scss';
 
 // import 'winbox/dist/css/winbox.min.css';
 // import '@/styles/winbox-retro.css'; 
@@ -21,7 +22,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
       {/* Layer 2: Wallpaper */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
-        style={{ backgroundImage: `url(${wallpaper || '/assets/wallpaper/default.jpg'})` }} 
+        style={{ backgroundImage: `url(${wallpaper || '/assets/wallpaper/wave.jpg'})` }} 
       />
       
       {/* Layer 3, 4, 5: Injected Content */}
@@ -35,9 +36,9 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
                {/* Close Button applied to the wrapper to avoid conflict inside Widget */}
                <button 
                  onClick={closeAuth} 
-                 className="absolute -top-8 right-0 text-white font-bold hover:text-gray-300"
+                 className={styles.buttonClose}
                >
-                 [CLOSE]
+                 x
                </button>
                <AuthWidget />
              </div>

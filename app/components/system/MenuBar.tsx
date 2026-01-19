@@ -8,6 +8,8 @@ import { useCartStore } from '@/store/cartStore';
 import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
 import { WidgetKind } from '@/lib/types/workspace';
 
+import styles from './MenuBar.module.scss';
+
 export const MenuBar: React.FC = () => {
   const [time, setTime] = useState<string>('');
   const [mounted, setMounted] = useState(false);
@@ -67,7 +69,7 @@ export const MenuBar: React.FC = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full bg-[#e0e0e0] border-b border-gray-400 shadow-sm flex items-center justify-between px-1 select-none"
+      className={styles.menubarContainer}
       style={{
         height: LAYOUT.MENU_BAR_HEIGHT,
         zIndex: Z_INDEX.MENU_BAR

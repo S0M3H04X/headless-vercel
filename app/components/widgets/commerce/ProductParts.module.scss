@@ -1,0 +1,36 @@
+// INFO
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+} 
+
+
+.btnAddToCart {
+  position: relative;
+  
+  
+  
+}
+
+// IMAGE
+.imageContainer {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: -1;
+} 
+
+.detailContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  position: relative;
+}
+

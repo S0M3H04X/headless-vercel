@@ -1,6 +1,8 @@
 // app/components/widgets/commerce/CollectionVisualizer.tsx
 'use client';
 import React, { useRef, useEffect } from 'react';
+import Image from 'next/image';
+import photo from '../../../../public/assets/img/style.jpeg';
 
 interface VisualizerProps {
   isLoading: boolean;

@@ -6,6 +6,8 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 import { useWidgetState } from '@/hooks/useWidgetState';
 import { useShopifyProduct } from '@/hooks/useShopifyProduct';
 import { useCartStore } from '@/store/cartStore'; // [新增] 引入 Store
+import { Button } from '@/components/ui/primitives/Button';
+import styles from './ProductParts.module.scss';
 
 
 const DEFAULT_DESC_STATE = { fontSize: 14, showDetails: true };
@@ -40,7 +42,7 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
   
   const imgUrl = product?.images?.edges?.[0]?.node?.url;
   return (
-    <div className="h-full w-full bg-white flex items-center justify-center overflow-hidden">
+    <div className={styles.imageContainer}>
       {imgUrl ? (
         <img src={imgUrl} alt={product.title} className="object-cover h-full w-full" />
       ) : (
@@ -74,29 +76,29 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
   if (loading) return <div className="p-4">Loading...</div>;
 
   return (
-    <div className="flex flex-col justify-center">
-      <h1 className="text-2xl font-black uppercase tracking-widest leading-tight">
+    <div className={styles.infoContainer}>
+      <h1 className={styles.productTitle}>
         {product?.title || 'Product Not Found'}
       </h1>
-      <div className="text-sm text-gray-500 mt-2 font-mono">
+      <div className={styles.productPrice}>
         {product?.variants?.edges?.[0]?.node?.price?.amount 
           ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
           : ''}
       </div>
-      <button 
+      <Button 
+        className={styles.btnAddToCart}
+        buttonStyle="system" isDefault
         onClick={handleAddToCart}
         disabled={isAdding || !product}
-        className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 disabled:bg-gray-400 transition-all active:scale-95 flex items-center justify-center gap-2 mx-auto"
       >
         {isAdding ? (
           <>
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             Adding...
           </>
         ) : (
           'ADD TO CART'
         )}
-      </button>
+      </Button>
     </div>
   );
 };
@@ -122,7 +124,7 @@ export const ProductDescWidget = ({ content, internalState }: BaseWidgetProps) =
   }
 
   return (
-    <div className="overflow-y-auto">
+    <div className={styles.detailContainer}>
       {/* C. 渲染真實描述 */}
       <div 
         style={{ fontSize: state.fontSize }} 

@@ -1,8 +1,6 @@
 // app/styles/classicy/main.scss
 @import 'variables';
 
-@import url("https://unpkg.com/modern-css-reset/dist/reset.min.css")
-layer(reset);
 
 // 全域 Reset 與字體設定
 body {
@@ -36,13 +34,41 @@ body {
   --scrollbar-track: #e0e0e0; /* 淺灰軌道 */
   --scrollbar-thumb: #c0c0c0; /* 深灰按鈕 */
   --scrollbar-border: #ffffff;
+
   --lg-bg-color: rgba(255, 255, 255, 0.25);
   --lg-highlight: rgba(255, 255, 255, 0.75);
   --lg-text: #ffffff;
   --lg-hover-glow: rgba(255, 255, 255, 0.4);
   --lg-red: #fb4268;
   --lg-grey: #5b5b5b;
-  --glass-pill-hue:210;
+
+  --glass-pill-hue: 210;
+
+  --shadow-color: var(--glass-pill-hue, 284) 100 25;
+  --specular-highlight: 0 0 100;
+  --button-text: hsl(var(--glass-pill-hue, 284) 70 20 / 80%);
+  --light: hsl(var(--glass-pill-hue, 284) 100 75 / 20%);
+  --medium: hsl(var(--glass-pill-hue, 284) 100 50 / 50%);
+  --dark: hsl(var(--glass-pill-hue, 284) 100 24 / 73%);
+
+  --x-min: var(--shadow-x-min, 0px);
+  --x-max: var(--shadow-x-max, 0px);
+  --x-1: var(--x-min);
+  --x-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.12);
+  --x-3: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.38);
+  --x-4: var(--x-max);
+  --x-fill-1: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.25);
+  --x-fill-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.7);
+  --x-fill-spread: calc(abs(var(--x-max)) / 3.25 * -1 - 20px);
+
+  --drop-shadow: var(--x-1) 0.5px 0.6px hsl(var(--shadow-color) / 0.36),
+    var(--x-2) 8px 9px -0.8px hsl(var(--shadow-color) / 0.36),
+    var(--x-3) 24.3px 27.3px -1.7px hsl(var(--shadow-color) / 0.36),
+    var(--x-4) 63px 70.9px -2.5px hsl(var(--shadow-color) / 0.36);
+  --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 80%),
+    var(--x-fill-2) 28px 26px var(--x-fill-spread) hsl(var(--specular-highlight) / 60%);
+  --background-gradient-opacity: 50%;
+  
 }
 
 * {

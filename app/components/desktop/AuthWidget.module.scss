@@ -1,40 +1,51 @@
-@import '../../../../styles/classicy/variables';
+@import '../../styles/classicy/variables';
 
-// =============================================================================
-// WINDOW TITLE BAR
-// =============================================================================
-
-.titleBar {
+.loginContainer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.logoutContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.grantedContainer {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  min-height: 24px; // Standard height
-  
-  color: #fff;
-  font-family: $font-system;
-  font-weight: 100;
-  font-size: 13px;
-  cursor: default;
-  user-select: none;
 
-  
+  gap: 2rem;
+}
 
-  &.active {
-    background: $color-platinum-light;
-    --background-gradient-opacity: 15%;
-    // Active 狀態的標題列樣式...
-  }
+.inputAuth {
+  width: 100%;
+  padding: 0 1rem;
+  font-size: 18px;
+  border-radius: 2rem;
+  border: 1px solid hsl(var(--shadow-color) / 0.2);
+  box-shadow: inset 1px 1px 0 hsl(var(--specular-highlight)/ 80%);
 
-  // Inactive state (greyed out)
-  &.inactive {
-    // background: #808080;
-    background: transparent;
-    color: #ccc;
+  &:focus {
+    background-color: #fff8dc;
+    border: 1px solid hsl(var(--specular-highlight));
   }
 }
 
-.titleText {
+.greeting {
+  font-family: $font-pixel;
+  font-size: 14px;
+  color: hsl(var(--shadow-color) / 0.7);
+}
+
+.userInfoBox {
   position: relative;
   z-index: 1;
   background-color: $color-platinum-light; // 遮住橫紋
@@ -69,16 +80,4 @@
     pointer-events: none;
     z-index: -1;
   }
-  
-  &.active {
-    color: #000;
-  }
-
-}
-
-.titleControls {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  z-index: 1;
 }

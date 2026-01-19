@@ -2,7 +2,8 @@
 
 .appContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
   background-color: $color-platinum-light; /* App 背景色通常是灰的 */
 }
@@ -51,8 +52,13 @@
   margin: 0 2px; /* 留邊框 */
   overflow-y: auto;
   
+  
   /* Platinum 內凹效果 */
   box-shadow: inset 1px 1px 0 #000, inset 2px 2px 0 #888;
+
+    /* 經典 Mac 視窗背景網格點 */
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 3px 3px;
 }
 
 .productGrid {

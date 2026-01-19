@@ -1,123 +1,29 @@
 @import '../../../styles/classicy/variables';
 
-.windowFrame {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  // background-color: $color-platinum-light;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-	backdrop-filter: blur(15px);
-	-webkit-backdrop-filter: blur(15px);
-  border-radius: 15px;
-  border: 1px solid #000;
-  /* 外框 */
-  padding-right: 15px;
-  padding-left: 15px;
-  padding-bottom: 2px;
-  // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-	box-shadow:
-		0 8px 24px rgba(0, 0, 0, 0.2),
-		inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  /* 簡單陰影，未來可更換為像素陰影 */
-  overflow: hidden;
-
-  // Platinum 邊框效果 (Bevel)
-  // box-shadow:
-  //   inset 1px 1px 0px #fff,
-  //   inset -1px -1px 0px #888,
-  //   2px 2px 0px rgba(0, 0, 0, 0.2);
-}
-
-.titleBar {
-  height: 24px; // Mac OS 8 標準高度
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-  background: $color-platinum-dark;
-  // border-bottom: 1px solid #888;
-  position: relative;
-  cursor: default;
-
-  // 標題列橫紋 (Stripes)
-  &::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
-    background-image: linear-gradient(to bottom,
-        rgba(0, 0, 0, 0.1) 50%,
-        transparent 50%);
-    background-size: 100% 2px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  &.active {
-    background: $color-platinum-light;
-    // Active 狀態的標題列樣式...
-  }
-}
-
-.titleText {
-  position: relative;
-  z-index: 1;
-  background-color: $color-platinum-light; // 遮住橫紋
-  padding: 0 8px;
-  font-family: $font-pixel;
-  font-weight: 100;
-  font-size: 14px;
-  color: #333;
-  margin: 0 auto; // 置中
-
-  &.active {
-    color: #000;
-  }
-}
 
 .windowBody {
-  flex: 1;
-  position: relative;
-  background-color: $color-window-bg;
-  overflow: auto;
-  border: 1px solid #000;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-
-  // 內容區內陰影
-  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.2) inset;
-}
-
-// --- Window Buttons (Customizable via variables) ---
-.controlBtn {
-  width: 13px;
-  height: 13px;
-  border: 1px solid #000000;
-  border-radius: 2rem;
-  background-color: #fff;
-  z-index: 2;
-  margin-top: -1px;
-  cursor: pointer;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  font-size: 10px;
-  line-height: 1;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  border-radius: 0.5rem;
 
-  &:active {
-    background-color: #999;
-    border-color: #000;
-  }
-}
+  // background-color: $color-platinum-light; // 遮住橫紋
+  box-shadow:
+      inset 1px 1px 0 #444,
+      inset 2px 2px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 0 #000;
+  overflow: auto;
+  // margin: 0 10px;
+  backdrop-filter: blur(4px);
 
-.closeBtn {
-  margin-right: auto; // 靠左
-  background-image: $btn-close-bg; // 當資源準備好時啟用
-}
-
-.collapseBtn {
-  margin-left: auto; // 靠右
+  background-color: #fff;  
+  /* 經典 Mac 視窗背景網格點 */
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 3px 3px;
+  
+  
 }

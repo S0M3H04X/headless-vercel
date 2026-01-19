@@ -6,9 +6,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px;
+  padding: 20px;
   /* 預留 MenuBar 與 Dock 空間 */
-  padding-top: 40px; 
+  padding-top: 60px; 
   padding-bottom: 80px;
   pointer-events: none; /* 讓點擊穿透到背景 (如果有需要)，但圖示本身要 auto */
 }

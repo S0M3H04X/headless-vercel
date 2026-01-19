@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/primitives/Button';
 import { GroupFrame } from '@/components/ui/primitives/Forms';
+import styles from './AuthWidget.module.scss';
 
 type AuthStep = 'email' | 'key';
 
@@ -63,25 +64,25 @@ export const AuthWidget: React.FC = () => {
   // [Fix] 登入後顯示會員資訊 (My Account View)
   if (isAuthenticated) {
     return (
-      <GroupFrame legend="My Account" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
-        <div className="text-center">
+      <GroupFrame legend="Access Granted" className={styles.logoutContainer}>
+        <div className={styles.grantedContainer}>
           <div className="mb-4">
-            <div className="w-12 h-12 mx-auto mb-2 bg-gray-300 border border-gray-500 flex items-center justify-center shadow-inset">
+            <div className={styles.userGreeting}>Welcome</div>
+            <div className={styles.userAvatar}>
               <span className="text-2xl">👤</span>
             </div>
-            <div className="font-bold text-sm">Member Access Granted</div>
-            <div className="text-xs text-gray-600 font-mono mt-1">{user?.email || 'Authenticated User'}</div>
+            <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
           </div>
 
-          <div className="bg-white p-2 border border-gray-400 shadow-inset text-left text-xs font-mono mb-4 h-24 overflow-y-auto">
+          <div className={styles.userInfoBox}>
             <p>{`> Session Type: OS_NATIVE`}</p>
             <p>{`> Permissions: READ_WRITE`}</p>
-            <p>{`> Status: CONNECTED`}</p>
-            <p>{`> Encrypted: YES`}</p>
+            {/* <p>{`> Status: CONNECTED`}</p> */}
+            {/* <p>{`> Encrypted: YES`}</p> */}
             <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
           </div>
 
-          <Button onClick={handleLogout} className="w-full">
+          <Button onClick={handleLogout} className={styles.logoutButton} isDefault={true}>
             Log Out
           </Button>
         </div>
@@ -91,17 +92,17 @@ export const AuthWidget: React.FC = () => {
 
   // 未登入視圖
   return (
-    <GroupFrame legend="System Login" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
+    <GroupFrame legend="Welcome" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
       {msg && <div className="mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200">{msg}</div>}
       {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 
-      <div className="space-y-4">
+      <div className={styles.loginContainer}>
         {step === 'email' ? (
           <div>
             <label className="block text-xs mb-1 font-bold">Email Address</label>
             <input
               type="email"
-              className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm focus:outline-none focus:bg-yellow-50"
+              className={styles.inputAuth}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}

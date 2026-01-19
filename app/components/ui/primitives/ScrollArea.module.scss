@@ -67,7 +67,8 @@
   &.scrollbar-vertical {
     width: 16px;
     height: 100%;
-    border-left: 1px solid #888;
+    // border-left: 1px solid #888;
+    color: var(--color-text, var(--button-text));
 
     /* Optional arrow buttons area */
     &::before,

@@ -9,7 +9,7 @@ import {
   DialogActionsProps,
 } from './types';
 import styles from './SystemDialog.module.scss';
-import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
+// import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 // =============================================================================
 // DIALOG ICON

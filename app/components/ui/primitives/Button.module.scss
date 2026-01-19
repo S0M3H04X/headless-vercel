@@ -6,62 +6,6 @@
 // =============================================================================
 
 .button {
-  // font-family: $font-pixel;
-  // font-size: 13px;
-  // color: var(--lg-text);
-  // cursor: pointer;
-  // background-color: transparent;
-  // padding: 4px 16px;
-
-  // border: 0;
-  // appearance: none;
-  // background: transparent;
-
-  // border-radius: 2rem;
-  // overflow: hidden;
-  // outline: none;
-  // position: relative;
-  // user-select: none;
-  // display: inline-flex;
-  // align-items: center;
-  // justify-content: center;
-  // gap: 4px;
-
-  // /* 模擬 3px 的複雜立體邊框 */
-  // box-shadow:
-  //   inset 1px 1px 0 #fff,
-  //   /* 內亮面 */
-  //   inset -1px -1px 0 #888,
-  //   /* 內陰影 */
-  //   inset -2px -2px 0 #444,
-  //   /* 內深陰影 */
-  //   1px 1px 0 #000;
-  // /* 外框 */
-
-  --shadow-color: var(--glass-pill-hue, 284) 100 25;
-  --specular-highlight: 0 0 100;
-  --button-text: hsl(var(--glass-pill-hue, 284) 70 20 / 80%);
-  --light: hsl(var(--glass-pill-hue, 284) 100 75 / 20%);
-  --medium: hsl(var(--glass-pill-hue, 284) 100 50 / 50%);
-  --dark: hsl(var(--glass-pill-hue, 284) 100 24 / 73%);
-
-  --x-min: var(--shadow-x-min, 0px);
-  --x-max: var(--shadow-x-max, 0px);
-  --x-1: var(--x-min);
-  --x-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.12);
-  --x-3: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.38);
-  --x-4: var(--x-max);
-  --x-fill-1: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.25);
-  --x-fill-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.7);
-  --x-fill-spread: calc(abs(var(--x-max)) / 3.25 * -1 - 20px);
-
-  --drop-shadow: var(--x-1) 0.5px 0.6px hsl(var(--shadow-color) / 0.36),
-    var(--x-2) 8px 9px -0.8px hsl(var(--shadow-color) / 0.36),
-    var(--x-3) 24.3px 27.3px -1.7px hsl(var(--shadow-color) / 0.36),
-    var(--x-4) 63px 70.9px -2.5px hsl(var(--shadow-color) / 0.36);
-  --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 80%),
-    var(--x-fill-2) 28px 26px var(--x-fill-spread) hsl(var(--specular-highlight) / 60%);
-  --background-gradient-opacity: 50%;
 
   background-image: linear-gradient(180deg,
       transparent 16%,
@@ -81,9 +25,9 @@
 
   font-family: $font-pixel;
   font-size: 13px;
-  // text-transform: uppercase;
   letter-spacing: 0.02ch;
   font-weight: 100;
+  
   color: var(--color-text, var(--button-text));
   backdrop-filter: blur(4px);
   transition: all var(--transition-speed, 200ms) cubic-bezier(0.44, 0, 0.56, 1);

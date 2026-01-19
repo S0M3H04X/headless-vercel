@@ -23,7 +23,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
   },
   'video_studio': {
     label: 'Studio',
-    requiredTier: 'member', // VideoControl/Visual/Mixer are admin-only, but Studio app is member
+    requiredTier: 'admin', // VideoControl/Visual/Mixer are admin-only, but Studio app is member
     action: () => ScenarioService.launchVideoStudio('01')
   },
   'pdf_viewer': {

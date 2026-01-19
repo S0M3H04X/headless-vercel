@@ -6,37 +6,41 @@
 // =============================================================================
 
 .groupFrame {
-  border: none;
   padding: 0;
-  // margin: 0 0 16px 0;
   position: relative;
-
+  // height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: transparent;
   /* Platinum beveled border */
   &::before {
     content: '';
     position: absolute;
-    inset: 8px 0 0 0;
-    border: 1px solid #888;
-    border-top-color: #fff;
-    border-left-color: #fff;
-    box-shadow: inset 1px 1px 0 #ddd;
-    pointer-events: none;
   }
 }
 
 .legend {
   font-family: $font-pixel;
-  font-size: 12px;
-  color: $color-text;
-  background-color: $color-platinum-light;
-  padding: 0 6px;
-  margin-left: 8px;
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  color: var(--color-text);
+  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
 
 .groupContent {
-  padding: 16px 12px 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  // height: 100%;
 }
 
 // =============================================================================
@@ -146,6 +150,10 @@
   opacity: 0;
   width: 0;
   height: 0;
+  border: 1px solid #888;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 #fff;
 
   &:focus+.checkboxControl {
     outline: 2px solid $color-highlight;
