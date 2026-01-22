@@ -3,8 +3,6 @@ import { useAuthStore } from '@/store/authStore';
 import { AuthWidget } from '@/components/desktop/AuthWidget'; // [修正] 加上大括號
 import styles from './RetroOSLayout.module.scss';
 
-// import 'winbox/dist/css/winbox.min.css';
-// import '@/styles/winbox-retro.css'; 
 
 interface RetroOSLayoutProps {
   children: React.ReactNode;
@@ -32,7 +30,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
         {/* Global Auth Modal */}
         {isAuthOpen && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-             <div className="relative">
+             <div className={styles.authModal}>
                {/* Close Button applied to the wrapper to avoid conflict inside Widget */}
                <button 
                  onClick={closeAuth} 

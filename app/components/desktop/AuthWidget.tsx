@@ -92,16 +92,17 @@ export const AuthWidget: React.FC = () => {
 
   // 未登入視圖
   return (
-    <GroupFrame legend="Welcome" className="w-full max-w-sm mx-auto bg-[#c0c0c0] p-4">
+    <GroupFrame legend="Get Your Access Key" className={styles.authContainer}>
       {msg && <div className="mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200">{msg}</div>}
       {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 
       <div className={styles.loginContainer}>
         {step === 'email' ? (
-          <div>
-            <label className="block text-xs mb-1 font-bold">Email Address</label>
+          <div className={styles.inputGroup}>
+            <label className={styles.labelAuth}>Enter Email Address</label>
             <input
               type="email"
+              placeholder='address@mail.com'
               className={styles.inputAuth}
               value={email}
               onChange={(e) => setEmail(e.target.value)}

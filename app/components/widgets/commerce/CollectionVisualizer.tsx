@@ -6,6 +6,7 @@ import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
+import styles from './CollectionApp.module.scss';
 
 // Import dithering shaders
 import vertexShader from '@/shaders/dither.vert';
@@ -80,7 +81,7 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
     colorLevels = 8,      // Number of color levels (lower = more posterized)
 }) => {
     return (
-        <div className="border-b border-gray-600 relative overflow-hidden" style={{ width: '100%' }}>
+        <div className={styles.visualizerContainer}>
             {isLoading ? (
                 <div className="w-full h-full flex items-center justify-center">
                     <span className="text-white text-xs font-mono">Loading...</span>
@@ -94,16 +95,14 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
                     }}
                     dpr={1}
                     camera={{ position: [0, 0, 5], fov: 50 }}
-                    style={{ width: '100%', height: '500px' }}
+                    className={ styles.visualizerCanvas }
+                    style={{ width: '100%', height: '542px' }}
                 >
                     <Suspense fallback={<LoadingFallback />}>
                         <DitheredImage ditherScale={ditherScale} colorLevels={colorLevels} />
                     </Suspense>
                 </Canvas>
             )}
-            <div className="absolute bottom-2 right-2 text-white text-xs font-mono opacity-50 pointer-events-none">
-                Dither View (v1.0)
-            </div>
         </div>
     );
 };

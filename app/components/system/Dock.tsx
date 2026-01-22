@@ -18,7 +18,7 @@ interface AppConfig {
 const APP_CONFIG: Record<string, AppConfig> = {
   'product_browser': {
     label: 'Store',
-    requiredTier: 'member',
+    requiredTier: 'admin',
     action: () => ScenarioService.launchProductSuite('tee')
   },
   'video_studio': {

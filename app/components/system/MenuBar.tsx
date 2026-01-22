@@ -77,12 +77,12 @@ export const MenuBar: React.FC = () => {
     >
       <div className="flex items-center h-full">
         <SystemMenu />
-        <div className="ml-4 font-bold text-black px-2 border-l border-gray-300 text-sm">
+        <div className="ml-4 text-sm text-black px-2 border-l border-gray-300">
           {activeWindowTitle}
         </div>
       </div>
 
-      <div className="flex items-center h-full px-3 text-sm font-semibold text-black gap-3">
+      <div className="flex items-center h-full px-3 font-semibold text-sm text-black gap-3">
 
         {/* [新增] 用戶模式顯示 */}
         <div className={`px-2 py-0.5 text-[10px] rounded border ${tierStyle} uppercase tracking-wider`}>

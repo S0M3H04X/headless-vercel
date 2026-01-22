@@ -65,7 +65,7 @@ body {
     var(--x-2) 8px 9px -0.8px hsl(var(--shadow-color) / 0.36),
     var(--x-3) 24.3px 27.3px -1.7px hsl(var(--shadow-color) / 0.36),
     var(--x-4) 63px 70.9px -2.5px hsl(var(--shadow-color) / 0.36);
-  --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 80%),
+  --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 50%),
     var(--x-fill-2) 28px 26px var(--x-fill-spread) hsl(var(--specular-highlight) / 60%);
   --background-gradient-opacity: 50%;
   

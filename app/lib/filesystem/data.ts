@@ -15,21 +15,21 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
         icon: '/assets/classicy/img/icons/system/drives/disk.png',
         requiredTier: 'member',
         children: [
-          {
-            id: 'apps',
-            name: 'Applications',
-            type: 'folder',
-            children: [
-              {
-                id: 'radio',
-                name: 'Radio',
-                type: 'app',
-                requiredTier: 'member',
-                appId: WidgetKind.MediaPlayer,
-                icon: '/assets/classicy/img/icons/system/files/sound.png'
-              },
-            ]
-          },
+          // {
+          //   id: 'apps',
+          //   name: 'Applications',
+          //   type: 'folder',
+          //   children: [
+          //     {
+          //       id: 'radio',
+          //       name: 'Radio',
+          //       type: 'app',
+          //       requiredTier: 'member',
+          //       appId: WidgetKind.MediaPlayer,
+          //       icon: '/assets/classicy/img/icons/system/files/sound.png'
+          //     },
+          //   ]
+          // },
           {
             id: 'shop',
             name: 'Shop',
@@ -40,7 +40,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
               // 1. Collection App Shortcut
               {
                 id: 'link_tees',
-                name: '1cr3dit',
+                name: 'One Credit Collection',
                 type: 'app',
                 appId: WidgetKind.Collection,
                 metadata: { handle: '1cr3dit' },
@@ -48,15 +48,15 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
                 icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
               },
               // 2. Product Shortcut
-              {
-                id: 'link_basic_tee',
-                name: 'Basic Tee',
-                type: 'widget',
-                appId: WidgetKind.Product,
-                requiredTier: 'member',
-                metadata: { handle: 'basic-tee' },
-                icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
-              }
+              // {
+              //   id: 'link_basic_tee',
+              //   name: 'Basic Tee',
+              //   type: 'widget',
+              //   appId: WidgetKind.Product,
+              //   requiredTier: 'member',
+              //   metadata: { handle: 'basic-tee' },
+              //   icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
+              // }
             ]
           }
         ]

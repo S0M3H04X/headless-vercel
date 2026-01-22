@@ -80,7 +80,7 @@ export const SystemMenu: React.FC = () => {
 
       {isOpen && (
         <div
-          className="absolute top-full left-0 mt-[1px] w-56 bg-[#e0e0e0] border border-gray-500 shadow-xl py-1 text-sm font-medium text-black"
+          className="absolute top-full left-0 mt-[1px] w-56 bg-[#e0e0e0] border border-gray-500 shadow-xl py-1 font-medium text-black"
           style={{ zIndex: Z_INDEX.MENU_BAR + 1 }} // 確保選單在 MenuBar 之上
         >
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('ABOUT')}>

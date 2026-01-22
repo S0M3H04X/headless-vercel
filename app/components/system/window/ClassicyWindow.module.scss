@@ -20,10 +20,27 @@
   // margin: 0 10px;
   backdrop-filter: blur(4px);
 
-  background-color: #fff;  
+  background-color: $color-platinum-light;  
   /* 經典 Mac 視窗背景網格點 */
-  background-image: radial-gradient(#ccc 1px, transparent 1px);
-  background-size: 3px 3px;
+  // background-image: radial-gradient(#ccc 1px, transparent 1px);
+  // background-size: 3px 3px;
   
+  // 標題列橫紋 (Stripes)
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    // right: 20px;
+    // bottom: 0px;
+    background-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 50%,
+        transparent 50%);
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: -1;
+  }
   
 }

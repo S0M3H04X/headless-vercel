@@ -61,7 +61,7 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
     default: (props: any) => {
       const { AuthWidget } = m;
       // 強制將 AuthWidget 渲染在視窗內，移除原本的 absolute 定位樣式
-      return <div className="p-4"><AuthWidget /></div>;
+      return <div className="w-full"><AuthWidget /></div>;
     }
   }))),
 
