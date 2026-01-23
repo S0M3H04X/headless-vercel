@@ -36,15 +36,75 @@ const ProductDescStateSchema = z.object({
 type ProductDescState = z.infer<typeof ProductDescStateSchema>;
 
 // 1. 商品圖片視窗
+
 export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   if (loading) return <div className="animate-pulse bg-gray-200 h-full w-full" />;
 
-  const imgUrl = product?.images?.edges?.[0]?.node?.url;
+  // Extract all images
+  const images = product?.images?.edges?.map((e: any) => e.node) || [];
+  const hasMultipleImages = images.length > 1;
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const currentImg = images[currentIndex];
+
   return (
-    <div className={styles.imageContainer}>
-      {imgUrl ? (
-        <img src={imgUrl} alt={product.title} className="object-cover h-full w-full" />
+    <div className={`${styles.imageContainer} relative group`}>
+      {currentImg ? (
+        <>
+          <img
+            src={currentImg.url}
+            alt={currentImg.altText || product?.title || 'Product Image'}
+            className="object-cover h-full w-full transition-opacity duration-300"
+          />
+
+          {hasMultipleImages && (
+            <>
+              {/* Previous Button */}
+              <button
+                onClick={handlePrev}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/90 text-black p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                aria-label="Previous image"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNext}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/90 text-black p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                aria-label="Next image"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+
+              {/* Indicators */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 p-1 px-2 rounded-full bg-black/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
+                {images.map((_: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className={`w-1.5 h-1.5 rounded-full shadow-sm transition-colors ${idx === currentIndex ? 'bg-white' : 'bg-white/40'}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </>
       ) : (
         <span className="text-gray-400">No Image</span>
       )}

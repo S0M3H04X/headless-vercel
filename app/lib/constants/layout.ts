@@ -2,7 +2,7 @@
 
 export const INITIAL_LAYOUTS = {
   PRODUCT: {
-    GALLERY: { x: 20, y: 100, width: 300, height: 400 },
+    GALLERY: { x: 0, y: 100, width: 300, height: 400 },
     INFO: { x: 30, y: 300, width: 300, height: 200 },
     DETAILS: { x: 50, y: 350, width: 300, height: 400 },
   },

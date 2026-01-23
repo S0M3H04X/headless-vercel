@@ -8,7 +8,10 @@
   align-items: center;
   position: relative;
   height: 100%;
-  border-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-left-radius: 1.2rem;
+  border-bottom-right-radius: 1.2rem;
 
   // background-color: $color-platinum-light; // 遮住橫紋
   box-shadow:
@@ -16,7 +19,7 @@
       inset 2px 2px 0 #888,
       inset -1px -1px 0 #fff,
       1px 1px 0 #888;
-  overflow: auto;
+  overflow: clip;
   // margin: 0 10px;
   backdrop-filter: blur(4px);
 

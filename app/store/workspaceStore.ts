@@ -9,7 +9,7 @@ interface WorkspaceState {
   // [新增] 系統狀態
   installedApps: string[]; // 當前用戶可用的 App ID 清單
   isBooted: boolean;
-  
+
   openWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
@@ -20,6 +20,7 @@ interface WorkspaceState {
   restoreWindow: (id: string) => void;
   bootSystem: (config: any) => void;
   updateWindowTitle: (id: string, title: string) => void;
+  updateWindowContent: (id: string, content: ContentDescriptor) => void;
 
 }
 
@@ -30,11 +31,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       stackOrder: [],
 
       // [新增] 預設狀態
-      installedApps: [], 
+      installedApps: [],
       isBooted: false,
       bootSystem: (config) => {
         const { dock, autoStart } = config;
-        
+
         set((state) => {
           // 策略 C (Hybrid):
           // 1. Dock (Installed Apps) -> 強制使用 Server 設定
@@ -47,12 +48,12 @@ export const useWorkspaceStore = create<WorkspaceState>()(
 
           // 若是用戶首次訪問 (無殘留視窗)，則執行 autoStart
           if (!hasExistingWindows && autoStart && autoStart.length > 0) {
-             autoStart.forEach((winConfig: any) => {
-                // 這裡簡化邏輯，需呼叫內部的 openWindow 邏輯 (或在 Component 層處理)
-                // 為保持 Store 純粹，我們通常建議由 Component 觸發 openWindow
-                // 但為了方便，我們可以在這裡標記 "pendingAutoStart" 讓 UI 處理
-                // 或者直接在這裡操作 windows 物件 (需引入 uuid)
-             });
+            autoStart.forEach((winConfig: any) => {
+              // 這裡簡化邏輯，需呼叫內部的 openWindow 邏輯 (或在 Component 層處理)
+              // 為保持 Store 純粹，我們通常建議由 Component 觸發 openWindow
+              // 但為了方便，我們可以在這裡標記 "pendingAutoStart" 讓 UI 處理
+              // 或者直接在這裡操作 windows 物件 (需引入 uuid)
+            });
           }
 
           return {
@@ -70,10 +71,10 @@ export const useWorkspaceStore = create<WorkspaceState>()(
 
         // Phase5-3: 視窗開啟事件追蹤
         AnalyticsService.track('window_open', {
-            window_id: id,
-            title: title,
-            kind: content.kind,
-            source_id: content.sourceId
+          window_id: id,
+          title: title,
+          kind: content.kind,
+          source_id: content.sourceId
         });
         // ----------------------------------
 
@@ -89,7 +90,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           },
         };
 
-        
+
 
         set((state) => ({
           windows: { ...state.windows, [id]: newWindow },
@@ -101,15 +102,15 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         // --- Phase5-3 視窗關閉事件追蹤 ---
         const win = get().windows[id];
         if (win) {
-            const openTime = (win.internalState as any)?._openTime || Date.now();
-            const duration = (Date.now() - openTime) / 1000; // 秒
+          const openTime = (win.internalState as any)?._openTime || Date.now();
+          const duration = (Date.now() - openTime) / 1000; // 秒
 
-            AnalyticsService.track('window_close', {
-                window_id: id,
-                title: win.title,
-                kind: win.content.kind,
-                duration_seconds: duration
-            });
+          AnalyticsService.track('window_close', {
+            window_id: id,
+            title: win.title,
+            kind: win.content.kind,
+            duration_seconds: duration
+          });
         }
         // ----------------------------------
 
@@ -126,18 +127,18 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         set((state) => {
           const newStack = state.stackOrder.filter((w) => w !== id);
           newStack.push(id);
-          
+
           const updatedWindows = { ...state.windows };
           newStack.forEach((winId, index) => {
-             if (updatedWindows[winId]) {
-                 updatedWindows[winId] = { ...updatedWindows[winId], zIndex: index + 1 };
-             }
+            if (updatedWindows[winId]) {
+              updatedWindows[winId] = { ...updatedWindows[winId], zIndex: index + 1 };
+            }
           });
 
           return { stackOrder: newStack, windows: updatedWindows };
         });
       },
-      
+
       focusOrOpenWindow: (params) => {
         const { windows, focusWindow, openWindow } = get();
         // 根據 kind 尋找是否已存在相同類型的視窗
@@ -172,9 +173,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           return {
             windows: {
               ...state.windows,
-              [id]: { 
-                  ...win, 
-                  internalState: { ...(win.internalState as object), ...stateUpdate } 
+              [id]: {
+                ...win,
+                internalState: { ...(win.internalState as object), ...stateUpdate }
               },
             },
           };
@@ -182,30 +183,42 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       },
 
       minimizeWindow: (id) => {
-          set((state) => {
-              const win = state.windows[id];
-              if (!win) return {};
-              return {
-                windows: {
-                    ...state.windows,
-                    [id]: { ...win, isMinimized: true }
-                }
-              };
-          });
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {};
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { ...win, isMinimized: true }
+            }
+          };
+        });
       },
 
       restoreWindow: (id) => {
-          set((state) => {
-              const win = state.windows[id];
-              if (!win) return {};
-              return {
-                windows: {
-                    ...state.windows,
-                    [id]: { ...win, isMinimized: false }
-                }
-              };
-          });
-          get().focusWindow(id);
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {};
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { ...win, isMinimized: false }
+            }
+          };
+        });
+        get().focusWindow(id);
+      },
+      updateWindowContent: (id, content) => {
+        set((state) => {
+          const win = state.windows[id];
+          if (!win) return {};
+          return {
+            windows: {
+              ...state.windows,
+              [id]: { ...win, content },
+            },
+          };
+        });
       },
       updateWindowTitle: (id, title) => {
         set((state) => {
