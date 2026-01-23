@@ -44,8 +44,7 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.PDFViewer]: lazy(() => import('./assets/PDFViewerWidget')),
 
   [WidgetKind.ProductImage]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductImageWidget }))),
-  [WidgetKind.ProductTitle]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductTitleWidget }))),
-  [WidgetKind.ProductDesc]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductDescWidget }))),
+  [WidgetKind.ProductInfo]: lazy(() => import('./commerce/ProductParts').then(m => ({ default: m.ProductInfoWidget }))),
   [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
   [WidgetKind.UserProfile]: lazy(() => import('./user/UserProfileWidget')),
 

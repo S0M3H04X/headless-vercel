@@ -26,7 +26,7 @@ const ProductTitleStateSchema = z.object({
   fontSize: z.number().min(12).max(36),
   showDetails: z.boolean(),
 });
-type ProductTitleState = z.infer<typeof ProductTitleStateSchema>; 
+type ProductTitleState = z.infer<typeof ProductTitleStateSchema>;
 
 const ProductDescStateSchema = z.object({
   fontSize: z.number().min(12).max(24),
@@ -36,10 +36,10 @@ const ProductDescStateSchema = z.object({
 type ProductDescState = z.infer<typeof ProductDescStateSchema>;
 
 // 1. 商品圖片視窗
-export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
+export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
   if (loading) return <div className="animate-pulse bg-gray-200 h-full w-full" />;
-  
+
   const imgUrl = product?.images?.edges?.[0]?.node?.url;
   return (
     <div className={styles.imageContainer}>
@@ -52,40 +52,57 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps ) => {
   );
 };
 
-// 2. 商品標題視窗 (修正加入購物車邏輯)
-export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
+// 2. 商品資訊視窗 (合併標題 + 描述)
+export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
   const addItem = useCartStore((s) => s.addItem);
   const [isAdding, setIsAdding] = useState(false);
 
+  const state = useWidgetState<ProductDescState>(
+    internalState,
+    ProductDescStateSchema,
+    DEFAULT_DESC_STATE
+  );
+
   const handleAddToCart = async () => {
-     // 安全地獲取第一個 Variant ID
-     const defaultVariantId = product?.variants?.edges?.[0]?.node?.id;
+    // 安全地獲取第一個 Variant ID
+    const defaultVariantId = product?.variants?.edges?.[0]?.node?.id;
 
-     if (!defaultVariantId) {
-       console.error("Product data missing variants:", product);
-       alert('Error: No variant available. Please check console.');
-       return;
-     }
+    if (!defaultVariantId) {
+      console.error("Product data missing variants:", product);
+      alert('Error: No variant available. Please check console.');
+      return;
+    }
 
-     setIsAdding(true);
-     await addItem(defaultVariantId, 1);
-     setIsAdding(false);
+    setIsAdding(true);
+    await addItem(defaultVariantId, 1);
+    setIsAdding(false);
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="h-full w-full bg-white p-6 flex flex-col gap-2">
+        <div className="h-6 bg-gray-200 rounded w-1/2 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse" />
+        <div className="h-10 bg-gray-200 rounded w-1/3 animate-pulse mt-2" />
+        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse mt-4" />
+        <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.infoContainer}>
+      {/* 標題區塊 */}
       <h1 className={styles.productTitle}>
         {product?.title || 'Product Not Found'}
       </h1>
       <div className={styles.productPrice}>
-        {product?.variants?.edges?.[0]?.node?.price?.amount 
+        {product?.variants?.edges?.[0]?.node?.price?.amount
           ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
           : ''}
       </div>
-      <Button 
+      <Button
         className={styles.btnAddToCart}
         buttonStyle="system" isDefault
         onClick={handleAddToCart}
@@ -99,48 +116,24 @@ export const ProductTitleWidget = ({ content }: BaseWidgetProps) => {
           'ADD TO CART'
         )}
       </Button>
-    </div>
-  );
-};
 
-// 3. 商品描述視窗
-export const ProductDescWidget = ({ content, internalState }: BaseWidgetProps) => {
-  // 使用衛士：給定預設值
-  const { product, loading } = useShopifyProduct(content.sourceId);
-  const state = useWidgetState<ProductDescState>(
-    internalState, 
-    ProductDescStateSchema, 
-    DEFAULT_DESC_STATE
-  );
-
-  if (loading) {
-    return (
-      <div className="h-full w-full bg-white p-6 flex flex-col gap-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.detailContainer}>
-      {/* C. 渲染真實描述 */}
-      <div 
-        style={{ fontSize: state.fontSize }} 
-        className="text-gray-700 leading-relaxed whitespace-pre-wrap"
-      >
-        {product?.description || "No description available for this product."}
-      </div>
-
-      {/* 狀態控制的額外資訊 */}
-      {state.showDetails && (
-        <div className="mt-6 pt-4 border-gray-100 text-xs text-gray-400 font-mono">
-          Product ID: {content.sourceId}<br/>
-          Source: Shopify Storefront API
+      {/* 描述區塊 */}
+      <div className={styles.productDescription}>
+        <div
+          style={{ fontSize: state.fontSize }}
+          className="text-gray-700 leading-relaxed whitespace-pre-wrap"
+        >
+          {product?.description || "No description available for this product."}
         </div>
-      )}
+
+        {/* 狀態控制的額外資訊 */}
+        {state.showDetails && (
+          <div className="mt-6 pt-4 border-gray-100 text-xs text-gray-400 font-mono">
+            Product ID: {content.sourceId}<br />
+            Source: Shopify Storefront API
+          </div>
+        )}
+      </div>
     </div>
   );
-
 };

@@ -22,14 +22,8 @@ export const ScenarioService = {
 
     openWindow({
       title: 'Product Info',
-      content: { kind: WidgetKind.ProductTitle, sourceId: handle },
-      initialGeometry: layout.INFO
-    });
-
-    openWindow({
-      title: 'Details',
-      content: { kind: WidgetKind.ProductDesc, sourceId: handle },
-      initialGeometry: layout.DETAILS
+      content: { kind: WidgetKind.ProductInfo, sourceId: handle },
+      initialGeometry: { ...layout.INFO, height: 600 }
     });
   },
 
@@ -38,9 +32,9 @@ export const ScenarioService = {
   // Scenario 2: Video Studio (with Singleton Check)
   launchVideoStudio: (sourceId?: string) => {
     const store = useWorkspaceStore.getState();
-    
+
     // [Fix 1] Singleton Check: 檢查是否已經有 Video Studio 相關視窗
-    const hasVideoStudio = Object.values(store.windows).some(win => 
+    const hasVideoStudio = Object.values(store.windows).some(win =>
       VIDEO_WIDGET_KINDS.includes(win.content.kind as any)
     );
 

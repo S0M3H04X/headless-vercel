@@ -5,8 +5,7 @@ export const WidgetKind = {
   // Commerce Context
   Product: 'shopify_product',
   ProductImage: 'product_image',
-  ProductTitle: 'product_title',
-  ProductDesc: 'product_desc',
+  ProductInfo: 'product_info',
 
   // Content Context
   MediaPlayer: 'media_player',
