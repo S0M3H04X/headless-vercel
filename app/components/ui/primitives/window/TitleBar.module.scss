@@ -12,7 +12,6 @@
   height: 42px; // Standard height
   
   color: #fff;
-  font-family: $font-system;
   font-weight: 100;
   font-size: 13px;
   cursor: default;
@@ -41,12 +40,12 @@
   box-shadow:
       inset 1px 1px 0 #444,
       inset 2px 2px 0 #888,
-      inset -1px -1px 0 #fff,
-      1px 1px 0 #000;
+      inset -1px -1px 0 #fff;
+      // 1px 1px 0 #000;
   backdrop-filter: blur(4px);
-  border-radius: 2px;
+  border-radius: 2rem;
   padding: 0 8px;
-  font-family: $font-pixel;
+  font-family: $font-menu;
   font-weight: 100;
   font-size: 14px;
   color: $color-text;
@@ -60,8 +59,7 @@
     width: 100%;
     top: 0;
     left: 0;
-    // right: 20px;
-    // bottom: 0px;
+    border-radius: 2rem;
     background-image: linear-gradient(to bottom,
         rgba(0, 0, 0, 0.1) 50%,
         transparent 50%);

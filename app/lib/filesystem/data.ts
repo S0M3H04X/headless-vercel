@@ -33,20 +33,22 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
           {
             id: 'shop',
             name: 'Shop',
-            type: 'folder',
+            type: 'app',
+            appId: WidgetKind.Collection,
+            metadata: { handle: '1cr3dit' },
             icon: '/assets/classicy/img/icons/system/folders/favorites.png',
             requiredTier: 'member',
-            children: [
-              // 1. Collection App Shortcut
-              {
-                id: 'link_tees',
-                name: 'One Credit Collection',
-                type: 'app',
-                appId: WidgetKind.Collection,
-                metadata: { handle: '1cr3dit' },
-                requiredTier: 'member',
-                icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
-              },
+            // children: [
+            //   // 1. Collection App Shortcut
+            //   {
+            //     id: 'link_tees',
+            //     name: 'One Credit Collection',
+            //     type: 'app',
+            //     appId: WidgetKind.Collection,
+            //     metadata: { handle: '1cr3dit' },
+            //     requiredTier: 'member',
+            //     icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
+            //   },
               // 2. Product Shortcut
               // {
               //   id: 'link_basic_tee',
@@ -57,7 +59,7 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
               //   metadata: { handle: 'basic-tee' },
               //   icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
               // }
-            ]
+            // ]
           }
         ]
       }

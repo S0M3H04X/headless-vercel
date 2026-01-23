@@ -92,7 +92,7 @@ export const AuthWidget: React.FC = () => {
 
   // 未登入視圖
   return (
-    <GroupFrame legend="Get Your Access Key" className={styles.authContainer}>
+    <GroupFrame legend="Get Your Access Key">
       {msg && <div className="mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200">{msg}</div>}
       {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 

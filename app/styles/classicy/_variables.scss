@@ -30,6 +30,23 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
 }
 
 @font-face {
+  font-family: 'Arcade';
+  src: url('#{$font-path}/ARCADE.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  ascent-override: 110%;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+  font-family: 'LL Pixel 3';
+  src: url('#{$font-path}/LLPIXEL3.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
     font-family: "Apple Garamond Light";
     src: url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.eot");
     src: url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.eot?#iefix")format("embedded-opentype"),
@@ -41,7 +58,9 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
 
 $font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
 $font-pixel: 'Ishmeria', monospace; // 暫代像素字體
-$font-menu: 'Apple Garamond Light', serif; // 按鈕字體
+$font-menu: 'Arcade', monospace; // 遊戲字體
+// $font-menu: 'LL Pixel 3', monospace; // 另一款
+// $font-menu: 'Apple Garamond Light', serif; // 按鈕字體
 
 
 // --- 3. Assets Paths (Customizable) ---
