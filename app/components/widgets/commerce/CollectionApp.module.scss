@@ -86,7 +86,7 @@
 
 /* --- Product Item --- */
 .productItem {
-  grid-column: 3/4;
+  grid-column: 2/3;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -105,18 +105,18 @@
   // width: 80px;
   // height: 100px;
   // border: 1px solid #000;
-  background: #fff;
+  background: #ffffffca;
   padding: 2px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 6px;
   border-radius: 2rem;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   overflow: clip;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 0;
+    // height: 100%;
     object-fit: cover;
   }
 }
@@ -265,5 +265,42 @@
   .productThumb {
     border: 2px solid #508cfb;
   }
+}
 
+.selectedPreview {
+  position: absolute;
+  bottom: 64px;
+  right: 16px;
+  // transform: translate(-50%, -50%);
+  width: calc(50% - 82.5px);
+  height: calc(40% - 67px);
+  pointer-events: none; // Let clicks pass through to grid items underneath if needed, or maybe not?
+  // If it's on top and opaque, we might want it to block?
+  // But navigation is via controller... so maybe pointer-events: none is safer for now to avoid blocking clicks on grid if it overlaps weirdly.
+  // Actually, user might want to click IT to view? The request didn't say.
+  // Keeping pointer-events: none for now as it's a "display".
+
+  z-index: 5;
+
+  // Style similar to productThumb
+  background: #ffffffca;
+  padding: 2px; // Slightly larger padding for larger item
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 1.2rem; // Keep consistent with thumb
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; // Changed from cover to contain to ensure full product is seen? Or cover for style?
+    // products have .productThumb img { object-fit: cover } in existing code.
+    // I'll stick to cover for consistency, but maybe contain is better for "preview"?
+    // Let's use cover to match the aesthetic of "thumb to match a 2x2"
+    object-fit: cover;
+    // border-radius: 1.8rem; // Inner radius
+  }
 }

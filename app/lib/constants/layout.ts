@@ -3,7 +3,7 @@
 export const INITIAL_LAYOUTS = {
   PRODUCT: {
     GALLERY: { x: 0, y: 100, width: 300, height: 400 },
-    INFO: { x: 30, y: 300, width: 300, height: 200 },
+    INFO: { x: 30, y: 300, width: 300, height: 400 },
     DETAILS: { x: 50, y: 350, width: 300, height: 400 },
   },
   VIDEO: {

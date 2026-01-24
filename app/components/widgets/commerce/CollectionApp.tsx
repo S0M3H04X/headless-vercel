@@ -70,21 +70,35 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
             Error loading collection.
           </div>
         ) : (
-          <div className={styles.productGrid}>
-            {products.map((p, index) => (
-              <div
-                key={p.id}
-                className={`${styles.productItem} ${index === selectedIndex ? styles.selected : ''}`}
-                onClick={() => handleProductSelect(index)}
-                // onDoubleClick={() => handleProductClick(p.handle)}
-                title={p.title}
-              >
-                <div className={styles.productThumb}>
-                  {p.featuredImage && <img src={p.featuredImage.url} alt={p.title} />}
+          <>
+            <div className={styles.productGrid}>
+              {products.map((p, index) => (
+                <div
+                  key={p.id}
+                  className={`${styles.productItem} ${index === selectedIndex ? styles.selected : ''}`}
+                  onClick={() => handleProductSelect(index)}
+                  // onDoubleClick={() => handleProductClick(p.handle)}
+                  title={p.title}
+                >
+                  <div className={styles.productThumb}>
+                    {p.featuredImage && <img src={p.featuredImage.url} alt={p.title} />}
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Selected Product Large Preview */}
+            {products.length > 0 && products[selectedIndex] && (
+              <div className={styles.selectedPreview}>
+                {products[selectedIndex].featuredImage && (
+                  <img
+                    src={products[selectedIndex].featuredImage.url}
+                    alt={products[selectedIndex].title}
+                  />
+                )}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
 

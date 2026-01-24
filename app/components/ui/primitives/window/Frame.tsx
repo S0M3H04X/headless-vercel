@@ -20,7 +20,7 @@ export const WindowFrame = React.forwardRef<HTMLDivElement, WindowFrameProps>(
     return (
       <div
         ref={ref}
-        className={`${styles.windowFrame} ${isActive ? styles.active : ''} ${className || ''}`}
+        className={`${styles.windowFrame} ${isActive ? styles.active : ''}`}
         {...props}
       >
         {children}

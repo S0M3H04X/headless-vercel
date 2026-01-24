@@ -13,7 +13,7 @@ import { WidgetKind, WidgetKindType } from '@/lib/types/workspace';
 const WIDGET_HEIGHT_CONFIG: Partial<Record<WidgetKindType | string, number | 'auto'>> = {
   [WidgetKind.Auth]: 450,
   [WidgetKind.Cart]: 400,
-  [WidgetKind.Product]: 'auto',
+  [WidgetKind.Product]: 300,
   [WidgetKind.Collection]: 600,
   [WidgetKind.Folder]: 200,
   [WidgetKind.PDFViewer]: 600,
@@ -26,7 +26,7 @@ const WIDGET_HEIGHT_CONFIG: Partial<Record<WidgetKindType | string, number | 'au
 const WIDGET_WIDTH_CONFIG: Partial<Record<WidgetKindType | string, number | 'auto'>> = {
   [WidgetKind.Auth]: 320,
   [WidgetKind.Cart]: 360,
-  [WidgetKind.Product]: 'auto',
+  [WidgetKind.Product]: 400,
   [WidgetKind.Collection]: 500,
   [WidgetKind.Folder]: 200,
   [WidgetKind.PDFViewer]: 500,
