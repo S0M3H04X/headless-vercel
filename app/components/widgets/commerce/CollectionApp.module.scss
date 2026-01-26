@@ -186,7 +186,7 @@
 .navContainer {
   position: fixed;
   bottom: 0;
-  left: 16px;
+  left: 12px;
   display: flex;
   flex-direction: column;
   align-items: end;
@@ -199,8 +199,8 @@
 }
 
 .navButton {
-  width: 60px;
-  height: 80px;
+  width: 48px;
+  height: 100px;
   min-width: unset;
   padding: 0;
   font-size: 1.5rem;
@@ -270,16 +270,11 @@
 .selectedPreview {
   position: absolute;
   bottom: 64px;
-  right: 16px;
-  // transform: translate(-50%, -50%);
-  width: calc(50% - 82.5px);
-  height: calc(40% - 67px);
-  pointer-events: none; // Let clicks pass through to grid items underneath if needed, or maybe not?
-  // If it's on top and opaque, we might want it to block?
-  // But navigation is via controller... so maybe pointer-events: none is safer for now to avoid blocking clicks on grid if it overlaps weirdly.
-  // Actually, user might want to click IT to view? The request didn't say.
-  // Keeping pointer-events: none for now as it's a "display".
+  right: 12px;
 
+  width: calc(50% - 63px);
+  height: calc(42% - 67px);
+  pointer-events: none; 
   z-index: 5;
 
   // Style similar to productThumb
@@ -296,11 +291,8 @@
   img {
     width: 100%;
     height: 100%;
-    object-fit: contain; // Changed from cover to contain to ensure full product is seen? Or cover for style?
-    // products have .productThumb img { object-fit: cover } in existing code.
-    // I'll stick to cover for consistency, but maybe contain is better for "preview"?
-    // Let's use cover to match the aesthetic of "thumb to match a 2x2"
+    object-fit: contain; 
     object-fit: cover;
-    // border-radius: 1.8rem; // Inner radius
+    border-radius: 1.2rem;
   }
 }

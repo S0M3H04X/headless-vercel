@@ -20,6 +20,7 @@ const WIDGET_HEIGHT_CONFIG: Partial<Record<WidgetKindType | string, number | 'au
   [WidgetKind.UserProfile]: 350,
   [WidgetKind.MediaPlayer]: 480,
   [WidgetKind.VideoVisual]: 400,
+  [WidgetKind.ProductInfo]: 300,
 };
 
 // Widget-specific width configuration (optional)
