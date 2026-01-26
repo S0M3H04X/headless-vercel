@@ -72,7 +72,7 @@ export const SystemMenu: React.FC = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={styles.menuButton + `
-          ${isOpen ? 'bg-blue-900 text-white' : 'hover:bg-gray-700 hover:text-white text-black'}
+          ${isOpen ? styles.menuButtonOpen : 'hover:bg-gray-700 hover:text-white text-black'}
         `}
       >
         1313Heart
