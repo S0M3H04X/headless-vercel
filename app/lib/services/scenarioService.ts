@@ -26,7 +26,7 @@ export const ScenarioService = {
       openWindow({
         title: 'Product Info',
         content: { kind: WidgetKind.ProductInfo, sourceId: handle },
-        initialGeometry: { ...layout.INFO, height: 200 }
+        initialGeometry: layout.INFO
       });
     }
 

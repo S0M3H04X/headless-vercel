@@ -1,9 +1,12 @@
 // app/lib/constants/layout.ts
+import { WindowGeometry } from '@/lib/types/workspace';
+
+type LayoutGroup = Record<string, WindowGeometry>;
 
 export const INITIAL_LAYOUTS = {
   PRODUCT: {
     GALLERY: { x: 0, y: 80, width: 350, height: 420 },
-    INFO: { x: 50, y: 500, width: 350, height: 500 },
+    INFO: { x: 50, y: 500, width: 350, height: 200 }, // Updated height from 500 to 200 (from ScenarioService)
     DETAILS: { x: 50, y: 350, width: 300, height: 400 },
   },
   VIDEO: {
@@ -15,11 +18,7 @@ export const INITIAL_LAYOUTS = {
     DEFAULT: { x: 20, y: 100, width: 300, height: 800 },
   },
   COLLECTION: {
-    APP: {
-      x: 0,
-      y: 0,
-      width: '100vw',
-      height: 'calc(90vh - 120px)'
-    },
+    // Updated to match SystemService usage instead of the old full-screen default
+    APP: { x: 0, y: 0, width: 640, height: 480 },
   },
-} as const;
+} satisfies Record<string, LayoutGroup>;

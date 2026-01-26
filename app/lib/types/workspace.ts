@@ -41,16 +41,18 @@ export interface ContentDescriptor {
   initialMeta?: Record<string, unknown>;
 }
 
+export interface WindowGeometry {
+  x: number | 'center' | 'left' | 'right';
+  y: number | 'center' | 'top' | 'bottom';
+  width: number | string;
+  height: number | string;
+}
+
 // 2. 視窗實體 (中顆粒) - 包含幾何狀態與不透明的內部狀態
 export interface WindowInstance {
   id: string;
   title: string;
-  geometry: {
-    x: number | 'center' | 'left' | 'right';
-    y: number | 'center' | 'top' | 'bottom';
-    width: number | string;
-    height: number | string;
-  };
+  geometry: WindowGeometry;
   zIndex: number;
   isMinimized: boolean;
   content: ContentDescriptor;

@@ -158,7 +158,8 @@ export const WindowManager = () => {
         // 確保視窗不會因為計算誤差而跑出螢幕左側或上方
         // 手機版強制水平置中
         if (isMobile) {
-          finalX = (viewport.w - finalW) / 2;
+          // Mobile Clamp: Ensure it fits within screen, but don't force center
+          finalX = Math.max(0, Math.min(finalX, viewport.w - finalW));
           // 確保標題列可見
           finalY = Math.max(42, Math.min(finalY, viewport.h - finalH));
         } else {

@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 import { canAccess } from '@/lib/utils/tierUtils';
 
 import { ScenarioService } from './scenarioService';
+import { INITIAL_LAYOUTS } from '@/lib/constants/layout';
 import { WidgetKind } from '@/lib/types/workspace';
 
 import { FileSystemNode } from '@/lib/filesystem/types';
@@ -49,7 +50,7 @@ export const SystemService = {
               kind: WidgetKind.Collection,
               sourceId: node.metadata?.handle || 'root'
             },
-            initialGeometry: { x: 150, y: 150, width: 640, height: 480 }
+            initialGeometry: INITIAL_LAYOUTS.COLLECTION.APP
           });
         }
         // 未來可在此擴充其他 App (如 MediaPlayer)
