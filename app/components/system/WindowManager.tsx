@@ -75,13 +75,48 @@ export const WindowManager = () => {
         const configHeight = WIDGET_HEIGHT_CONFIG[widgetKind];
         const configWidth = WIDGET_WIDTH_CONFIG[widgetKind];
 
+        // Helper to parse dimension
+        const parseDimension = (val: number | string | undefined, total: number): number => {
+          if (typeof val === 'number') return val;
+          if (!val) return 600; // Default fallback
+          if (val === 'auto') return 600; // Handle 'auto' from config
+
+          const strVal = val as string;
+          if (strVal.endsWith('vw')) {
+            return (parseFloat(strVal) / 100) * viewport.w;
+          }
+          if (strVal.endsWith('vh')) {
+            return (parseFloat(strVal) / 100) * viewport.h;
+          }
+          // Simple calc support: calc(90vh - 120px)
+          if (strVal.startsWith('calc')) {
+            const inner = strVal.replace('calc(', '').replace(')', '');
+            // rudimentary parsing for "90vh - 120px" or similar
+            // This is a very basic parser for the specific use case
+            const parts = inner.split('-').map(p => p.trim());
+            if (parts.length === 2) {
+              let base = 0;
+              if (parts[0].endsWith('vh')) base = (parseFloat(parts[0]) / 100) * viewport.h;
+              else if (parts[0].endsWith('vw')) base = (parseFloat(parts[0]) / 100) * viewport.w;
+              else if (parts[0].endsWith('%')) base = (parseFloat(parts[0]) / 100) * total;
+
+              let subtract = parseFloat(parts[1]);
+              return base - subtract;
+            }
+          }
+          return 600;
+        };
+
+        const geometryW = win.geometry.width;
+        const geometryH = win.geometry.height;
+
         let baseW = configWidth && configWidth !== 'auto'
-          ? configWidth
-          : (typeof win.geometry.width === 'number' ? win.geometry.width : 600);
+          ? (typeof configWidth === 'number' ? configWidth : 600) // Config currently only supports number | 'auto' in types, but let's be safe
+          : parseDimension(geometryW, viewport.w);
 
         let baseH = configHeight && configHeight !== 'auto'
-          ? configHeight
-          : (typeof win.geometry.height === 'number' ? win.geometry.height : 500);
+          ? (typeof configHeight === 'number' ? configHeight : 500)
+          : parseDimension(geometryH, viewport.h);
 
         // 2. [關鍵修正] 強制尺寸約束 (Size Constraints)
         let finalW = baseW;

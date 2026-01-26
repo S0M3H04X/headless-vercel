@@ -66,7 +66,7 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
           <img
             src={currentImg.url}
             alt={currentImg.altText || product?.title || 'Product Image'}
-            className="object-cover h-full w-full transition-opacity duration-300"
+            className={styles.imageSlide}
           />
 
           {hasMultipleImages && (
@@ -154,34 +154,39 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
   return (
     <div className={styles.infoContainer}>
       {/* 標題區塊 */}
-      <h1 className={styles.productTitle}>
-        {product?.title || 'Product Not Found'}
-      </h1>
-      <div className={styles.productPrice}>
-        {product?.variants?.edges?.[0]?.node?.price?.amount
-          ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
-          : ''}
-      </div>
-      <Button
-        className={styles.btnAddToCart}
-        buttonStyle="system" isDefault
-        onClick={handleAddToCart}
-        disabled={isAdding || !product}
-      >
-        {isAdding ? (
-          <>
-            Adding...
-          </>
-        ) : (
-          'ADD TO CART'
-        )}
-      </Button>
 
+      <div className={styles.headerContainer}>
+        <div className={styles.textSection}>
+          <h1 className={styles.productTitle}>
+            {product?.title || 'Product Not Found'}
+          </h1>
+          <div className={styles.productPrice}>
+            {product?.variants?.edges?.[0]?.node?.price?.amount
+              ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
+              : ''}
+          </div>
+
+        </div>
+        <Button
+          className={styles.btnAddToCart}
+          buttonStyle="system" isDefault
+          onClick={handleAddToCart}
+          disabled={isAdding || !product}
+        >
+          {isAdding ? (
+            <>
+              Adding...
+            </>
+          ) : (
+            'ADD TO CART'
+          )}
+        </Button>
+      </div>
       {/* 描述區塊 */}
-      <div className={styles.productDescription}>
+      <div className={styles.descContainer}>
         <div
           style={{ fontSize: state.fontSize }}
-          className="text-gray-700 leading-relaxed whitespace-pre-wrap"
+          className={styles.descriptionText}
         >
           {product?.description || "No description available for this product."}
         </div>
@@ -194,6 +199,10 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
           </div>
         )}
       </div>
+
+
+
+
     </div>
   );
 };

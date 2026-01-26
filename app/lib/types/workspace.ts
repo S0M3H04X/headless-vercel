@@ -48,8 +48,8 @@ export interface WindowInstance {
   geometry: {
     x: number | 'center' | 'left' | 'right';
     y: number | 'center' | 'top' | 'bottom';
-    width: number;
-    height: number;
+    width: number | string;
+    height: number | string;
   };
   zIndex: number;
   isMinimized: boolean;
