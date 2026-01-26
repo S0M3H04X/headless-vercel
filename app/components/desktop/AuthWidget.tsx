@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/primitives/Button';
 import { GroupFrame } from '@/components/ui/primitives/Forms';
+import { ProgressBar } from '@/components/ui/primitives';
 import styles from './AuthWidget.module.scss';
 
 type AuthStep = 'email' | 'key';
@@ -75,8 +76,8 @@ export const AuthWidget: React.FC = () => {
           </div>
 
           <div className={styles.userInfoBox}>
-            <p>{`> Session Type: OS_NATIVE`}</p>
-            <p>{`> Permissions: READ_WRITE`}</p>
+            <p>{`> Session Type: 1313_NATIVE`}</p>
+            <p>{`> Permissions: READ`}</p>
             {/* <p>{`> Status: CONNECTED`}</p> */}
             {/* <p>{`> Encrypted: YES`}</p> */}
             <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
@@ -103,7 +104,7 @@ export const AuthWidget: React.FC = () => {
             <input
               type="email"
               placeholder='address@mail.com'
-              className={styles.inputAuth}
+              className={styles.inputMail}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}
@@ -111,12 +112,12 @@ export const AuthWidget: React.FC = () => {
             />
           </div>
         ) : (
-          <div>
+          <div className={styles.inputGroup}>
             <label className="block text-xs mb-1 font-bold">Access Key</label>
             <input
               type="password"
               placeholder="********"
-              className="w-full p-2 border-2 border-gray-600 shadow-inset bg-white font-mono text-sm tracking-widest focus:outline-none focus:bg-yellow-50"
+              className={styles.inputKey}
               value={accessKey}
               onChange={(e) => setAccessKey(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
@@ -127,18 +128,25 @@ export const AuthWidget: React.FC = () => {
         )}
 
         <div className="flex justify-between items-center pt-2 gap-2">
-          {step === 'key' && (
-            <Button onClick={() => setStep('email')} variant="default" className="w-20">Back</Button>
+          {loading ? (
+            <div className="w-full">
+              <ProgressBar height="28px" label="Processing Request..." />
+            </div>
+          ) : (
+            <>
+              {step === 'key' && (
+                <Button onClick={() => setStep('email')} variant="default" className="w-20">Back</Button>
+              )}
+              <div className="flex-1"></div>
+              <Button
+                onClick={step === 'email' ? handleRequestKey : handleLogin}
+                isDefault={true}
+                className="min-w-[100px]"
+              >
+                {step === 'email' ? 'Get Key' : 'Enter System'}
+              </Button>
+            </>
           )}
-          <div className="flex-1"></div>
-          <Button
-            onClick={step === 'email' ? handleRequestKey : handleLogin}
-            disabled={loading}
-            isDefault={true}
-            className="min-w-[100px]"
-          >
-            {loading ? 'Processing...' : (step === 'email' ? 'Get Key' : 'Enter System')}
-          </Button>
         </div>
       </div>
     </GroupFrame>

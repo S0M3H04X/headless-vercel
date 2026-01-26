@@ -2,7 +2,7 @@
 import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useAuthStore } from '@/store/authStore';
-import { PixelIcon } from '@/components/ui/PixelIcon';
+import { PixelIcon } from '@/components/ui/primitives/PixelIcon';
 import { WidgetKind } from '@/lib/types/workspace';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { canAccess, type UserTier } from '@/lib/utils/tierUtils';
@@ -11,6 +11,7 @@ import styles from './Dock.module.scss';
 // App config with tier requirements
 interface AppConfig {
   label: string;
+  icon: string;
   requiredTier: UserTier;
   action: () => void;
 }
@@ -18,16 +19,19 @@ interface AppConfig {
 const APP_CONFIG: Record<string, AppConfig> = {
   'product_browser': {
     label: 'Store',
+    icon: 'shop',
     requiredTier: 'admin',
     action: () => ScenarioService.launchProductSuite('tee')
   },
   'video_studio': {
     label: 'Studio',
+    icon: 'retro-camera',
     requiredTier: 'admin', // VideoControl/Visual/Mixer are admin-only, but Studio app is member
     action: () => ScenarioService.launchVideoStudio('01')
   },
   'pdf_viewer': {
     label: 'Files',
+    icon: 'folder-open',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
       title: 'System Manual.pdf',
@@ -37,6 +41,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
   },
   'cart': {
     label: 'Cart',
+    icon: 'shopping-cart',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().focusOrOpenWindow({
       title: 'Cart',
@@ -46,6 +51,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
   },
   'profile': {
     label: 'My PC',
+    icon: 'user',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().focusOrOpenWindow({
       title: 'My Account',
@@ -54,6 +60,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
   },
   'launcher': {
     label: 'Start',
+    icon: 'grid',
     requiredTier: 'guest', // Always accessible
     action: () => { console.log('Open Start Menu'); }
   }
@@ -96,7 +103,7 @@ export const Dock = () => {
               aria-label={config.label}
               title={isLocked ? `${config.label} (Login required)` : config.label}
             >
-              <PixelIcon name={appId} size={32} className={isLocked ? 'opacity-50' : 'text-black'} />
+              <PixelIcon name={config.icon} className={isLocked ? 'opacity-50' : 'text-black'} style={{ fontSize: '2rem' }} />
               <span className={styles.tooltip}>{config.label}</span>
               {isAppRunning(appId) && <div className={styles.runningDot} />}
             </button>
@@ -104,14 +111,7 @@ export const Dock = () => {
         })}
       </div>
 
-      {/* <!-- SVG FILTER DEFINITION --> */}
-    {/* <svg style="display: none">
-      <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
-        <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
-        <feDisplacementMap in="SourceGraphic" in2="blurred" scale="70" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </svg> */}
+
     </div>
   );
 };

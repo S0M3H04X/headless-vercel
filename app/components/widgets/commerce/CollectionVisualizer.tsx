@@ -6,6 +6,7 @@ import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
+import { ProgressBar } from '@/components/ui/primitives';
 import styles from './CollectionApp.module.scss';
 
 // Import dithering shaders
@@ -83,8 +84,10 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
     return (
         <div className={styles.visualizerContainer}>
             {isLoading ? (
-                <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-white text-xs font-mono">Loading...</span>
+                <div className="w-full h-full flex items-center justify-center bg-black/20">
+                    <div className="w-48 p-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-gray-600 border-r-gray-600">
+                        <ProgressBar height="16px" label="Loading Assets..." />
+                    </div>
                 </div>
             ) : (
                 <Canvas

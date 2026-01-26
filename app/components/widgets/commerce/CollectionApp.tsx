@@ -6,6 +6,7 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 import { useCollectionData } from '@/hooks/useCollectionData';
 import { CollectionVisualizer } from './CollectionVisualizer';
 import { Button } from '@/components/ui/primitives/Button';
+import { ProgressBar } from '@/components/ui/primitives';
 import styles from './CollectionApp.module.scss';
 
 export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
@@ -62,8 +63,8 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
       {/* Content Layer */}
       <div className={styles.viewArea}>
         {isLoading ? (
-          <div className="p-4 text-center text-xs text-gray-500 font-mono">
-            Connecting to Commerce Cloud...
+          <div className="p-8 w-full max-w-[200px] mx-auto flex flex-col items-center justify-center">
+            <ProgressBar height="20px" label="Downloading Data..." />
           </div>
         ) : error ? (
           <div className="p-4 text-center text-red-600 text-xs font-mono">

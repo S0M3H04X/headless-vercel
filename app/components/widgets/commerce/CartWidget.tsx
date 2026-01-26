@@ -3,7 +3,8 @@
 import React, { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore'; // 注意：確認您的 cartStore 是放在哪，根據上一輪應為 @/store/cartStore
 // 修正引用路徑：
-import { useCartStore } from '@/store/cartStore'; 
+import { useCartStore } from '@/store/cartStore';
+import { ProgressBar } from '@/components/ui/primitives';
 import { BaseWidgetProps } from '@/lib/types/workspace';
 
 export default function CartWidget({ content }: BaseWidgetProps) {
@@ -30,7 +31,13 @@ export default function CartWidget({ content }: BaseWidgetProps) {
   };
 
   if (isLoading && !cart) {
-    return <div className="p-8 text-center text-gray-500">Loading Cart...</div>;
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8">
+        <div className="w-full max-w-[200px]">
+          <ProgressBar label="Loading Cart..." />
+        </div>
+      </div>
+    );
   }
 
   if (!cart || cart.lines.edges.length === 0) {
@@ -50,7 +57,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
       <div className="h-full flex flex-col items-center justify-center p-8 bg-red-50 text-red-600">
         <p className="font-bold mb-2">Error</p>
         <p className="text-sm text-center mb-4">{error}</p>
-        <button 
+        <button
           onClick={() => { clearError(); initialize(); }}
           className="px-4 py-2 bg-white border border-red-200 rounded shadow-sm hover:bg-red-50"
         >
@@ -69,9 +76,9 @@ export default function CartWidget({ content }: BaseWidgetProps) {
             {/* 商品圖片 */}
             <div className="w-16 h-16 bg-white rounded border overflow-hidden flex-shrink-0">
               {item.merchandise.image ? (
-                <img 
-                  src={item.merchandise.image.url} 
-                  alt={item.merchandise.image.altText || item.merchandise.product.title} 
+                <img
+                  src={item.merchandise.image.url}
+                  alt={item.merchandise.image.altText || item.merchandise.product.title}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -93,7 +100,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
             {/* 數量控制 */}
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center border bg-white rounded overflow-hidden">
-                <button 
+                <button
                   disabled={isLoading}
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   className="px-2 py-1 hover:bg-gray-100 disabled:opacity-50 text-xs"
@@ -101,7 +108,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
                   -
                 </button>
                 <span className="px-2 text-xs font-mono w-6 text-center">{item.quantity}</span>
-                <button 
+                <button
                   disabled={isLoading}
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   className="px-2 py-1 hover:bg-gray-100 disabled:opacity-50 text-xs"
@@ -109,7 +116,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
                   +
                 </button>
               </div>
-              <button 
+              <button
                 onClick={() => removeItem(item.id)}
                 disabled={isLoading}
                 className="text-xs text-red-500 hover:text-red-700 underline decoration-dotted"
@@ -132,14 +139,20 @@ export default function CartWidget({ content }: BaseWidgetProps) {
             <span className="text-xs text-gray-400">Tax included. Shipping calculated at checkout.</span>
           </div>
         </div>
-        
-        <button
-          onClick={handleCheckout}
-          disabled={isLoading}
-          className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 disabled:bg-gray-400 transition-colors flex justify-center items-center gap-2"
-        >
-          {isLoading ? 'Processing...' : 'Proceed to Checkout →'}
-        </button>
+
+        {isLoading ? (
+          <div className="w-full py-1">
+            <ProgressBar height="30px" label="Processing Order..." />
+          </div>
+        ) : (
+          <button
+            onClick={handleCheckout}
+            disabled={isLoading}
+            className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 disabled:bg-gray-400 transition-colors flex justify-center items-center gap-2"
+          >
+            Proceed to Checkout →
+          </button>
+        )}
       </div>
     </div>
   );

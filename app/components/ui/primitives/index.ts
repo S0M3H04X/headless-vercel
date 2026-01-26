@@ -33,3 +33,4 @@ export { Window } from './window';
 export type { WindowFrameProps, ResizeHandleProps } from './window/Frame';
 export type { WindowTitleBarProps } from './window/TitleBar';
 export type { WindowButtonProps, WindowButtonVariant } from './window/Controls';
+export { ProgressBar } from './ProgressBar';

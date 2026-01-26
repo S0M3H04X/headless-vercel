@@ -14,6 +14,8 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  width: 100%;
+  text-align: center;
 }
 
 .logoutContainer {
@@ -43,20 +45,22 @@
 
 .labelAuth {
   font-family: $font-menu;
-  font-size: 14px;
+  font-size: 22px;
   color: hsl(var(--specular-highlight) / 0.9);
   // margin-bottom: 0.5rem;
 }
 
-.inputAuth {
-  width: 70vw;
-  max-width: 300px;
+.inputMail, .inputKey {
+  width: 90%;
+  margin: 0 2rem;
+  // max-width: 300px;
   height: 30px;
   padding: 0 1rem;
   font-family: $font-system;
-  font-size: 12px;
+  font-size: 16px;
   border-radius: 2rem;
   border: 1px solid hsl(var(--shadow-color) / 0.2);
+  text-align: center;
   
   box-shadow:
       inset 1px 1px 0 #444,
@@ -65,9 +69,34 @@
       1px 1px 0 #000;
 
   &:focus {
-    background-color: #d9eeff;
+    background-color: #131313;
     border: 1px solid hsl(var(--shadow-color) / 0.4);
+    color: #00ff00;
   }
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    // right: 20px;
+    // bottom: 0px;
+    background-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 50%,
+        transparent 50%);
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.inputKey {
+  width: fit-content;
+  font-size: 20px;
+  letter-spacing: 0.8rem;
+  
 }
 
 .greeting {

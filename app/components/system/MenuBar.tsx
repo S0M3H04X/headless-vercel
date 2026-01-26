@@ -7,6 +7,7 @@ import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useCartStore } from '@/store/cartStore';
 import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
 import { WidgetKind } from '@/lib/types/workspace';
+import { PixelIcon } from '@/components/ui/primitives/PixelIcon';
 
 import styles from './MenuBar.module.scss';
 
@@ -92,9 +93,10 @@ export const MenuBar: React.FC = () => {
         {/* [新增] 購物車按鈕 */}
         <button
           onClick={handleOpenCart}
-          className="flex items-center gap-1 hover:bg-gray-300 px-2 py-0.5 rounded transition-colors"
+          className="flex items-center gap-1 py-0.5 rounded transition-colors"
         >
-          <span>🛒</span>
+          {/* <span>🛒</span> */}
+          <PixelIcon name="shopping-cart" style={{ fontSize: '1rem' }} />
           {totalQuantity > 0 && (
             <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full min-w-[1.2em] text-center">
               {totalQuantity}

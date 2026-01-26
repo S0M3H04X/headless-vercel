@@ -56,7 +56,7 @@
   &:hover {
     /* Hover 效果：簡單的反白或凹陷 */
     background-color: transparent;
-    border: 1px solid hsl(var(--specular-highlight));
+    // border: 1px solid hsl(var(--specular-highlight));
     border-radius: 5rem;
     /* 圓角處理 (Classic Mac 有時有圓角，有時直角，依喜好) */
     // border-top-left-radius: 4px;
@@ -67,9 +67,9 @@
     background-color: transparent;
     box-shadow:
       inset 1px 1px 0 #444,
-      inset 2px 2px 0 #888,
+      inset 1px 1px 0 #888,
       inset -1px -1px 0 #fff,
-      1px 1px 0 #000;
+      1px 1px 0 #404040;
     transform: translateY(1px);
     --background-gradient-opacity: 15%;
     --drop-shadow: var(--x-1) 0.4px 0.5px hsl(var(--shadow-color) / 0.15),
