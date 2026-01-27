@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore'; // [新增]
 import { SystemMenu } from './SystemMenu';
 import { useWorkspaceStore } from '@/store/workspaceStore';
-import { useCartStore } from '@/store/cartStore';
 import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
-import { WidgetKind } from '@/lib/types/workspace';
+
 import { PixelIcon } from '@/components/ui/primitives/PixelIcon';
 
 import styles from './MenuBar.module.scss';
@@ -21,8 +20,6 @@ export const MenuBar: React.FC = () => {
   const openWindow = useWorkspaceStore((state) => state.openWindow);
 
   // [新增] 訂閱購物車與 Auth 狀態
-  const cart = useCartStore((state) => state.cart);
-  const totalQuantity = cart?.totalQuantity || 0;
   const tier = useAuthStore((state) => state.tier); // [新增] 獲取當前層級
 
   // [修正] 推導 activeWindowId (Stack 的最後一個即為最上層/聚焦視窗)
@@ -31,7 +28,7 @@ export const MenuBar: React.FC = () => {
     ? (windows[activeWindowId].title || 'Application')
     : 'Finder';
 
-  const focusOrOpenWindow = useWorkspaceStore((state) => state.focusOrOpenWindow);
+
 
   useEffect(() => {
     setMounted(true);
@@ -44,14 +41,7 @@ export const MenuBar: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // [新增] 開啟購物車視窗邏輯
-  const handleOpenCart = () => {
-    focusOrOpenWindow({
-      title: 'Shopping Cart',
-      content: { kind: WidgetKind.Cart, sourceId: 'cart' },
-      initialGeometry: { width: 400, height: 600, x: window.innerWidth - 420, y: 50 }
-    });
-  };
+
 
   // [新增] 層級顯示設定
   const tierLabel = {
@@ -86,23 +76,20 @@ export const MenuBar: React.FC = () => {
       <div className="flex items-center h-full px-3 font-semibold text-sm text-black gap-3">
 
         {/* [新增] 用戶模式顯示 */}
-        <div className={`px-2 py-0.5 text-[10px] rounded border ${tierStyle} uppercase tracking-wider`}>
+        {/* <div className={`px-2 py-0.5 text-[10px] rounded border ${tierStyle} uppercase tracking-wider`}>
           {tierLabel}
-        </div>
+        </div> */}
 
         {/* [新增] 購物車按鈕 */}
-        <button
-          onClick={handleOpenCart}
+        {/* [新增] Instagram 按鈕 */}
+        <a
+          href="https://instagram.com/1313heart"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 py-0.5 rounded transition-colors"
         >
-          {/* <span>🛒</span> */}
-          <PixelIcon name="shopping-cart" style={{ fontSize: '1rem' }} />
-          {totalQuantity > 0 && (
-            <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full min-w-[1.2em] text-center">
-              {totalQuantity}
-            </span>
-          )}
-        </button>
+          <PixelIcon name="instagram" style={{ fontSize: '1rem' }} />
+        </a>
 
         {/* 使用 suppressHydrationWarning 作為額外保險，雖然 mounted check 已經解決了大部分問題 */}
         <span suppressHydrationWarning>

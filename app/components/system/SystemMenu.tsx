@@ -92,9 +92,9 @@ export const SystemMenu: React.FC = () => {
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SOCIAL')}>
             Social
           </div>
-          <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SETTINGS')}>
+          {/* <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SETTINGS')}>
             Control Panels
-          </div>
+          </div> */}
 
           <div className="h-[1px] bg-gray-400 my-1 mx-1" />
 

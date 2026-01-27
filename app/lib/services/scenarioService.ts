@@ -19,6 +19,17 @@ export const ScenarioService = {
     const existingInfoWin = Object.values(windows).find(w => w.content.kind === WidgetKind.ProductInfo);
 
     // 2. Singleton Update or New Launch
+    if (existingImageWin) {
+      updateWindowContent(existingImageWin.id, { kind: WidgetKind.ProductImage, sourceId: handle });
+      focusWindow(existingImageWin.id);
+    } else {
+      openWindow({
+        title: 'Product Gallery',
+        content: { kind: WidgetKind.ProductImage, sourceId: handle },
+        initialGeometry: layout.GALLERY
+      });
+    }
+
     if (existingInfoWin) {
       updateWindowContent(existingInfoWin.id, { kind: WidgetKind.ProductInfo, sourceId: handle });
       focusWindow(existingInfoWin.id);
@@ -30,16 +41,7 @@ export const ScenarioService = {
       });
     }
 
-    if (existingImageWin) {
-      updateWindowContent(existingImageWin.id, { kind: WidgetKind.ProductImage, sourceId: handle });
-      focusWindow(existingImageWin.id);
-    } else {
-      openWindow({
-        title: 'Product Gallery',
-        content: { kind: WidgetKind.ProductImage, sourceId: handle },
-        initialGeometry: layout.GALLERY
-      });
-    }
+    
   },
 
 

@@ -2,14 +2,14 @@
 
 .dockContainer {
   position: fixed;
-  bottom: 30px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9; /* 確保在最上層 */
+  z-index: 999; /* 確保在最上層 */
   display: flex;
   align-items: flex-end;
   border-radius: 5rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0.3rem 0.3rem;
 
   background-image: linear-gradient(180deg,
       transparent 16%,
@@ -43,8 +43,8 @@
   border: 1px solid hsl(var(--shadow-color) / 0.2);
   box-shadow: inset 1px 1px 0 hsl(var(--specular-highlight)/ 80%);
   border-radius: 5rem;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin: 2px;
   display: flex;
   align-items: center;

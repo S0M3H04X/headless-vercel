@@ -24,16 +24,14 @@ const WIDGET_TIERS: Record<string, UserTier> = {
   [WidgetKind.Cart]: 'member',
   [WidgetKind.Collection]: 'member',
   [WidgetKind.Product]: 'member', // Product Browsing is member feature
+  [WidgetKind.PDFViewer]: 'member', // Manuals should be readable? Or member? Let's say member based on Launcher.
 
   // Guest Access (Default)
   [WidgetKind.Auth]: 'guest',
   [WidgetKind.Folder]: 'guest', // Folders access controlled by FS node, but widget itself is open
-  [WidgetKind.PDFViewer]: 'guest', // Manuals should be readable? Or member? Let's say member based on Launcher.
+  
 };
 
-// Override PDFViewer to member if strictly enforced, but let's keep it flexible for now unless specified.
-// Actually Launcher says PDFViewer requires 'member'. Let's match that.
-WIDGET_TIERS[WidgetKind.PDFViewer] = 'member';
 
 
 // --- 2. 動態導入映射表 (Code Splitting) ---

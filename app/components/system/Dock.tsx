@@ -2,6 +2,7 @@
 import React from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useAuthStore } from '@/store/authStore';
+import { useCartStore } from '@/store/cartStore';
 import { PixelIcon } from '@/components/ui/primitives/PixelIcon';
 import { WidgetKind } from '@/lib/types/workspace';
 import { ScenarioService } from '@/lib/services/scenarioService';
@@ -30,7 +31,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
     action: () => ScenarioService.launchVideoStudio('01')
   },
   'pdf_viewer': {
-    label: 'Files',
+    label: 'Scan',
     icon: 'folder-open',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
@@ -70,6 +71,7 @@ export const Dock = () => {
   const installedApps = useWorkspaceStore((s) => s.installedApps);
   const windows = useWorkspaceStore((s) => s.windows);
   const { tier, login } = useAuthStore();
+  const totalQuantity = useCartStore((s) => s.cart?.totalQuantity || 0);
 
   const isAppRunning = (appId: string) => {
     return false;
@@ -95,6 +97,10 @@ export const Dock = () => {
 
           const isLocked = !canAccess(tier, config.requiredTier);
 
+          // Cart Quantity Badge Logic
+          const isCart = appId === 'cart';
+          const showBadge = isCart && totalQuantity > 0;
+
           return (
             <button
               key={appId}
@@ -106,6 +112,11 @@ export const Dock = () => {
               <PixelIcon name={config.icon} className={isLocked ? 'opacity-50' : 'text-black'} style={{ fontSize: '2rem' }} />
               <span className={styles.tooltip}>{config.label}</span>
               {isAppRunning(appId) && <div className={styles.runningDot} />}
+              {showBadge && (
+                <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-[#c0c0c0] shadow-sm z-10">
+                  {totalQuantity}
+                </div>
+              )}
             </button>
           );
         })}

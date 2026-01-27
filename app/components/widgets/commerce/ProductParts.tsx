@@ -41,26 +41,59 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Touch state for swipe detection
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
+
   if (loading) return <div className="animate-pulse bg-gray-200 h-full w-full" />;
 
   // Extract all images
   const images = product?.images?.edges?.map((e: any) => e.node) || [];
   const hasMultipleImages = images.length > 1;
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePrev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
+    }
   };
 
   const currentImg = images[currentIndex];
 
   return (
-    <div className={`${styles.imageContainer} relative group`}>
+    <div
+      className={`${styles.imageContainer} relative group touch-pan-y`}
+      onTouchStart={hasMultipleImages ? onTouchStart : undefined}
+      onTouchMove={hasMultipleImages ? onTouchMove : undefined}
+      onTouchEnd={hasMultipleImages ? onTouchEnd : undefined}
+    >
       {currentImg ? (
         <>
           <img
@@ -162,7 +195,7 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
           </h1>
           <div className={styles.productPrice}>
             {product?.variants?.edges?.[0]?.node?.price?.amount
-              ? `$${product.variants.edges[0].node.price.amount} ${product.variants.edges[0].node.price.currencyCode}`
+              ? `$${product.variants.edges[0].node.price.currencyCode} ${product.variants.edges[0].node.price.amount} `
               : ''}
           </div>
 
