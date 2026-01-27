@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   rewrites: async () => {
-    return [
+    const apiRewrites = [
       {
         source: '/api/python/:path*',
         destination:
@@ -10,7 +10,22 @@ const nextConfig = {
             : '/api/index.py', // 生產環境交給 Vercel 處理
       },
     ];
+
+    // If simulating CDN with ASSET_PREFIX, rewrite root asset requests to the prefix path
+    if (process.env.ASSET_PREFIX) {
+      return [
+        ...apiRewrites,
+        { source: '/fonts/:path*', destination: `${process.env.ASSET_PREFIX}/fonts/:path*` },
+        { source: '/icons/:path*', destination: `${process.env.ASSET_PREFIX}/icons/:path*` },
+        { source: '/img/:path*', destination: `${process.env.ASSET_PREFIX}/img/:path*` },
+        { source: '/pdf/:path*', destination: `${process.env.ASSET_PREFIX}/pdf/:path*` },
+        { source: '/classicy/:path*', destination: `${process.env.ASSET_PREFIX}/classicy/:path*` },
+      ];
+    }
+
+    return apiRewrites;
   },
+  assetPrefix: process.env.ASSET_PREFIX || undefined,
   webpack: (config, { dev, isServer, webpack }) => {
     // 1. 基礎設定：解決 Canvas 依賴與 Top Level Await
     config.resolve.alias.canvas = false;

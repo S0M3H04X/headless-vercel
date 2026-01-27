@@ -11,6 +11,7 @@ interface AuthState {
     email?: string;
     tier?: UserTier; // From backend
   } | null;
+  customerAccessToken: string | null;
 
   isAuthOpen: boolean;
   checkAuth: () => Promise<void>;
@@ -24,6 +25,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   tier: 'guest',
   isLoading: true,
   user: null,
+  customerAccessToken: null,
   isAuthOpen: false,
 
   checkAuth: async () => {
@@ -41,7 +43,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             isAuthenticated: true,
             tier: userTier,
             isLoading: false,
-            user: data.user
+            user: data.user,
+            customerAccessToken: data.accessToken
           });
 
           // [Trigger] US-08-02: 登入成功，立即綁定購物車
@@ -69,14 +72,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           }
 
         } else {
-          set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null });
+          set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
         }
       } else {
-        set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null });
+        set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
       }
     } catch (error) {
       console.error('[AuthStore] Check failed', error);
-      set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null });
+      set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
     }
   },
 
@@ -105,7 +108,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (e) {
       console.error('Logout failed:', e);
     } finally {
-      set({ isAuthenticated: false, tier: 'guest', user: null });
+      set({ isAuthenticated: false, tier: 'guest', user: null, customerAccessToken: null });
       window.location.reload();
     }
   }
