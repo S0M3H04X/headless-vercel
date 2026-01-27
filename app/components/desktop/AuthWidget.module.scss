@@ -1,0 +1,143 @@
+@import '../../styles/classicy/variables';
+
+.authContainer {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  
+  padding: 1rem;
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  text-align: center;
+}
+
+.logoutContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.grantedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.labelAuth {
+  font-family: $font-menu;
+  font-size: 22px;
+  color: hsl(var(--specular-highlight) / 0.9);
+  // margin-bottom: 0.5rem;
+}
+
+.inputMail, .inputKey {
+  width: 90%;
+  margin: 0 2rem;
+  // max-width: 300px;
+  height: 30px;
+  padding: 0 1rem;
+  font-family: $font-system;
+  font-size: 16px;
+  border-radius: 2rem;
+  border: 1px solid hsl(var(--shadow-color) / 0.2);
+  text-align: center;
+  
+  box-shadow:
+      inset 1px 1px 0 #444,
+      inset 2px 2px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 0 #000;
+
+  &:focus {
+    background-color: #131313;
+    border: 1px solid hsl(var(--shadow-color) / 0.4);
+    color: #00ff00;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    // right: 20px;
+    // bottom: 0px;
+    background-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 50%,
+        transparent 50%);
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.inputKey {
+  width: fit-content;
+  font-size: 20px;
+  letter-spacing: 0.8rem;
+  
+}
+
+.greeting {
+  font-family: $font-pixel;
+  font-size: 14px;
+  color: hsl(var(--shadow-color) / 0.7);
+}
+
+.userInfoBox {
+  position: relative;
+  z-index: 1;
+  background-color: $color-platinum-light; // 遮住橫紋
+  box-shadow:
+      inset 1px 1px 0 #444,
+      inset 2px 2px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 0 #000;
+  backdrop-filter: blur(4px);
+  border-radius: 2px;
+  padding: 0 8px;
+  font-family: $font-pixel;
+  font-weight: 100;
+  font-size: 14px;
+  color: $color-text;
+  margin: 0; // 置中
+
+  // 標題列橫紋 (Stripes)
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    // right: 20px;
+    // bottom: 0px;
+    background-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 50%,
+        transparent 50%);
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: -1;
+  }
+}

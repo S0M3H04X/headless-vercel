@@ -1,0 +1,47 @@
+/* app/components/system/ui/SystemButton.module.scss */
+@import '../../styles/classicy/variables';
+
+.platinumBtn {
+  font-family: $font-pixel;
+  font-size: 13px;
+  color: #000;
+  background-color: #ddd;
+  padding: 4px 16px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  
+  /* 模擬 3px 的複雜立體邊框 */
+  box-shadow: 
+    inset 1px 1px 0 #fff,      /* 內亮面 */
+    inset -1px -1px 0 #888,    /* 內陰影 */
+    inset -2px -2px 0 #444,    /* 內深陰影 */
+    1px 1px 0 #000;            /* 外框 */
+
+  border-radius: 3px; /* 輕微圓角 */
+
+  &:active:not(:disabled) {
+    background-color: #bbb;
+    box-shadow: 
+      inset 1px 1px 0 #444,
+      inset 2px 2px 0 #888,
+      inset -1px -1px 0 #fff,
+      1px 1px 0 #000;
+    transform: translateY(1px); /* 按壓位移感 */
+  }
+
+  &:disabled {
+    color: #888;
+    background-color: #eee;
+    box-shadow: none;
+    border: 1px solid #aaa;
+    cursor: default;
+  }
+
+  /* Default / Primary Button Style (Blue Pulse) */
+  &.primary {
+    border: 2px solid #000; /* 加粗外框 */
+    // 這裡可以加入 animation 模擬 Mac OS 預設按鈕的藍色呼吸燈
+  }
+}

@@ -9,28 +9,39 @@ const VIDEO_WIDGET_KINDS = [
 ];
 
 export const ScenarioService = {
-  // Scenario 1: Product Suite
+  // Scenario 1: Product Suite (Singleton Navigation)
   launchProductSuite: (handle: string) => {
-    const { openWindow } = useWorkspaceStore.getState();
+    const { openWindow, windows, updateWindowContent, focusWindow } = useWorkspaceStore.getState();
     const layout = INITIAL_LAYOUTS.PRODUCT;
 
-    openWindow({
-      title: 'Product Gallery',
-      content: { kind: WidgetKind.ProductImage, sourceId: handle },
-      initialGeometry: layout.GALLERY
-    });
+    // 1. Search for existing Product Windows
+    const existingImageWin = Object.values(windows).find(w => w.content.kind === WidgetKind.ProductImage);
+    const existingInfoWin = Object.values(windows).find(w => w.content.kind === WidgetKind.ProductInfo);
 
-    openWindow({
-      title: 'Product Info',
-      content: { kind: WidgetKind.ProductTitle, sourceId: handle },
-      initialGeometry: layout.INFO
-    });
+    // 2. Singleton Update or New Launch
+    if (existingImageWin) {
+      updateWindowContent(existingImageWin.id, { kind: WidgetKind.ProductImage, sourceId: handle });
+      focusWindow(existingImageWin.id);
+    } else {
+      openWindow({
+        title: 'Product Gallery',
+        content: { kind: WidgetKind.ProductImage, sourceId: handle },
+        initialGeometry: layout.GALLERY
+      });
+    }
 
-    openWindow({
-      title: 'Details',
-      content: { kind: WidgetKind.ProductDesc, sourceId: handle },
-      initialGeometry: layout.DETAILS
-    });
+    if (existingInfoWin) {
+      updateWindowContent(existingInfoWin.id, { kind: WidgetKind.ProductInfo, sourceId: handle });
+      focusWindow(existingInfoWin.id);
+    } else {
+      openWindow({
+        title: 'Product Info',
+        content: { kind: WidgetKind.ProductInfo, sourceId: handle },
+        initialGeometry: layout.INFO
+      });
+    }
+
+    
   },
 
 
@@ -38,9 +49,9 @@ export const ScenarioService = {
   // Scenario 2: Video Studio (with Singleton Check)
   launchVideoStudio: (sourceId?: string) => {
     const store = useWorkspaceStore.getState();
-    
+
     // [Fix 1] Singleton Check: 檢查是否已經有 Video Studio 相關視窗
-    const hasVideoStudio = Object.values(store.windows).some(win => 
+    const hasVideoStudio = Object.values(store.windows).some(win =>
       VIDEO_WIDGET_KINDS.includes(win.content.kind as any)
     );
 

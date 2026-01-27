@@ -1,0 +1,77 @@
+@import '../../../../styles/classicy/variables';
+
+// =============================================================================
+// WINDOW BUTTONS
+// =============================================================================
+
+.windowButton {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #fff; // Highlight
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  
+  // background-color: $color-platinum-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  // color: var(--lg-text);
+  // background: transparent;
+  border-radius: 2rem;
+  overflow: hidden;
+
+  background-image: linear-gradient(180deg,
+      transparent 16%,
+      hsl(var(--specular-highlight) / var(--background-gradient-opacity)) 80%),
+    radial-gradient(circle, var(--light) 0%, var(--dark) 100%);
+  background-size: 250% 200%;
+  background-position: var(--background-position, 50% 3%);
+  background-repeat: no-repeat;
+  box-shadow: inset 0 1px 2px 0 hsl(var(--specular-highlight) / 80%),
+    inset 0 -4px 6px -2px var(--medium), inset 0 5px 15px -10px var(--dark),
+    inset 0 1px 2px 0.75px hsl(var(--specular-highlight) / 25%),
+    var(--fill-light), var(--drop-shadow);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+  
+  margin: 4px 0 4px;
+  fill: var(--lg-grey);
+
+  &:active:not(:disabled) {
+    border-color: #404040;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    box-shadow: none; // inset managed via border flip
+    transform: translate(1px, 1px);
+    background-color: #ccc;
+  }
+
+  &:disabled {
+    color: #888;
+    border-color: #dfdfdf #888 #888 #dfdfdf;
+    cursor: default;
+  }
+  z-index: 1;
+}
+
+// Close Button (Heavy/Bold X)
+.buttonClose {
+  font-weight: 900;
+  font-family: sans-serif;
+  background-color: #fcfcfc;
+}
+
+// Collapse (Minimize) _
+.buttonCollapse {
+  font-weight: 900;
+  align-items: flex-end;
+  padding-bottom: 2px;
+}
+
+// FullScreen (Maximize) [ ]
+.buttonFullScreen {
+  // Placeholder
+}

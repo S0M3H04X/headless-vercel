@@ -21,7 +21,7 @@ export function useWidgetState<T>(
     // 這是為了避免 "expected number, received undefined" 的 Zod 誤報
     if (typeof rawState === 'object' && Object.keys(rawState as object).length === 0) {
         // 您可以選擇在這裡印一個溫和的 Info，或者完全靜默
-        // console.debug('[WidgetState] Empty state initialized with defaults');
+        console.debug('[WidgetState] Empty state initialized with defaults');
         return defaultState;
     }
 

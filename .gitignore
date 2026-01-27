@@ -1,7 +1,7 @@
-node_modules
+/node_modules
 .venv
 .next
-.env.local
+.env*
 diagram
 __pycache__
 __tests__
@@ -12,3 +12,13 @@ __tests__
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+.agent
+.github
+.vscode
+.idea
+/docs
+# /public/assets/
+
+*storybook.log
+storybook-static

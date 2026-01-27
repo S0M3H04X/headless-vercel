@@ -1,73 +1,43 @@
 import { useState, useEffect } from 'react';
+import { getProduct, Product } from '@/lib/shopify';
 
-const SHOPIFY_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN;
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
 
-export function useShopifyProduct(sourceId: string) {
-  const [product, setProduct] = useState<any>(null);
+export function useShopifyProduct(handle: string) {
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 簡單的 ID 解析邏輯 (gid://shopify/Product/12345 -> 12345)
-    // 實務上建議使用 handle 查詢，這裡模擬直接 ID 查詢
-    const fetchProduct = async () => {
-      if (!SHOPIFY_DOMAIN || !ACCESS_TOKEN) {
-            console.warn("Shopify Env missing");
-            setLoading(false);
-            return;
+    let isMounted = true;
+
+    async function fetchProduct() {
+      if (!handle) return;
+      
+      try {
+        setLoading(true);
+        // sourceId 通常是 handle (例如 "fancy-cup")
+        const data = await getProduct(handle);
+        if (isMounted) {
+          setProduct(data);
         }
-        const isGid = sourceId.startsWith('gid://');
-        const idVariableType = isGid ? "ID!" : "String!";
-        const queryArg = isGid ? "id: $id" : "handle: $id"; // 使用 handle 查詢更方便測試
-
-        const query = `
-        query getProduct($id: ${idVariableType}) {
-          product(${queryArg}) {
-            title
-            description
-            images(first: 1) {
-              edges { node { url } }
-            }
-          }
-        }`;
-
-        if (!SHOPIFY_DOMAIN) {
-            // [Mock Mode] 如果沒設定環境變數，回傳假資料以免卡關
-            setProduct({ 
-                title: "Mock: Nike Air Zoom", 
-                description: "This is a mock product because ENV vars are missing.",
-                images: { edges: [{ node: { url: "https://placehold.co/600x400/png" } }] }
-            });
-            setLoading(false);
-            return;
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        if (isMounted) {
+          setError(error instanceof Error ? error.message : 'Unknown error');
         }
-
-
-        try {
-            const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2023-10/graphql.json`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Shopify-Storefront-Access-Token': ACCESS_TOKEN!
-                },
-                body: JSON.stringify({ query, variables: { id: sourceId } })
-            });
-            const json = await res.json();
-
-            if (json.errors) {
-                console.error("Shopify API Errors:", json.errors);
-            }
-            
-            setProduct(json.data?.product);
-        } catch (e) {
-            console.error("Shopify fetch error:", e);
-        } finally {
-            setLoading(false);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
         }
-    };
+      }
+    }
 
     fetchProduct();
-  }, [sourceId]);
 
-  return { product, loading };
+    return () => {
+      isMounted = false;
+    };
+  }, [handle]);
+
+  return { product, loading, error };
 }

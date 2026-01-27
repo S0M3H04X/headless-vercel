@@ -1,0 +1,115 @@
+// app/styles/classicy/main.scss
+@import 'variables';
+
+
+// 全域 Reset 與字體設定
+body {
+  font-family: $font-system;
+  background-color: #808080; // 預設桌面灰
+  overflow: hidden;
+  /* 禁止捲動 */
+  margin: 0;
+  cursor: default; // 之後會替換為自定義 cursor
+  background: url("/assets/img/2.jpg") center/cover;
+  animation: bg-move 5s ease-in-out infinite alternate;
+}
+
+/* 用來讓文字無法選取，模擬 OS 介面 */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@keyframes bg-move {
+  from {
+    background-position: center center;
+  }
+
+  to {
+    background-position: center top;
+  }
+}
+
+/* --- Platinum Scrollbars --- */
+:root {
+  --scrollbar-size: 16px;
+  --scrollbar-track: #e0e0e0;
+  /* 淺灰軌道 */
+  --scrollbar-thumb: #c0c0c0;
+  /* 深灰按鈕 */
+  --scrollbar-border: #ffffff;
+
+  --lg-bg-color: rgba(255, 255, 255, 0.25);
+  --lg-highlight: rgba(255, 255, 255, 0.75);
+  --lg-text: #ffffff;
+  --lg-hover-glow: rgba(255, 255, 255, 0.4);
+  --lg-red: #fb4268;
+  --lg-grey: #5b5b5b;
+
+  --glass-pill-hue: 210;
+
+  --shadow-color: var(--glass-pill-hue, 284) 100 25;
+  --specular-highlight: 0 0 100;
+  --button-text: hsl(var(--glass-pill-hue, 284) 70 20 / 80%);
+  --light: hsl(var(--glass-pill-hue, 284) 100 75 / 20%);
+  --medium: hsl(var(--glass-pill-hue, 284) 100 50 / 50%);
+  --dark: hsl(var(--glass-pill-hue, 284) 100 24 / 73%);
+
+  --x-min: var(--shadow-x-min, 0px);
+  --x-max: var(--shadow-x-max, 0px);
+  --x-1: var(--x-min);
+  --x-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.12);
+  --x-3: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.38);
+  --x-4: var(--x-max);
+  --x-fill-1: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.25);
+  --x-fill-2: calc(var(--x-min) + (var(--x-max) - var(--x-min)) * 0.7);
+  --x-fill-spread: calc(abs(var(--x-max)) / 3.25 * -1 - 20px);
+
+  --drop-shadow: var(--x-1) 0.5px 0.6px hsl(var(--shadow-color) / 0.36),
+    var(--x-2) 8px 9px -0.8px hsl(var(--shadow-color) / 0.36),
+    var(--x-3) 24.3px 27.3px -1.7px hsl(var(--shadow-color) / 0.36),
+    var(--x-4) 63px 70.9px -2.5px hsl(var(--shadow-color) / 0.36);
+  --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 50%),
+    var(--x-fill-2) 28px 26px var(--x-fill-spread) hsl(var(--specular-highlight) / 60%);
+  --background-gradient-opacity: 50%;
+
+}
+
+* {
+
+  /* Webkit Browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background:
+      repeating-linear-gradient(45deg,
+        #fff,
+        #fff 2px,
+        #ddd 2px,
+        #ddd 4px);
+    /* 模擬軌道紋理 (Pattern) */
+    border-left: 1px solid #888;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    /* Bevel */
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #a0a0a0;
+    /* 按下變深 */
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+  }
+}

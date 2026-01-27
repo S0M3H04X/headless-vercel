@@ -1,0 +1,77 @@
+// app/styles/classicy/_variables.scss
+
+// --- 1. Colors (Platinum Theme) ---
+$color-platinum-light: rgba(187, 206, 217, 0.6);
+$color-platinum-dark: #cdcdcd;
+$color-highlight: #000080; // 預設反白顏色 (Classic Blue)
+$color-highlight-text: #ffffff;
+$color-window-bg: rgba(0, 0, 0, 0.3);
+$color-text: #000000;
+
+
+// --- 2. Fonts ---
+// 您可以隨時在此更換為 'Chicago', 'Geneva' 或其他像素字體
+$font-path: '/assets/fonts/'; // 字體資源路徑
+@font-face {
+  font-family: 'ChicagoKare';
+  src: url('#{$font-path}/ChicagoKare-Regular.woff2') format('woff2'),
+       url('#{$font-path}/ChicagoKare-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+  font-family: 'Ishmeria';
+  src: url('#{$font-path}/Ishmeria.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+  font-family: 'Arcade';
+  src: url('#{$font-path}/ARCADE.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  ascent-override: 110%;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+  font-family: 'LL Pixel 3';
+  src: url('#{$font-path}/LLPIXEL3.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Recommended for performance */
+}
+
+@font-face {
+    font-family: "Apple Garamond Light";
+    src: url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.eot");
+    src: url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.svg#Apple Garamond Light")format("svg");
+}
+
+$font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
+$font-pixel: 'Ishmeria', monospace; // 暫代像素字體
+$font-menu: 'Arcade', monospace; // 遊戲字體
+// $font-menu: 'LL Pixel 3', monospace; // 另一款
+// $font-menu: 'Apple Garamond Light', serif; // 按鈕字體
+
+
+// --- 3. Assets Paths (Customizable) ---
+$asset-path-png: '/assets/classicy/img/ui';
+$asset-path-icon: '/assets/icons/SVG';
+
+// Window Controls (Close/Zoom/Collapse)
+// 這裡允許您未來替換為自己的圖片
+$btn-close-bg: url('#{$asset-path-icon}/regular/times.svg'); 
+$btn-zoom-bg: url('#{$asset-path-png}/window/zoom-box.png');
+$btn-collapse-bg: url('#{$asset-path-icon}/regular/times.svg');
+
+// Window Textures
+$window-stripes: url('#{$asset-path-png}/window/stripes.png'); // 標題列橫紋

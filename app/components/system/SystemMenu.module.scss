@@ -1,0 +1,17 @@
+.menuButton {
+  display: flex;
+  align-items: center;
+  padding:0 0.8rem;
+  height: 100%;
+  // font-weight: 100;
+  border-radius: 20px;
+  user-select: none;
+  font-size: 1.3rem;
+
+}
+
+
+.menuButtonOpen {
+  background-color: #000000;
+  color: rgb(0, 255, 0);
+}

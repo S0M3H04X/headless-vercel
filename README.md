@@ -1,91 +1,78 @@
 # Headless Vercel - Web Desktop OS
 
-一個基於 Next.js 14 與 React 18 構建的仿桌面作業系統介面，整合了 Shopify Headless Commerce 與多媒體互動功能。
+一個基於 Next.js App Router 與 Zustand 的視窗化作業系統模擬器 (Window Manager)。
+整合了 Shopify Headless Commerce、Serverless Python Analytics 與 PDF 閱讀功能。
 
-## 🏗️ 技術架構 (Tech Stack)
+## 🚀 功能特色 (Features)
 
-* **Framework**: Next.js 14 (App Router)
-* **Language**: TypeScript
-* **State Management**: Zustand (with Persist Middleware)
-* **Window Manager**: WinBox.js (via React wrapper)
-* **Commerce**: Shopify Storefront API (GraphQL)
-* **PDF Rendering**: react-pdf (w/ custom worker setup)
-* **Testing**: Playwright (E2E)
+### 1. Window Management
+* 視窗拖曳、縮放、最小化、關閉。
+* 狀態持久化 (LocalStorage) 與 堆疊管理 (Z-Index)。
 
-## 🧩 核心模組 (Widgets)
+### 2. Widget Ecosystem
+* **Commerce (Shopify)**: 透過 Storefront API 獲取即時商品資訊。
+* **Video Studio**: 多視窗協作 (Visualiser/Control/Mixer) 與 狀態同步。
+* **Digital Assets (PDF)**: 解決 Worker 載入問題並記憶閱讀頁碼。
 
-目前已實作以下 Widget：
+### 3. System Intelligence (Phase 5 New!)
+* **Hybrid Architecture**: Next.js (Frontend) + Python (Backend) 同步運行於 Vercel。
+* **Telemetry**: 使用 `navigator.sendBeacon` 實作無阻塞的用戶行為追蹤 (視窗開啟/關閉/停留時間)。
+* **Compute**: Python FastAPI 負責處理日誌聚合與分析運算。
 
-1.  **Product Suite (Commerce Context)**
-    * 整合 Shopify Storefront API。
-    * 動態獲取商品圖片、標題、描述。
-    * 狀態記憶：包含字體大小、顯示設定等。
+## 🛠️ 技術架構 (Tech Stack)
 
-2.  **Media Player (Content Context)**
-    * 支援 HTML5 Video 播放。
-    * **跨組件協作**：Visualiser (畫面)、Playback (控制)、EQ Mixer (音量) 分離設計。
-    * **狀態持久化**：記憶播放進度與音量，刷新後自動恢復。
-
-3.  **PDF Viewer (Asset Context)**
-    * 基於 `react-pdf` v9/v10。
-    * 支援分頁瀏覽、縮放。
-    * 解決了 Worker 載入與 `Promise.withResolvers` 相容性問題。
-
-## 🛠️ 重要配置說明 (Critical Configurations)
-
-為了相容部分第三方庫與 Next.js 14 的構建機制，本專案包含以下特殊配置，**請勿隨意刪除**：
-
-### 1. Polyfills (`app/polyfills.js`)
-用於解決 `pdfjs-dist` 在部分瀏覽器或 Node 環境缺少的 `Promise.withResolvers` API。
-必須在 `app/layout.tsx` 的**第一行**引入。
-
-### 2. Next.js Config & Webpack (`next.config.mjs`)
-* **TopLevelAwait**: 啟用以支援 ESM 模組。
-* **Canvas Alias**: 將 `canvas` 指向 `false` 以避免 SSR 錯誤。
-* **DevTool Fix**: 禁用 `eval-source-map` 並手動配置 `EvalSourceMapDevToolPlugin`，以解決 PDF Worker 路徑解析錯誤 (404/undefined)。
-
-### 3. Static Assets
-PDF Worker 檔案位於 `public/pdf.worker.mjs`，這是為了繞過 Webpack 打包路徑問題的最終手段。
+* **Frontend**: Next.js 14, Zustand (Persist), Winbox.js, TailwindCSS
+* **Backend**: Python 3.12, FastAPI, Pydantic (Serverless Functions)
+* **Database**: (Planned) Turso / LibSQL
 
 ## 📂 專案結構
-app/ 
-├── components/ 
-│ ├── system/ # 系統級 UI (Launcher, Taskbar) 
-│ ├── widgets/ # 具體應用 (Product, Video, PDF) 
-│ ├── workspace/ # 桌面容器 
-│ └── ui/ # 通用元件 (WinboxWrapper) 
-├── lib/ 
-│ ├── services/ # 業務邏輯 (ScenarioService) 
-│ ├── constants/ # 設定常數 (Layouts) 
-│ └── persistence/ # 存檔邏輯 
-├── store/ # Zustand Stores 
-└── hooks/ # Custom Hooks (useShopify, useWidgetState)
-
-## 🚀 Getting Started
 
 ```bash
-# 安裝依賴 (建議使用 npm 以確保 lockfile 一致)
-npm install
+app/
+├── api/                # Next.js Route Handlers (Auth, Proxy)
+├── components/         # React Components
+├── lib/
+│   ├── services/       # 業務邏輯 (Scenario, Analytics)
+│   └── ...
+└── store/              # Zustand Stores
+api/                    # Python Serverless Functions
+├── index.py            # FastAPI Entry Point
+└── db.py               # Database Connection
 
-# 設定環境變數 (.env.local)
-NEXT_PUBLIC_SHOPIFY_DOMAIN=...
-NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN=...
+```
 
-# 啟動開發伺服器
-npm run dev
+# Headless OS (React PWA)
+
+... (保留原有內容)
+
+## ✅ TODO List
+
+- [x] Phase 1-4: Core Window Manager & Widgets
+- [x] Phase 5: System Intelligence (Hybrid Architecture)
+  - [x] Vercel Hybrid Deployment
+  - [x] Analytics Pipeline
+  - [x] Headless Auth (PKCE & Lifecycle)
+- [ ] Phase 6: Global System Features
+  - [x] US-06-01: Top Menu Bar (Mac OS 9 Style)
+  - [x] US-06-Refactor: System Service & UI Decoupling
+  - [ ] **US-06-02: Cart & Checkout** (Headless Cart API Integration)
+  - [ ] **US-06-03: My Account** (Order History & Profile Management)
+
+## 🚧 Phase 7: Backend Migration & Hardening (Planned)
+*為了提升安全性與業務邏輯的擴展性，以下邏輯將從前端遷移至 Python/Next.js 後端 API：*
+
+1.  **Time-Gated Access Control (時效性權限)**:
+    * **現狀**: 資料夾/活動的開放時間判斷寫在前端。
+    * **目標**: 建立 `/api/os/resource/check`，由後端驗證 Server Time 與 User Role。
+2.  **Shopify BFF (Backend for Frontend)**:
+    * **現狀**: 前端直接呼叫 Shopify Storefront API。
+    * **目標**: 建立 `/api/shopify/query` 中介層，處理 Caching、Rate Limiting 與資料清洗 (Data Sanitization)。
+3.  **Dynamic Boot Sequence (動態開機程序)**:
+    * **現狀**: App Registry 是靜態編譯的。
+    * **目標**: 建立 `/api/os/boot`，根據用戶權限動態回傳可用 Widget 清單。
+4.  **Asset Streaming (細粒度資源控制)**:
+    * **現狀**: PDF/影片為靜態檔案下載。
+    * **目標**: 實作 `/api/assets/stream`，支援分頁讀取與權限驗證 (e.g. 非付費用戶僅能讀取前 3 頁)。
 
 
-### ✅ 執行檢查
 
-請執行以下步驟驗證重構成果：
-
-1.  **Singleton 測試**：
-    * 點擊 "Open Video Studio"。
-    * 再次點擊 "Open Video Studio"。
-    * **預期**：跳出 Alert 警告，且不會開啟第二組視窗。
-2.  **功能回歸測試**：
-    * 點擊 "Open Product Suite" -> 確認商品描述是否正常載入。
-    * 點擊 "Open PDF" -> 確認 PDF 是否正常顯示且無 404 錯誤。
-3.  **代碼整潔度**：
-    * 檢查 `Desktop.tsx` 是否變乾淨了。
-    * 檢查 `ScenarioService.ts` 裡的魔術數字是否消失。

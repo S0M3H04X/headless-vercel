@@ -1,48 +1,23 @@
-// app/components/workspace/Desktop.tsx
 'use client';
+import React from 'react';
+import { RetroOSLayout } from '@/components/layout/RetroOSLayout';
+import { MenuBar } from '@/components/system/MenuBar';
+import { Dock } from '@/components/system/Dock'; // Dock
+import { WindowManager } from '@/components/system/WindowManager';
+import { Finder } from '@/components/system/Finder'; // [新增] 背景與桌面圖示層
 
-import React, { useEffect, useState } from 'react';
-import { useWorkspaceStore } from '@/store/workspaceStore';
-import { WinboxWrapper } from '../ui/WinboxWrapper';
-import { WidgetRenderer } from '@/components/widgets/Registry';
-import { WorkspaceRepository } from '@/lib/persistence/storage';
-import { ScenarioService } from '@/lib/services/scenarioService';
-import { Launcher } from '../system/Launcher';
-
-
-export default function Desktop() {
-  // const openWindow = useWorkspaceStore((state) => state.openWindow);
-  // const hydrate = useWorkspaceStore((state) => state.hydrate);
-  
-  // 防止水合不匹配 (Hydration Mismatch)
-  const [isHydrated, setIsHydrated] = useState(false);
-  const windows = useWorkspaceStore((state) => state.windows);
-
-  // [新增] 初始化邏輯
-  useEffect(() => {
-    WorkspaceRepository.load();
-    setIsHydrated(true);
-  }, []);
-
-
-  // [關鍵保護] 如果還沒水合，不要渲染 Winbox (避免與 SSR 衝突)
-  // 可以渲染一個 Loading Spinner 或空的 div
-  if (!isHydrated) {
-    return <div className="h-screen w-screen bg-slate-100" />;
-  }
-
+export const Desktop = () => {
   return (
-    <div className="relative w-full h-screen bg-slate-100 overflow-hidden">
-      {/* 測試控制台 */}
-      {/* 系統層：Launcher (未來可在這裡加入 Taskbar, StartMenu) */}
-      <Launcher />
+    <RetroOSLayout>
+      {/* Layer 1: Background & Desktop Icons (The Finder) */}
+      <Finder />
 
-      {/* 視窗渲染層 */}
-      {Object.values(windows).map((win) => (
-        <WinboxWrapper key={win.id} windowInstance={win}>
-          <WidgetRenderer id={win.id} content={win.content} internalState={win.internalState} />
-        </WinboxWrapper>
-      ))}
-    </div>
+      {/* Layer 2: Window Manager (Independent) */}
+      <WindowManager />
+
+      {/* Layer 3: System UI */}
+      <MenuBar />
+      <Dock />
+    </RetroOSLayout>
   );
-}
+};
