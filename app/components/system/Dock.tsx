@@ -63,7 +63,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
     label: 'Start',
     icon: 'grid',
     requiredTier: 'guest', // Always accessible
-    action: () => { console.log('Open Start Menu'); }
+    action: () => { useWorkspaceStore.getState().toggleMissionControl(); }
   }
 };
 

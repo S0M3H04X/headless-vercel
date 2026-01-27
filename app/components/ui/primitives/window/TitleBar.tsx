@@ -49,7 +49,11 @@ export const WindowTitleBar = React.forwardRef<HTMLDivElement, WindowTitleBarPro
         </div>
 
         {/* Right Side: Controls */}
-        <div className={styles.titleControls}>
+        <div
+          className={styles.titleControls}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
           {children}
 
           {/* Auto-generated buttons if handlers provided */}

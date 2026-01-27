@@ -18,6 +18,8 @@ interface ClassicyWindowProps {
   points?: Point[]; // Optional custom polygon shape
   onUpdatePoints?: (points: Point[]) => void;
   isEditingShape?: boolean;
+  style?: React.CSSProperties; // [新增] 允許覆蓋樣式 (Mission Control)
+  isDragDisabled?: boolean; // [新增] 禁止拖曳
 }
 
 export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
@@ -30,6 +32,8 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
   points,
   onUpdatePoints,
   isEditingShape = false,
+  style: overrideStyle,
+  isDragDisabled = false,
 }) => {
   const { closeWindow, focusWindow, updateWindowGeometry } = useWorkspaceStore();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -45,6 +49,8 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
     zIndex,
     focusWindow
   );
+
+  const onDragHandler = isDragDisabled ? undefined : handleDragStart;
 
   return (
     <Window.Frame
@@ -63,6 +69,7 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
         border: points ? 'none' : undefined,
         boxShadow: points ? 'none' : (isDragging ? '0 10px 20px rgba(0,0,0,0.3)' : undefined),
         borderRadius: points ? 0 : undefined,
+        ...overrideStyle, // [新增] 套用覆蓋樣式
       }}
       // 點擊視窗本體聚焦 (桌面版) / 手機版 TouchStart 也觸發聚焦
       onMouseDown={() => focusWindow(id)}
@@ -108,8 +115,8 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
         // We pass handleDragStart to the logic that needs to drag. 
         // Existing TitleBar doesn't natively expose 'onDragStart' prop for the whole bar, 
         // but it spreads props. So we can pass onMouseDown/onTouchStart.
-        onMouseDown={handleDragStart}
-        onTouchStart={handleDragStart}
+        onMouseDown={onDragHandler}
+        onTouchStart={onDragHandler}
         style={{ cursor: 'default', touchAction: 'none' }} // [修正] 禁止瀏覽器預設手勢
       // Note: TitleBar expects 'children' for custom controls or 'onClose', 'onMinimize' etc.
       // We can pass children if we want to customize the buttons exactly like before
@@ -151,8 +158,8 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
           // clipPath: getClipPath(points) // Clip content to polygon
         } : undefined}
       >
-        {/* 遮罩層：防止 iframe 在拖曳時吞掉事件 */}
-        {isDragging && <div className="absolute inset-0 z-50 bg-transparent" />}
+        {/* 遮罩層：防止 iframe 在拖曳時吞掉事件，或在 Mission Control (isDragDisabled) 時防止誤觸內容 */}
+        {(isDragging || isDragDisabled) && <div className="absolute inset-0 z-50 bg-transparent" />}
         {children}
       </div>
     </Window.Frame>

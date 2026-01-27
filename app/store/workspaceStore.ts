@@ -9,6 +9,7 @@ interface WorkspaceState {
   // [新增] 系統狀態
   installedApps: string[]; // 當前用戶可用的 App ID 清單
   isBooted: boolean;
+  isMissionControlActive: boolean;
 
   openWindow: (params: { title: string; content: ContentDescriptor; initialGeometry?: any }) => void;
   closeWindow: (id: string) => void;
@@ -21,6 +22,7 @@ interface WorkspaceState {
   bootSystem: (config: any) => void;
   updateWindowTitle: (id: string, title: string) => void;
   updateWindowContent: (id: string, content: ContentDescriptor) => void;
+  toggleMissionControl: () => void;
 
 }
 
@@ -33,6 +35,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       // [新增] 預設狀態
       installedApps: [],
       isBooted: false,
+      isMissionControlActive: false,
       bootSystem: (config) => {
         const { dock, autoStart } = config;
 
@@ -135,7 +138,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             }
           });
 
-          return { stackOrder: newStack, windows: updatedWindows };
+          return { stackOrder: newStack, windows: updatedWindows, isMissionControlActive: false };
         });
       },
 
@@ -231,6 +234,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             },
           };
         });
+      },
+      toggleMissionControl: () => {
+        set((state) => ({ isMissionControlActive: !state.isMissionControlActive }));
       },
     }),
     {
