@@ -8,7 +8,8 @@
     "test:frontend": "vitest",
     "test:backend": "cd api && pytest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "knip": "knip"
   },
   "dependencies": {
     "@hackernoon/pixel-icon-library": "^1.0.6",
@@ -49,6 +50,7 @@
     "glslify": "^7.1.1",
     "glslify-loader": "^2.0.0",
     "jsdom": "^24.0.0",
+    "knip": "^5.82.1",
     "playwright": "^1.57.0",
     "postcss": "^8.5.6",
     "raw-loader": "^4.0.2",

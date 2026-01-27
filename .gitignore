@@ -18,7 +18,7 @@ __tests__
 .vscode
 .idea
 /docs
-/public/assets/
+# /public/assets/
 
 *storybook.log
 storybook-static
