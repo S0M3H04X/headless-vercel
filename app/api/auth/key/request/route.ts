@@ -4,10 +4,12 @@ import { db } from '@/lib/db';
 import { EmailService } from '@/lib/services/emailService';
 import { ShopifyAdmin } from '@/lib/shopify/admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
-    
+
     // 1. Rate Limiting (5分鐘冷卻)
     const now = Math.floor(Date.now() / 1000);
     const result = await db.execute({
@@ -17,8 +19,8 @@ export async function POST(request: Request) {
     const existing = result.rows[0] as any;
 
     if (existing && (now - existing.created_at < 300)) {
-        // 如果是開發測試，您可以暫時註解掉下面這行
-        return NextResponse.json({ error: 'Please wait 5 minutes before requesting a new key.' }, { status: 429 });
+      // 如果是開發測試，您可以暫時註解掉下面這行
+      return NextResponse.json({ error: 'Please wait 5 minutes before requesting a new key.' }, { status: 429 });
     }
 
     // 2. 生成 Access Key (8位數，增強安全性)
@@ -28,13 +30,13 @@ export async function POST(request: Request) {
     // 嘗試在 Shopify 建立該用戶 (如果不存在)，確保他是 "Real Customer"
     // 但我們不在乎密碼了
     try {
-        const customer = await ShopifyAdmin.findCustomerByEmail(email);
-        if (!customer) {
-            await ShopifyAdmin.createCustomer(email);
-        }
+      const customer = await ShopifyAdmin.findCustomerByEmail(email);
+      if (!customer) {
+        await ShopifyAdmin.createCustomer(email);
+      }
     } catch (shopifyErr) {
-        console.warn('[Shopify Sync Warn]', shopifyErr);
-        // 忽略 Shopify 錯誤，讓 OS 登入流程繼續 (Fallback)
+      console.warn('[Shopify Sync Warn]', shopifyErr);
+      // 忽略 Shopify 錯誤，讓 OS 登入流程繼續 (Fallback)
     }
 
     // 4. 發送郵件
@@ -44,15 +46,15 @@ export async function POST(request: Request) {
     // 5. 存入 DB (作為驗證真理)
     // 使用 UPSERT 邏輯：如果存在就更新 Code，不存在就插入
     if (existing) {
-        await db.execute({ 
-            sql: 'UPDATE otp_sessions SET code = ?, created_at = ?, attempts = 0 WHERE email = ?', 
-            args: [accessKey, now, email] 
-        });
+      await db.execute({
+        sql: 'UPDATE otp_sessions SET code = ?, created_at = ?, attempts = 0 WHERE email = ?',
+        args: [accessKey, now, email]
+      });
     } else {
-        await db.execute({ 
-            sql: 'INSERT INTO otp_sessions (email, code, attempts, expires_at, created_at) VALUES (?, ?, 0, ?, ?)', 
-            args: [email, accessKey, now + 900, now] // 15分鐘過期
-        });
+      await db.execute({
+        sql: 'INSERT INTO otp_sessions (email, code, attempts, expires_at, created_at) VALUES (?, ?, 0, ?, ?)',
+        args: [email, accessKey, now + 900, now] // 15分鐘過期
+      });
     }
 
     return NextResponse.json({ success: true, message: 'Access Key sent' });
