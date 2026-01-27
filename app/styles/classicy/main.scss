@@ -6,10 +6,11 @@
 body {
   font-family: $font-system;
   background-color: #808080; // 預設桌面灰
-  overflow: hidden; /* 禁止捲動 */
+  overflow: hidden;
+  /* 禁止捲動 */
   margin: 0;
   cursor: default; // 之後會替換為自定義 cursor
-  background: url("../../../public/assets/img/2.jpg") center/cover;
+  background: url("/assets/img/2.jpg") center/cover;
   animation: bg-move 5s ease-in-out infinite alternate;
 }
 
@@ -23,6 +24,7 @@ body {
   from {
     background-position: center center;
   }
+
   to {
     background-position: center top;
   }
@@ -31,8 +33,10 @@ body {
 /* --- Platinum Scrollbars --- */
 :root {
   --scrollbar-size: 16px;
-  --scrollbar-track: #e0e0e0; /* 淺灰軌道 */
-  --scrollbar-thumb: #c0c0c0; /* 深灰按鈕 */
+  --scrollbar-track: #e0e0e0;
+  /* 淺灰軌道 */
+  --scrollbar-thumb: #c0c0c0;
+  /* 深灰按鈕 */
   --scrollbar-border: #ffffff;
 
   --lg-bg-color: rgba(255, 255, 255, 0.25);
@@ -68,10 +72,11 @@ body {
   --fill-light: var(--x-fill-1) 18px 12px -8px hsl(var(--specular-highlight) / 50%),
     var(--x-fill-2) 28px 26px var(--x-fill-spread) hsl(var(--specular-highlight) / 60%);
   --background-gradient-opacity: 50%;
-  
+
 }
 
 * {
+
   /* Webkit Browsers (Chrome, Safari, Edge) */
   &::-webkit-scrollbar {
     width: var(--scrollbar-size);
@@ -80,13 +85,12 @@ body {
 
   &::-webkit-scrollbar-track {
     background:
-      repeating-linear-gradient(
-        45deg,
+      repeating-linear-gradient(45deg,
         #fff,
         #fff 2px,
         #ddd 2px,
-        #ddd 4px
-      ); /* 模擬軌道紋理 (Pattern) */
+        #ddd 4px);
+    /* 模擬軌道紋理 (Pattern) */
     border-left: 1px solid #888;
   }
 
@@ -96,11 +100,13 @@ body {
     border-left: 1px solid #fff;
     border-right: 1px solid #555;
     border-bottom: 1px solid #555;
-    box-shadow: inset 1px 1px 0 #dfdfdf; /* Bevel */
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    /* Bevel */
   }
 
   &::-webkit-scrollbar-thumb:active {
-    background-color: #a0a0a0; /* 按下變深 */
+    background-color: #a0a0a0;
+    /* 按下變深 */
   }
 
   &::-webkit-scrollbar-corner {
