@@ -1,11 +1,11 @@
 // app/lib/db.ts
 import { createClient } from '@libsql/client';
 
-const url = process.env.TURSO_DATABASE_URL;
-const authToken = process.env.TURSO_AUTH_TOKEN;
+const url = process.env.STORAGE_TURSO_DATABASE_URL || 'file::memory:';
+const authToken = process.env.STORAGE_TURSO_AUTH_TOKEN;
 
-if (!url) {
-  throw new Error('Missing TURSO_DATABASE_URL environment variable');
+if (!process.env.TURSO_DATABASE_URL) {
+  console.warn('⚠️  TURSO_DATABASE_URL is missing. Using in-memory fallback for build/dev.');
 }
 
 export const db = createClient({
