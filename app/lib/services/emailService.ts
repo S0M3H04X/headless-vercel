@@ -26,7 +26,7 @@ export const EmailService = {
 
     try {
       const { data, error } = await resend.emails.send({
-        from: 'onboarding@resend.dev', // 請將 domain 換成您在 Resend 驗證過的 domain
+        from: 'onboarding@1313heart.com', 
         to: [email],
         subject: 'Your Access Key for 1313 OS',
         html: `
