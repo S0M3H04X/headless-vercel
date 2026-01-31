@@ -110,4 +110,7 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
     );
 };
 
+// Preload the texture to avoid pop-in
+useTexture.preload('/assets/img/style3.jpg');
+
 export default CollectionVisualizer;
