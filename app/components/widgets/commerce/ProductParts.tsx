@@ -200,20 +200,30 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
           </div>
 
         </div>
-        <Button
-          className={styles.btnAddToCart}
-          buttonStyle="system" isDefault
-          onClick={handleAddToCart}
-          disabled={isAdding || !product}
-        >
-          {isAdding ? (
-            <>
-              Adding...
-            </>
-          ) : (
-            'ADD TO CART'
-          )}
-        </Button>
+
+
+        {(() => {
+          const variant = product?.variants?.edges?.[0]?.node;
+          const isSoldOut = !variant?.availableForSale || (variant?.quantityAvailable !== undefined && variant.quantityAvailable <= 0);
+
+          return (
+            <div className="flex flex-col gap-2 items-center">
+              {/* {isSoldOut && (
+                <span className="text-red-500 text-xs font-bold uppercase tracking-wider border border-red-500 px-2 py-0.5 rounded">
+                  Sold Out
+                </span>
+              )} */}
+              <Button
+                className={styles.btnAddToCart}
+                buttonStyle="system" isDefault
+                onClick={handleAddToCart}
+                disabled={isAdding || !product || isSoldOut}
+              >
+                {isSoldOut ? 'SOLD OUT' : (isAdding ? 'Adding...' : 'ADD TO CART')}
+              </Button>
+            </div>
+          );
+        })()}
       </div>
       {/* 描述區塊 */}
       <div className={styles.descContainer}>
@@ -236,6 +246,6 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
 
 
 
-    </div>
+    </div >
   );
 };

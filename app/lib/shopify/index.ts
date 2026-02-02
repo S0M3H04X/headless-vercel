@@ -82,6 +82,8 @@ export interface Product {
       node: {
         id: string;
         title: string;
+        availableForSale: boolean;
+        quantityAvailable: number;
         price: {
           amount: string;
           currencyCode: string;
@@ -119,6 +121,8 @@ export async function getProduct(handle: string): Promise<Product | null> {
             node {
               id
               title
+              availableForSale
+              quantityAvailable
               price {
                 amount
                 currencyCode
@@ -428,7 +432,7 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
   });
 
   const rawCustomer = response.customer;
-  
+
   // [安全檢查] 若 Token 無效或過期，API 可能回傳 null
   if (!rawCustomer) return null;
 
@@ -446,7 +450,7 @@ export async function getCustomer(customerAccessToken: string): Promise<Customer
           processedAt: new Date().toISOString(), // API 可能未回傳，給預設值
           financialStatus: edge.node.financialStatus,
           fulfillmentStatus: 'UNFULFILLED', // Customer API 需額外查詢，暫時給預設值以防崩潰
-          statusUrl: '', 
+          statusUrl: '',
           currentTotalPrice: edge.node.totalPrice, // Mapping totalPrice -> currentTotalPrice
           lineItems: edge.node.lineItems
         }
@@ -491,12 +495,12 @@ export async function getCollections(): Promise<Collection[]> {
       }
     }
   `;
-  
-  const response = await shopifyFetch<{ collections: { edges: Array<{ node: Collection }> } }>({ 
-    query, 
-    cache: 'force-cache' 
+
+  const response = await shopifyFetch<{ collections: { edges: Array<{ node: Collection }> } }>({
+    query,
+    cache: 'force-cache'
   });
-  
+
   return response.collections.edges.map((edge) => edge.node);
 }
 
@@ -534,6 +538,8 @@ export async function getCollectionProducts(handle: string): Promise<Product[]> 
                   node {
                     id
                     title
+                    availableForSale
+                    quantityAvailable
                     price {
                       amount
                       currencyCode
@@ -548,8 +554,8 @@ export async function getCollectionProducts(handle: string): Promise<Product[]> 
     }
   `;
 
-  const response = await shopifyFetch<{ collection: { products: { edges: Array<{ node: Product }> } } }>({ 
-    query, 
+  const response = await shopifyFetch<{ collection: { products: { edges: Array<{ node: Product }> } } }>({
+    query,
     variables: { handle },
     cache: 'no-store' // 確保庫存狀態即時
   });
@@ -558,16 +564,16 @@ export async function getCollectionProducts(handle: string): Promise<Product[]> 
     console.warn(`[Shopify] Collection not found: ${handle}`);
     return [];
   }
-  
+
   if (!response.collection) return [];
   return response.collection.products.edges.map((edge) => edge.node);
 }
 
 
 export async function updateCartBuyerIdentity(
-  cartId: string, 
-  buyerIdentity: { 
-    customerAccessToken: string; 
+  cartId: string,
+  buyerIdentity: {
+    customerAccessToken: string;
     email?: string;
   }
 ) {
