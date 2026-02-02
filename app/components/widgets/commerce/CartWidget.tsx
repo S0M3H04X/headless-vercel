@@ -40,7 +40,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
     );
   }
 
-  if (!cart || cart.lines.edges.length === 0) {
+  if (!cart || !cart.lines || cart.lines.edges.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8 bg-gray-50">
         <div className="text-4xl mb-4">🛒</div>

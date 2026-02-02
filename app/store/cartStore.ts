@@ -10,7 +10,7 @@ interface CartState {
   isLoading: boolean;
   error: string | null;
   associateUser: (accessToken: string | null, email?: string) => Promise<void>;
-  
+
   // Actions
   initialize: () => Promise<void>;
   open: () => void;
@@ -40,10 +40,10 @@ export const useCartStore = create<CartState>()(
           try {
             set({ isLoading: true, error: null });
             const cart = await getCart(cartId);
-            if (cart) {
+            if (cart && cart.lines) {
               set({ cart });
             } else {
-              // Cart ID 過期或無效，重置
+              // Cart ID 過期、無效或資料結構不完整 (missing lines)，重置
               set({ cartId: null, cart: null });
             }
           } catch (error) {
@@ -114,15 +114,15 @@ export const useCartStore = create<CartState>()(
       // [核心實作] US-08-02: 身份綁定
       associateUser: async (accessToken, email) => {
         const { cartId } = get();
-        
+
         // 情況 A: 目前沒有購物車 (因為訪客不能購物)
         // 策略: 暫不動作，等到使用者真的 addItem 時，我們再帶入 Token (需修改 addItem)
         // 或者: 在此直接建立一個帶有 Identity 的空購物車 (推薦，為了 UX 順暢)
-        
+
         if (!cartId || !email) {
-            // 可選：預先建立購物車邏輯，或單純將 Token 存入 store 等待下次使用
-            // 這裡示範「若有車則綁定，若無車則 pass」的保守策略
-            return;
+          // 可選：預先建立購物車邏輯，或單純將 Token 存入 store 等待下次使用
+          // 這裡示範「若有車則綁定，若無車則 pass」的保守策略
+          return;
         }
 
         // 情況 B: 已有購物車 (可能是舊 Session 殘留)
@@ -134,7 +134,7 @@ export const useCartStore = create<CartState>()(
             customerAccessToken: accessToken || undefined,
             email: email
           });
-          
+
           if (updatedCart) {
             set({ cart: updatedCart });
           }
