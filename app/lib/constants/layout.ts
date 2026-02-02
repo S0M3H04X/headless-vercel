@@ -15,7 +15,7 @@ export const INITIAL_LAYOUTS = {
     MIXER: { x: 20, y: 450, width: 150, height: 200 },
   },
   PDF: {
-    DEFAULT: { x: 20, y: 100, width: 300, height: 800 },
+    DEFAULT: { x: 20, y: 100, width: 300, height: 700 },
   },
   COLLECTION: {
     // Updated to match SystemService usage instead of the old full-screen default

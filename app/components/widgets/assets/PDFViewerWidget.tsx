@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useWidgetState } from '@/hooks/useWidgetState';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ContentDescriptor } from '@/lib/types/workspace';
+import styles from './PDFViewer.Widget.module.scss';
 
 // 引入樣式 (這是 react-pdf 必要的，否則會排版錯亂)
 // import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -161,6 +162,8 @@ function parseInline(text: string): React.ReactNode {
   });
 }
 
+
+
 export default function PDFViewerWidget({ id, content, internalState }: WidgetProps) {
   const updateInternalState = useWorkspaceStore(s => s.updateInternalState);
   const state = useWidgetState(internalState, PDFStateSchema, DEFAULT_PDF_STATE);
@@ -261,7 +264,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
       <div className="flex-grow overflow-auto flex justify-center p-4 bg-gray-400/50">
         {markdownHtml ? (
           <div
-            className="bg-white p-8 shadow-2xl min-h-full w-full max-w-4xl prose prose-slate"
+            className={`bg-white p-8 shadow-2xl min-h-full w-full max-w-4xl ${styles['markdown-body']}`}
             dangerouslySetInnerHTML={{ __html: markdownHtml }}
           />
         ) : (

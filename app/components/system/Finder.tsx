@@ -34,7 +34,7 @@ export const Finder = () => {
           kind: node.appId || 'Unknown',
           sourceId: node.metadata?.handle || 'root'
         },
-        initialGeometry: { x: 'center', y: 'center', width: 800, height: 600 }
+        initialGeometry: { x: 'center', y: 'center', width: 800, height: 800 }
       });
     }
   };

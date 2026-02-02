@@ -40,10 +40,10 @@ const APP_CONFIG: Record<string, AppConfig> = {
         kind: WidgetKind.PDFViewer,
         sourceId: '/assets/pdf/dissertation.pdf',
         initialMeta: {
-          markdownSource: '/assets/md/test.md'
+          markdownSource: '/assets/md/htlt.md'
         }
       },
-      initialGeometry: { x: 'center', y: 'center', width: 600, height: 700 },
+      initialGeometry: { x: 'center', y: 'center', width: 600, height: 800 },
     })
   },
   'cart': {
