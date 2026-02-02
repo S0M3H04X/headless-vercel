@@ -9,8 +9,8 @@ import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ContentDescriptor } from '@/lib/types/workspace';
 
 // 引入樣式 (這是 react-pdf 必要的，否則會排版錯亂)
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
+// import 'react-pdf/dist/Page/AnnotationLayer.css';
+// import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 interface WidgetProps {
@@ -26,12 +26,11 @@ const PDF_OPTIONS = {
 
 const PDFStateSchema = z.object({
   pageNumber: z.number().min(1).default(1),
-  scale: z.number().default(1.0),
+  scale: z.number().default(0.7),
 });
 
-const DEFAULT_PDF_STATE = { pageNumber: 1, scale: 1.0 };
+const DEFAULT_PDF_STATE = { pageNumber: 1, scale: 0.7 };
 
-// Simple Markdown Parser Component
 // Simple Markdown Parser Component
 const SimpleMarkdown = ({ text, source }: { text?: string; source?: string }) => {
   const [content, setContent] = useState<string | null>(text || null);
