@@ -109,6 +109,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error('Logout failed:', e);
     } finally {
       set({ isAuthenticated: false, tier: 'guest', user: null, customerAccessToken: null });
+      // [Cleanup] Clear local persistence to prevent state leaking to next user
+      localStorage.removeItem('headless-cart-storage');
+      localStorage.removeItem('headless-workspace-storage');
       window.location.reload();
     }
   }
