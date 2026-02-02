@@ -26,6 +26,10 @@ export const AuthWidget: React.FC = () => {
   }, [isAuthenticated]);
 
   const handleRequestKey = async () => {
+    if (!email.trim()) {
+      alert("Please enter an email address.");
+      return;
+    }
     setLoading(true); setError(''); setMsg('');
     try {
       const res = await fetch('/api/auth/key/request', {
@@ -42,6 +46,10 @@ export const AuthWidget: React.FC = () => {
   };
 
   const handleLogin = async () => {
+    if (!accessKey.trim()) {
+      alert("Please enter your access key.");
+      return;
+    }
     setLoading(true); setError('');
     try {
       const res = await fetch('/api/auth/login', {

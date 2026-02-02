@@ -36,7 +36,13 @@ const APP_CONFIG: Record<string, AppConfig> = {
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
       title: 'System Manual.pdf',
-      content: { kind: WidgetKind.PDFViewer, sourceId: '/assets/pdf/dissertation.pdf' },
+      content: {
+        kind: WidgetKind.PDFViewer,
+        sourceId: '/assets/pdf/dissertation.pdf',
+        initialMeta: {
+          markdownSource: '/assets/md/test.md'
+        }
+      },
       initialGeometry: { x: 'center', y: 'center', width: 600, height: 700 },
     })
   },
