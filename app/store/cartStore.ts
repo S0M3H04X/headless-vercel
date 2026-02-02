@@ -120,14 +120,13 @@ export const useCartStore = create<CartState>()(
         // 或者: 在此直接建立一個帶有 Identity 的空購物車 (推薦，為了 UX 順暢)
 
         if (!cartId || !email) {
-          // 可選：預先建立購物車邏輯，或單純將 Token 存入 store 等待下次使用
-          // 這裡示範「若有車則綁定，若無車則 pass」的保守策略
+          // Future improvement: If no cartId, store token to use for *next* cart creation
           return;
         }
 
         // 情況 B: 已有購物車 (可能是舊 Session 殘留)
         // 執行綁定
-        set({ isLoading: true });
+        // set({ isLoading: true }); // [Optimization] Don't show global loading for background sync
         try {
           console.log('[Cart] Binding identity to cart...');
           const updatedCart = await updateCartBuyerIdentity(cartId, {
@@ -139,10 +138,12 @@ export const useCartStore = create<CartState>()(
             set({ cart: updatedCart });
           }
         } catch (error) {
-          console.error('[Cart] Association failed:', error);
-          // 如果 Token 失效 (Customer is invalid)，可能需要通知 AuthStore 登出
+          console.warn('[Cart] Association failed (silent):', error);
+          // Token invalid or network error. 
+          // We choose NOT to clear the cart here to avoid data loss, 
+          // just failed to bind. The user is still the owner of the local cart.
         } finally {
-          set({ isLoading: false });
+          // set({ isLoading: false });
         }
       },
     }),

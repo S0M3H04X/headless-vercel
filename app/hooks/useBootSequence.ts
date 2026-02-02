@@ -1,6 +1,7 @@
 // app/hooks/useBootSequence.ts
 import { useState, useEffect, useRef } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
+import { useAuthStore } from '@/store/authStore';
 
 export const useBootSequence = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,22 +14,29 @@ export const useBootSequence = () => {
 
     const init = async () => {
       try {
-        console.log('[Boot] Fetching config...');
-        const res = await fetch('/api/os/boot');
-        if (!res.ok) throw new Error('Failed to boot');
-        
-        const config = await res.json();
-        
+        console.log('[Boot] Starting boot sequence...');
+
+        // [Optimized] Parallelize config fetch and auth check
+        // This ensures the "Desktop" doesn't render until we know the user's state
+        const [configRes] = await Promise.all([
+          fetch('/api/os/boot'),
+          useAuthStore.getState().checkAuth()
+        ]);
+
+        if (!configRes.ok) throw new Error('Failed to boot');
+
+        const config = await configRes.json();
+
         // 1. 初始化系統 (Dock, Permissions)
         bootSystem(config);
 
         // 2. 處理自動啟動 (僅在無視窗時)
         const hasWindows = Object.keys(useWorkspaceStore.getState().windows).length > 0;
         if (!hasWindows && config.autoStart) {
-             config.autoStart.forEach((win: any) => {
-                 // 這裡將 geometry 傳入，稍後由 WindowManager 處理 "center"
-                 openWindow(win);
-             });
+          config.autoStart.forEach((win: any) => {
+            // 這裡將 geometry 傳入，稍後由 WindowManager 處理 "center"
+            openWindow(win);
+          });
         }
       } catch (e) {
         console.error('[Boot] Error:', e);
@@ -36,7 +44,7 @@ export const useBootSequence = () => {
         setIsLoading(false);
       }
     };
-    
+
     init();
   }, []); // 確保只執行一次
 
