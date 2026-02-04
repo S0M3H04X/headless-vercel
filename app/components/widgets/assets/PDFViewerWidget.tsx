@@ -131,12 +131,12 @@ const SimpleMarkdown = ({ text, source }: { text?: string; source?: string }) =>
     if (line.trim() === '') {
       elements.push(<div key={i} className="h-2" />);
     } else {
-      elements.push(<p key={i} className="my-1 text-sm leading-relaxed text-gray-800">{parseInline(line)}</p>);
+      elements.push(<p key={i} className="my-1 leading-relaxed text-gray-800">{parseInline(line)}</p>);
     }
   }
 
   return (
-    <div className="bg-white p-6 border-b border-gray-200 overflow-y-auto max-h-[300px] shrink-0 font-sans">
+    <div className={`${styles.markdownContainer} p-6 border-b overflow-y-auto overflow-x-hidden w-full h-full shrink-0 font-sans`}>
       {elements}
     </div>
   );
@@ -228,12 +228,12 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
   };
 
   return (
-    <div className="h-full w-full bg-gray-500 flex flex-col overflow-hidden relative">
+    <div className="h-full w-full flex flex-col overflow-hidden relative">
       {/* Markdown Reader (Text or Source) */}
       {(description || markdownSource) && <SimpleMarkdown text={description} source={markdownSource} />}
 
       {/* Toolbar */}
-      <div className="bg-gray-800 text-white p-2 flex justify-between items-center z-10 shadow-md shrink-0">
+      {/* <div className="bg-gray-800 text-white p-2 flex justify-between items-center z-10 shadow-md shrink-0">
         <div className="flex gap-2 items-center">
           <button onClick={() => changePage(-1)} disabled={state.pageNumber <= 1} className="px-2 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50 text-sm">←</button>
           <span className="text-sm min-w-[80px] text-center">
@@ -247,10 +247,10 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
           <span className="text-xs">{Math.round(state.scale * 100)}%</span>
           <button onClick={() => changeScale(0.1)} className="px-2 py-1 bg-gray-700 rounded text-sm">+</button>
         </div>
-      </div>
+      </div> */}
 
       {/* Error Message */}
-      {isError && (
+      {/* {isError && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-red-100/90 text-red-600 p-4 text-center">
           <div>
             <h4 className="font-bold">PDF 載入失敗</h4>
@@ -258,10 +258,10 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
             <p className="text-xs mt-2 text-gray-500">請檢查網路連線或是 Worker 版本</p>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* PDF Canvas or Markdown Content */}
-      <div className="flex-grow overflow-auto flex justify-center p-4 bg-gray-400/50">
+      {/* <div className="flex-grow overflow-auto flex justify-center p-4 bg-gray-400/50">
         {markdownHtml ? (
           <div
             className={`bg-white p-8 shadow-2xl min-h-full w-full max-w-4xl ${styles['markdown-body']}`}
@@ -286,7 +286,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
             />
           </Document>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -35,7 +35,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
     icon: 'folder-open',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
-      title: 'System Manual.pdf',
+      title: 'CRASH Issue 2001',
       content: {
         kind: WidgetKind.PDFViewer,
         sourceId: '/assets/pdf/dissertation.pdf',
