@@ -139,7 +139,7 @@ export const AuthWidget: React.FC = () => {
         <div className="flex justify-between items-center pt-2 gap-2">
           {loading ? (
             <div className="w-full">
-              <ProgressBar height="28px" label="Processing Request..." />
+              <ProgressBar height="12px" label="Processing Request..." />
             </div>
           ) : (
             <>

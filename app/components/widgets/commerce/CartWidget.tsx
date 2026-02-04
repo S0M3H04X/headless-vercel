@@ -142,7 +142,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
 
         {isLoading ? (
           <div className="w-full py-1">
-            <ProgressBar height="30px" label="Processing Order..." />
+            <ProgressBar height="12px" label="Processing Order..." />
           </div>
         ) : (
           <button

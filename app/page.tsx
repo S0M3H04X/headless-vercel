@@ -13,8 +13,8 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className={`${styles.bootScreen} h-screen w-screen flex flex-col items-center justify-center gap-4`}>
-        <p className="text-xl text-white">BOOTING SYSTEM...</p>
+      <div className={`${styles.bootScreen} py-8 px-8 h-screen w-screen flex flex-col items-start justify-end gap-2`}>
+        <p className="text-3xl text-black">BOOTING SYSTEM...</p>
         <div className="w-64">
           <ProgressBar height="12px" />
         </div>
