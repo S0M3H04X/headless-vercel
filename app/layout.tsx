@@ -8,8 +8,8 @@ import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
 export const metadata = {
-  title: 'ONE CREDIT by 1313<3',
-  description: 'by S0M3H04X',
+  title: 'ONE CREDIT limited edition',
+  description: 'by 1313<3',
 }
 
 export default function RootLayout({
