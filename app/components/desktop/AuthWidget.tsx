@@ -75,25 +75,26 @@ export const AuthWidget: React.FC = () => {
     return (
       <GroupFrame legend="Access Granted" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
-          <div className="mb-4">
-            <div className={styles.userGreeting}>Welcome</div>
-            <div className={styles.userAvatar}>
-              <span className="text-2xl">👤</span>
-            </div>
-            <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
-          </div>
 
           <div className={styles.userInfoBox}>
-            <p>{`> Session Type: 1313_NATIVE`}</p>
+            <div className="mb-4">
+              <div className={styles.userGreeting}>Welcome</div>
+              <div className={styles.userAvatar}>
+                <span className="text-2xl">👤</span>
+              </div>
+              <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
+            </div>
+            <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
+
+            <p>{`> Session Type: CAMPAIGN`}</p>
             <p>{`> Permissions: READ`}</p>
             {/* <p>{`> Status: CONNECTED`}</p> */}
             {/* <p>{`> Encrypted: YES`}</p> */}
-            <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
           </div>
 
-          <Button onClick={handleLogout} className={styles.logoutButton} isDefault={true}>
+          {/* <Button onClick={handleLogout} className={styles.logoutButton} isDefault={true}>
             Log Out
-          </Button>
+          </Button> */}
         </div>
       </GroupFrame>
     );
