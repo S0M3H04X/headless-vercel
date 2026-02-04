@@ -68,7 +68,7 @@ export default function CartWidget({ content }: BaseWidgetProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full w-full flex flex-col bg-white">
       {/* 商品列表區域 (可捲動) */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {cart.lines.edges.map(({ node: item }) => (

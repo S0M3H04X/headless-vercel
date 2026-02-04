@@ -15,7 +15,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
 
   return (
     // Layer 1: Viewport
-    <div className="relative h-screen w-screen overflow-hidden font-mono text-black select-none">
+    <div className="relative h-screen w-screen overflow-hidden text-black select-none">
       
       {/* Layer 2: Wallpaper */}
       <div 

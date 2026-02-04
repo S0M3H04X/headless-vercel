@@ -35,10 +35,10 @@ const APP_CONFIG: Record<string, AppConfig> = {
     icon: 'folder-open',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().openWindow({
-      title: 'CRASH Issue 2001',
+      title: 'CRASH Issue 04: 1998 SEP',
       content: {
         kind: WidgetKind.PDFViewer,
-        sourceId: '/assets/pdf/dissertation.pdf',
+        sourceId: '/assets/json/issue04.json',
         initialMeta: {
           markdownSource: '/assets/md/htlt.md'
         }

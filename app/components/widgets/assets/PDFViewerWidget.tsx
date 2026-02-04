@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useWidgetState } from '@/hooks/useWidgetState';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ContentDescriptor } from '@/lib/types/workspace';
+import { WindowLayout } from '@/components/system/window/WindowLayout';
 import styles from './PDFViewer.Widget.module.scss';
 
 // 引入樣式 (這是 react-pdf 必要的，否則會排版錯亂)
@@ -14,6 +15,7 @@ import styles from './PDFViewer.Widget.module.scss';
 // import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
 interface WidgetProps {
   id: string;
   content: ContentDescriptor;
@@ -28,12 +30,49 @@ const PDF_OPTIONS = {
 const PDFStateSchema = z.object({
   pageNumber: z.number().min(1).default(1),
   scale: z.number().default(0.7),
+  lastLanguage: z.enum(['en', 'zh']).default('en').optional(),
 });
 
-const DEFAULT_PDF_STATE = { pageNumber: 1, scale: 0.7 };
+const DEFAULT_PDF_STATE = { pageNumber: 1, scale: 0.7, lastLanguage: 'en' as const };
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+type ImageDef = {
+  url: string;
+  alt?: string;
+  caption?: string;    // -> <figcaption>
+};
+
+type JSONArticleData = {
+  title?: string;        // -> <header><h1>
+  subtitle?: string;     // -> <header><p>
+  content: string;       // -> <article> (Markdown rendered here)
+  sidebar?: string;      // -> <aside>
+  footer?: string;       // -> <footer>
+  coverImage?: ImageDef; // -> <figure>
+  previews?: ImageDef[]; // -> Gallery
+  meta?: Record<string, any>; // Metadata not displayed but available
+};
+
+type SharedAssets = {
+  coverImage?: ImageDef;
+  previews?: ImageDef[];
+};
+
+type MultilingualContent = {
+  en: JSONArticleData;
+  zh: JSONArticleData;
+} & SharedAssets;
+
+// =============================================================================
+// SUB-COMPONENTS
+// =============================================================================
 
 // Simple Markdown Parser Component
-const SimpleMarkdown = ({ text, source }: { text?: string; source?: string }) => {
+// [Fix] Updated to react to `text` prop changes
+const SimpleMarkdown = ({ text, source, className }: { text?: string; source?: string; className?: string }) => {
   const [content, setContent] = useState<string | null>(text || null);
 
   useEffect(() => {
@@ -44,6 +83,12 @@ const SimpleMarkdown = ({ text, source }: { text?: string; source?: string }) =>
         .catch(err => console.error('Failed to load markdown:', err));
     }
   }, [source]);
+
+  useEffect(() => {
+    if (text !== undefined) {
+      setContent(text);
+    }
+  }, [text]);
 
   if (!content) return null;
 
@@ -136,7 +181,7 @@ const SimpleMarkdown = ({ text, source }: { text?: string; source?: string }) =>
   }
 
   return (
-    <div className={`${styles.markdownContainer} p-6 border-b overflow-y-auto overflow-x-hidden w-full h-full shrink-0 font-sans`}>
+    <div className={`${styles.markdownContainer} ${className || ''} p-6 overflow-y-auto overflow-x-hidden w-full font-sans`}>
       {elements}
     </div>
   );
@@ -162,42 +207,151 @@ function parseInline(text: string): React.ReactNode {
   });
 }
 
+const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
+  return (
+    <section className="semantic-article w-full h-full flex flex-col overflow-auto">
+      {/* Cover Image */}
+      {data.coverImage && (
+        <figure className="mb-6">
+          <img
+            src={data.coverImage.url}
+            alt={data.coverImage.alt || data.title}
+            className="w-full h-auto max-h-[400px] object-contain md:object-cover"
+          />
+          {data.coverImage.caption && (
+            <figcaption className="text-sm text-left text-gray-500 mt-2 italic">
+              {data.coverImage.caption}
+            </figcaption>
+          )}
+        </figure>
+      )}
+      {/* Header Area */}
+      {(data.title || data.subtitle) && (
+        <header className="pb-4 text-left border-b border-gray-100">
+          {data.title && <h1 className="text-3xl font-bold text-gray-900 mb-2">{data.title}</h1>}
+          {data.subtitle && <p className="text-lg text-gray-900 font-light">{data.subtitle}</p>}
+        </header>
+      )}
 
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full">
+        <article className="flex-1 min-w-0 pb-12">
+
+
+          {/* Markdown Content */}
+          <SimpleMarkdown text={data.content} className="p-0 px-8" />
+
+          {/* Previews Gallery */}
+          {data.previews && data.previews.length > 0 && (
+            <section className="mt-12">
+              <h3 className="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4">Previews</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {data.previews.map((img, idx) => (
+                  <figure key={idx} className="flex flex-col gap-2">
+                    <img
+                      src={img.url}
+                      alt={img.alt || `Preview ${idx + 1}`}
+                      className="w-full h-auto rounded border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                    />
+                    {img.caption && (
+                      <figcaption className="text-xs text-gray-500 text-left">
+                        {img.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            </section>
+          )}
+        </article>
+
+        {/* Sidebar */}
+        {data.sidebar && (
+          <aside className="w-full md:w-80 border-t md:border-t-0 md:border-l border-gray-100 bg-gray-50 p-6 shrink-0">
+            <SimpleMarkdown text={data.sidebar} className="p-0 bg-transparent" />
+          </aside>
+        )}
+      </div>
+
+      {/* Footer */}
+      {data.footer && (
+        <footer className="mt-auto border-t border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
+          <SimpleMarkdown text={data.footer} className="p-0 bg-transparent flex justify-center text-center" />
+        </footer>
+      )}
+    </section>
+  );
+};
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
 
 export default function PDFViewerWidget({ id, content, internalState }: WidgetProps) {
   const updateInternalState = useWorkspaceStore(s => s.updateInternalState);
   const state = useWidgetState(internalState, PDFStateSchema, DEFAULT_PDF_STATE);
 
+  const updateWindowGeometry = useWorkspaceStore(s => s.updateWindowGeometry); // [新增] 取得 updateWindowGeometry
   const [numPages, setNumPages] = useState<number | null>(null);
   const [isError, setIsError] = useState<string | null>(null);
-  const [markdownHtml, setMarkdownHtml] = useState<string | null>(null);
 
+  // [新增] Default Window Height 80vh
   useEffect(() => {
-    const checkAndLoadMarkdown = async () => {
-      if (content.sourceId?.toLowerCase().endsWith('.md')) {
-        try {
+    // 只有在第一次掛載時執行 (或可檢查 geometry.height 是否為預設值)
+    if (typeof window !== 'undefined') {
+      const vh80 = window.innerHeight * 0.8;
+      const centeredY = (window.innerHeight - vh80) / 2;
+      updateWindowGeometry(id, { height: vh80, y: Math.max(0, centeredY) });
+    }
+  }, []); // Empty dependency array = run once on mount
+
+  // JSON/Markdown Content
+  const [markdownHtml, setMarkdownHtml] = useState<string | null>(null); // For raw .md files rendered via remark-html
+  const [jsonContent, setJsonContent] = useState<MultilingualContent | null>(null);
+  const [language, setLanguage] = useState<'en' | 'zh'>(state.lastLanguage || 'en');
+
+  // File type detection
+  const isJson = content.sourceId?.toLowerCase().endsWith('.json');
+  const isMd = content.sourceId?.toLowerCase().endsWith('.md');
+  const isPdf = !isJson && !isMd && (content.sourceId?.toLowerCase().endsWith('.pdf') || true); // Default to PDF for now
+
+  // Effect: Load Content
+  useEffect(() => {
+    const loadContent = async () => {
+      if (!content.sourceId) return;
+
+      try {
+        if (isJson) {
           const res = await fetch(content.sourceId);
-          if (!res.ok) throw new Error('Failed to fetch markdown file');
+          if (!res.ok) throw new Error('Failed to fetch JSON file');
+          const data = await res.json();
+          setJsonContent(data);
+          setIsError(null);
+        } else if (isMd) {
+          const res = await fetch(content.sourceId);
+          if (!res.ok) throw new Error('Failed to fetch Markdown file');
           const text = await res.text();
           const processedContent = await remark().use(html).process(text);
           setMarkdownHtml(processedContent.toString());
           setIsError(null);
-        } catch (err: any) {
-          console.error('[PDFWidget] Markdown Load Error:', err);
-          setIsError(err.message || 'Failed to load markdown');
-          setMarkdownHtml(null);
+        } else {
+          // PDF is handled by react-pdf component directly via props
+          setIsError(null);
         }
-      } else {
-        setMarkdownHtml(null);
+      } catch (err: any) {
+        console.error('[PDFWidget] Load Error:', err);
+        setIsError(err.message || 'Failed to load content');
       }
     };
 
-    checkAndLoadMarkdown();
-  }, [content.sourceId]);
+    loadContent();
+  }, [content.sourceId, isJson, isMd]);
 
-  // Extract description or markdownSource
-  const description = content.initialMeta?.description as string;
-  const markdownSource = content.initialMeta?.markdownSource as string;
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'zh' : 'en';
+    setLanguage(newLang);
+    updateInternalState(id, { lastLanguage: newLang });
+  };
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -215,6 +369,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
     }
   }
 
+  // PDF Controls
   const changePage = (offset: number) => {
     const newPage = state.pageNumber + offset;
     if (newPage >= 1 && (numPages === null || newPage <= numPages)) {
@@ -227,66 +382,122 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
     updateInternalState(id, { scale: newScale });
   };
 
+  // Helper to get active data with merged shared assets
+  const getActiveJSONData = (): JSONArticleData | null => {
+    if (!jsonContent) return null;
+    const baseData = jsonContent[language] || jsonContent['en'];
+    if (!baseData) return null;
+
+    return {
+      ...baseData,
+      // Shared assets fallback/override logic: Use shared if local is missing.
+      // Or if user says they are "identical", maybe we should force shared.
+      // Here we prioritize local if specific overrides exist, otherwise fallback to shared root.
+      coverImage: baseData.coverImage || jsonContent.coverImage,
+      previews: baseData.previews || jsonContent.previews,
+    };
+  };
+
+  const activeJsonData = getActiveJSONData();
+
   return (
-    <div className="h-full w-full flex flex-col overflow-hidden relative">
-      {/* Markdown Reader (Text or Source) */}
-      {(description || markdownSource) && <SimpleMarkdown text={description} source={markdownSource} />}
-
-      {/* Toolbar */}
-      {/* <div className="bg-gray-800 text-white p-2 flex justify-between items-center z-10 shadow-md shrink-0">
+    <WindowLayout className={`h-full w-full ${styles.pdfViewerWindow}`}>
+      {/* TOOLBAR */}
+      <WindowLayout.Toolbar className="flex justify-between items-center px-4 py-2 border-b border-gray-200 bg-gray-50 h-12 shrink-0">
+        {/* Left Controls (PDF Only) */}
         <div className="flex gap-2 items-center">
-          <button onClick={() => changePage(-1)} disabled={state.pageNumber <= 1} className="px-2 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50 text-sm">←</button>
-          <span className="text-sm min-w-[80px] text-center">
-            {state.pageNumber} / {numPages || '--'}
-          </span>
-          <button onClick={() => changePage(1)} disabled={numPages !== null && state.pageNumber >= numPages} className="px-2 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50 text-sm">→</button>
+          {isPdf && (
+            <>
+              <button onClick={() => changePage(-1)} disabled={state.pageNumber <= 1} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">←</button>
+              <span className="text-sm min-w-[60px] text-center font-mono">
+                {state.pageNumber} / {numPages || '--'}
+              </span>
+              <button onClick={() => changePage(1)} disabled={numPages !== null && state.pageNumber >= numPages} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">→</button>
+            </>
+          )}
+
+          {(isJson && activeJsonData) && (
+            <div className="text-sm font-semibold text-gray-600">
+              {language === 'en' ? 'English' : '中文'}
+            </div>
+          )}
         </div>
 
+        {/* Right Controls */}
         <div className="flex gap-2 items-center">
-          <button onClick={() => changeScale(-0.1)} className="px-2 py-1 bg-gray-700 rounded text-sm">-</button>
-          <span className="text-xs">{Math.round(state.scale * 100)}%</span>
-          <button onClick={() => changeScale(0.1)} className="px-2 py-1 bg-gray-700 rounded text-sm">+</button>
-        </div>
-      </div> */}
+          {/* Language Switch for JSON */}
+          {isJson && activeJsonData && (
+            <button
+              onClick={toggleLanguage}
+              className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              {language === 'en' ? '中文翻譯' : 'English Version'}
+            </button>
+          )}
 
-      {/* Error Message */}
-      {/* {isError && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-red-100/90 text-red-600 p-4 text-center">
-          <div>
-            <h4 className="font-bold">PDF 載入失敗</h4>
-            <p className="text-sm mt-1">{isError}</p>
-            <p className="text-xs mt-2 text-gray-500">請檢查網路連線或是 Worker 版本</p>
+          {/* Scale Controls for PDF */}
+          {isPdf && (
+            <>
+              <button onClick={() => changeScale(-0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">-</button>
+              <span className="text-xs min-w-[40px] text-center">{Math.round(state.scale * 100)}%</span>
+              <button onClick={() => changeScale(0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">+</button>
+            </>
+          )}
+        </div>
+      </WindowLayout.Toolbar>
+
+      {/* CONTENT */}
+      <WindowLayout.Content className="flex-1 bg-white relative">
+
+        {/* Error State */}
+        {isError && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-red-50 text-red-600 p-4 text-center">
+            <div>
+              <h4 className="font-bold">Load Failed</h4>
+              <p className="text-sm mt-1">{isError}</p>
+            </div>
           </div>
-        </div>
-      )} */}
+        )}
 
-      {/* PDF Canvas or Markdown Content */}
-      {/* <div className="flex-grow overflow-auto flex justify-center p-4 bg-gray-400/50">
-        {markdownHtml ? (
+        {/* Mode: JSON */}
+        {isJson && activeJsonData && (
+          <JSONContentRenderer data={activeJsonData} />
+        )}
+
+        {/* Mode: Markdown File */}
+        {isMd && markdownHtml && (
           <div
-            className={`bg-white p-8 shadow-2xl min-h-full w-full max-w-4xl ${styles['markdown-body']}`}
+            className={`bg-white p-8 shadow-sm min-h-full w-full max-w-4xl mx-auto ${styles['markdown-body']}`}
             dangerouslySetInnerHTML={{ __html: markdownHtml }}
           />
-        ) : (
-          <Document
-            file={content.sourceId}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            className="shadow-2xl"
-            loading={<div className="text-white">載入文件中...</div>}
-            options={PDF_OPTIONS}
-          >
-            <Page
-              pageNumber={state.pageNumber}
-              scale={state.scale}
-              renderTextLayer={false} // 關閉文字選取層以提升效能
-              renderAnnotationLayer={false} // 關閉註釋層
-              className="bg-white"
-              width={500}
-            />
-          </Document>
         )}
-      </div> */}
-    </div>
+        {isMd && !markdownHtml && !isError && (
+          <SimpleMarkdown text={content.initialMeta?.description as string} source={content.initialMeta?.markdownSource as string} />
+        )}
+
+        {/* Mode: PDF */}
+        {isPdf && (
+          <div className="flex justify-center p-4 bg-gray-400/50 min-h-full">
+            <Document
+              file={content.sourceId}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              className="shadow-2xl"
+              loading={<div className="text-white mt-10">Loading PDF...</div>}
+              options={PDF_OPTIONS}
+            >
+              <Page
+                pageNumber={state.pageNumber}
+                scale={state.scale}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                className="bg-white"
+                width={500}
+              />
+            </Document>
+          </div>
+        )}
+      </WindowLayout.Content>
+    </WindowLayout>
   );
 }
