@@ -110,7 +110,7 @@ export const NameGame: React.FC<NameGameProps> = ({
       // const i = coord.index % (coord.y * g + 1) % (f % context.cols)
 
       const a = state.frame * 0.05;
-      const f = Math.floor((1 - Math.cos(a)) * 10) + 1;
+      const f = Math.floor((1 - Math.cos(a)) * 5) + 1;
       const g = Math.floor(a / TAU) % 10 + 1;
 
       for (let y = 0; y < rows; y++) {
