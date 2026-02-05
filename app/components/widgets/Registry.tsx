@@ -11,6 +11,8 @@ import { useAuthStore } from '@/store/authStore';
 import { AccessDenied } from '@/components/ui/AccessDenied';
 import { ProgressBar } from '../ui/primitives';
 
+import styles from './Registry.module.scss';
+
 const WIDGET_TIERS: Record<string, UserTier> = {
   // Admin Only
   [WidgetKind.VideoControl]: 'admin',
@@ -77,11 +79,10 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
 
 // --- 3. 載入中畫面 (Skeleton) ---
 const LoadingFallback = () => (
-  <div className="h-full w-full flex items-end justify-start bg-gray-50 text-gray-400 animate-pulse p-4">
+  <div className="h-full w-full flex items-end justify-start animate-pulse p-4">
     <div className="text-center">
-      {/* <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-2"></div> */}
-      <p className="text-xs">Loading Widget...</p>
-      <div className="w-full my-2">
+      <p className={`text-xl ${styles.loadingText}`}>Loading Widget...</p>
+      <div className="w-full">
         <ProgressBar height="12px" />
       </div>
     </div>

@@ -29,7 +29,7 @@ interface ProgressBarProps {
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   value,
   width = '100%',
-  height = '20px',
+  height = '12px',
   label,
   showPercentage = true,
   className = '',

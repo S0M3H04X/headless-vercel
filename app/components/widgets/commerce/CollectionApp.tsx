@@ -63,8 +63,13 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
       {/* Content Layer */}
       <div className={styles.viewArea}>
         {isLoading ? (
-          <div className="p-8 w-full max-w-[200px] mx-auto flex flex-col items-center justify-center">
-            <ProgressBar height="20px" label="Downloading Data..." />
+          <div className="h-full w-full flex items-end justify-center animate-pulse p-4">
+            {/* <div className="text-center">
+              <p className={`text-xl ${styles.loadingText}`}>Assets...</p>
+              <div className="w-full">
+                <ProgressBar height="12px" />
+              </div>
+            </div> */}
           </div>
         ) : error ? (
           <div className="p-4 text-center text-red-600 text-xs font-mono">

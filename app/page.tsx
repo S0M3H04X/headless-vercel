@@ -18,7 +18,7 @@ export default function Home() {
         <div className={`absolute inset-0 z-0 ${styles.backgroundAnimation}`}>
           <NameGame
             className="w-full h-full"
-            fontSize={14}
+            fontSize={16}
             opacity={0.3}
           />
         </div>

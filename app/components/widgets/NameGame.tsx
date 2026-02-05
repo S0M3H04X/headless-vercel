@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
+
 interface NameGameProps {
   backgroundColor?: string;
   color?: string;
@@ -9,9 +10,9 @@ interface NameGameProps {
 }
 
 export const NameGame: React.FC<NameGameProps> = ({
-  backgroundColor = 'black',
-  color = 'green',
-  fontSize = 14,
+  backgroundColor = 'white',
+  color = 'black',
+  fontSize = 24,
   className = '',
   opacity = 1
 }) => {
@@ -118,7 +119,7 @@ export const NameGame: React.FC<NameGameProps> = ({
     <div
       ref={containerRef}
       className={`w-full h-full ${className}`}
-      // style={{ opacity }}
+      style={{ opacity }}
     >
       <canvas ref={canvasRef} className="block" />
     </div>

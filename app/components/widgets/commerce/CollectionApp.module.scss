@@ -15,14 +15,11 @@
 
 .visualizerContainer {
   width: 100%;
-  // position: absolute;
   height: 100%;
-  // overflow: hidden;
 }
 
 .visualizerCanvas {
   box-shadow: inset 1px 1px 0 #000, inset 2px 2px 0 #888;
-
 }
 
 /* --- Toolbar Area --- */
@@ -294,4 +291,9 @@
     overflow: visible;
     object-fit: contain;
   }
+}
+
+.loadingText {
+  font-family: $font-menu;
+  color: black;
 }

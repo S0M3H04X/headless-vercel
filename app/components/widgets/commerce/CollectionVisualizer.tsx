@@ -84,9 +84,12 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
     return (
         <div className={styles.visualizerContainer}>
             {isLoading ? (
-                <div className="w-full h-full flex items-center justify-center bg-black/20">
-                    <div className="w-48 p-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-gray-600 border-r-gray-600">
-                        <ProgressBar height="16px" label="Loading Assets..." />
+                <div className="h-full w-full flex items-end justify-start animate-pulse p-4">
+                    <div className="text-center">
+                        <p className={`text-xl ${styles.loadingText}`}>Loading Widget...</p>
+                        <div className="w-full">
+                            <ProgressBar height="12px" />
+                        </div>
                     </div>
                 </div>
             ) : (

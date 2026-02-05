@@ -1,4 +1,5 @@
 // app/styles/classicy/_variables.scss
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=swap');
 
 // --- 1. Colors (Platinum Theme) ---
 $color-platinum-light: rgba(187, 206, 217, 0.6);
@@ -55,6 +56,8 @@ $font-path: '/assets/fonts/'; // 字體資源路徑
     url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.ttf")format("truetype"),
     url("https://db.onlinewebfonts.com/t/d4244fd536be2c4de94a657a0017fcac.svg#Apple Garamond Light")format("svg");
 }
+
+
 
 $font-system: 'ChicagoKare', 'Geneva', 'Helvetica Neue', sans-serif; 
 $font-pixel: 'Ishmeria', monospace; // 暫代像素字體
