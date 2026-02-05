@@ -20,7 +20,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
       {/* Layer 2: Wallpaper */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
-        style={{ backgroundImage: `url(${wallpaper || '/assets/wallpaper/wave.jpg'})` }} 
+        style={{ backgroundImage: `url(${wallpaper || '/assets/img/2.jpg'})` }} 
       />
       
       {/* Layer 3, 4, 5: Injected Content */}
