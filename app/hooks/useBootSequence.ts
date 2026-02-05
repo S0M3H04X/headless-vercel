@@ -18,9 +18,11 @@ export const useBootSequence = () => {
 
         // [Optimized] Parallelize config fetch and auth check
         // This ensures the "Desktop" doesn't render until we know the user's state
+        // [Feature] Ensure minimum boot time of 3 seconds for aesthetic purposes
         const [configRes] = await Promise.all([
           fetch('/api/os/boot'),
-          useAuthStore.getState().checkAuth()
+          useAuthStore.getState().checkAuth(),
+          new Promise(resolve => setTimeout(resolve, 3000))
         ]);
 
         if (!configRes.ok) throw new Error('Failed to boot');

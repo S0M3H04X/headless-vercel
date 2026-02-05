@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 
 interface NameGameProps {
@@ -18,6 +18,30 @@ export const NameGame: React.FC<NameGameProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  // Load custom font
+  useEffect(() => {
+    const fontName = 'Ishmeria';
+    const fontUrl = '/assets/fonts/Ishmeria.woff';
+
+    // Check if font is already loaded
+    if (document.fonts.check(`12px ${fontName}`)) {
+      setFontLoaded(true);
+      return;
+    }
+
+    const font = new FontFace(fontName, `url(${fontUrl})`);
+
+    font.load().then((loadedFont) => {
+      document.fonts.add(loadedFont);
+      setFontLoaded(true);
+    }).catch((err) => {
+      console.warn('Failed to load font:', err);
+      // Still set loaded to true to trigger render with fallback
+      setFontLoaded(true);
+    });
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -72,7 +96,11 @@ export const NameGame: React.FC<NameGameProps> = ({
       ctx.fillRect(0, 0, width, height);
 
       ctx.fillStyle = color;
-      ctx.font = `${fontSize}px monospace`;
+      ctx.fillStyle = color;
+      // Use loaded font or fallback
+      const fontFamily = fontLoaded ? 'Ishmeria' : 'monospace';
+      ctx.font = `${fontSize}px ${fontFamily}`;
+      ctx.textBaseline = 'top';
       ctx.textBaseline = 'top';
 
       // Logic from name_game.js
@@ -113,7 +141,7 @@ export const NameGame: React.FC<NameGameProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [backgroundColor, color, fontSize]);
+  }, [backgroundColor, color, fontSize, fontLoaded]);
 
   return (
     <div
