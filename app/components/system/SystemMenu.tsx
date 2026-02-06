@@ -84,14 +84,14 @@ export const SystemMenu: React.FC = () => {
           style={{ zIndex: Z_INDEX.MENU_BAR + 1 }} // 確保選單在 MenuBar 之上
         >
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('ABOUT')}>
-            About us
+            ABOUT US
           </div>
 
-          <div className="h-[1px] bg-gray-400 my-1 mx-1" />
+          {/* <div className="h-[1px] bg-gray-400 my-1 mx-1" /> */}
 
-          <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SOCIAL')}>
+          {/* <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SOCIAL')}>
             Social
-          </div>
+          </div> */}
           {/* <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('SETTINGS')}>
             Control Panels
           </div> */}
@@ -100,7 +100,7 @@ export const SystemMenu: React.FC = () => {
 
           {/* [新增] My Account 選項 */}
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={handleMyAccount}>
-            {isAuthenticated ? 'My Account' : 'Login / Register'}
+            {isAuthenticated ? 'INFO' : 'Login / Register'}
           </div>
 
 
