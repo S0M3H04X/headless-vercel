@@ -84,7 +84,7 @@ export const SystemMenu: React.FC = () => {
           style={{ zIndex: Z_INDEX.MENU_BAR + 1 }} // 確保選單在 MenuBar 之上
         >
           <div className="px-4 py-1 hover:bg-blue-700 hover:text-white cursor-pointer" onClick={() => handleSystemCommand('ABOUT')}>
-            About 1313
+            About us
           </div>
 
           <div className="h-[1px] bg-gray-400 my-1 mx-1" />

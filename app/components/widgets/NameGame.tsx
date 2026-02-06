@@ -12,7 +12,7 @@ interface NameGameProps {
 export const NameGame: React.FC<NameGameProps> = ({
   backgroundColor = 'white',
   color = 'black',
-  fontSize = 24,
+  fontSize = 12,
   className = '',
   opacity = 1
 }) => {

@@ -73,21 +73,21 @@ export const AuthWidget: React.FC = () => {
   // [Fix] 登入後顯示會員資訊 (My Account View)
   if (isAuthenticated) {
     return (
-      <GroupFrame legend="Access Granted" className={styles.logoutContainer}>
+      <GroupFrame legend="Welcome Onboard" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
-
-          <div className={styles.userInfoBox}>
-            <div className="mb-4">
-              <div className={styles.userGreeting}>Welcome</div>
-              <div className={styles.userAvatar}>
+          <div className={styles.userAvatar}>
                 <span className="text-2xl">👤</span>
               </div>
+          <div className={styles.userInfoBox}>
+            <div className="mb-4">
+              {/* <div className={styles.userGreeting}>Welcome</div> */}
+              
               <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
             </div>
             <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
 
-            <p>{`> Session Type: CAMPAIGN`}</p>
-            <p>{`> Permissions: READ`}</p>
+            {/* <p>{`> Session Type: CAMPAIGN`}</p> */}
+            {/* <p>{`> Permissions: READ`}</p> */}
             {/* <p>{`> Status: CONNECTED`}</p> */}
             {/* <p>{`> Encrypted: YES`}</p> */}
           </div>
