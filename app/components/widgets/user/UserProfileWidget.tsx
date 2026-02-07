@@ -26,10 +26,10 @@ const UserProfileWidget: React.FC = () => {
         ];
 
         return (
-            <div className="h-full flex flex-col p-4 text-sm select-none">
+            <div className="w-full h-full flex flex-col p-4 justify-between text-sm select-none">
                 {/* Header / Profile Card */}
-                <div className="border-1 border-gray-600 shadow-inset p-4 mb-4">
-                    <div className="flex items-center gap-4 border-b border-gray-300 pb-4 mb-4">
+                <div className="border-1 border-gray-600 mb-4">
+                    <div className="flex items-center gap-4 pb-4 mb-4">
                         {/* Avatar */}
                         <div className="w-14 h-14 bg-gray-200 border border-gray-400 flex items-center justify-center overflow-hidden rounded-full shadow-md">
                             <img
@@ -41,20 +41,20 @@ const UserProfileWidget: React.FC = () => {
                         </div>
                         {/* Name & Badge */}
                         <div>
-                            <div className="font-bold text-lg text-gray-900 leading-tight">
+                            {/* <div className="font-bold text-lg text-gray-900 leading-tight">
                                 {user?.email?.split('@')[0] || 'Member'}
-                            </div>
-                            <div className="text-blue-700 font-bold text-[10px] uppercase tracking-wider bg-blue-50 inline-block px-1 rounded border border-blue-100 mt-1">
+                            </div> */}
+                            {/* <div className="text-blue-700 font-bold text-[10px] uppercase tracking-wider bg-blue-50 inline-block px-1 rounded border border-blue-100 mt-1">
                                 OS Insider • Gold
-                            </div>
-                            <div className="text-gray-500 text-[10px] mt-1 font-mono tracking-tighter">
+                            </div> */}
+                            <div className="text-black text-[12px] mt-1 tracking-tighter">
                                 ID: {user?.email || 'unknown'}
                             </div>
                         </div>
                     </div>
 
                     {/* Stats / Level Grid */}
-                    <div className="grid grid-cols-2 gap-3 text-center">
+                    {/* <div className="grid grid-cols-2 gap-3 text-center">
                         <div className="bg-gray-50 border border-gray-200 p-2 rounded shadow-sm">
                             <div className="text-[10px] text-gray-500 uppercase tracking-wide">Level</div>
                             <div className="font-bold text-sm text-gray-800">Gold VIP</div>
@@ -63,11 +63,11 @@ const UserProfileWidget: React.FC = () => {
                             <div className="text-[10px] text-gray-500 uppercase tracking-wide">Points</div>
                             <div className="font-bold text-sm text-gray-800">1,313</div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Orders Section */}
-                <div className="flex-1 bg-white border-2 border-gray-600 shadow-inset p-3 mb-4 overflow-y-auto custom-scrollbar">
+                {/* <div className="flex-1 bg-white border-2 border-gray-600 shadow-inset p-3 mb-4 overflow-y-auto custom-scrollbar">
                     <h4 className="font-bold text-[10px] mb-3 text-gray-500 uppercase tracking-widest border-b border-gray-100 pb-1">
                         Recent Activity
                     </h4>
@@ -95,11 +95,11 @@ const UserProfileWidget: React.FC = () => {
                     ) : (
                         <div className="text-center text-gray-400 py-8 text-xs">No recent orders found.</div>
                     )}
-                </div>
+                </div> */}
 
                 {/* Footer Actions */}
-                <div className="flex justify-between items-center pt-2 border-t border-gray-300">
-                    <div className="text-[10px] text-gray-500">v2.1.0-stable</div>
+                <div className="flex justify-end items-center pt-2">
+                    {/* <div className="text-[10px] text-gray-500">v2.1.0-stable</div> */}
                     <Button onClick={() => { logout(); window.location.reload(); }} variant="default">
                         Sign Out
                     </Button>

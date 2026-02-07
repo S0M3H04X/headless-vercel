@@ -83,7 +83,7 @@ export const SystemService = {
               markdownSource: '/assets/md/about.md'
             }
           },
-          initialGeometry: { width: 400, height: 300, x: 'center', y: 'center' }
+          initialGeometry: { width: 200, height: 200, x: 'center', y: 'center' }
         });
         break;
       case 'SETTINGS':
