@@ -467,7 +467,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
         {/* Mode: Markdown File */}
         {isMd && markdownHtml && (
           <div
-            className={`bg-white p-8 shadow-sm min-h-full w-full max-w-4xl mx-auto ${styles['markdown-body']}`}
+            className={`p-8 shadow-sm min-h-full w-full max-w-4xl mx-auto ${styles['markdown-body']}`}
             dangerouslySetInnerHTML={{ __html: markdownHtml }}
           />
         )}

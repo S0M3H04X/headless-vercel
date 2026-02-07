@@ -75,9 +75,9 @@ export const AuthWidget: React.FC = () => {
     return (
       <GroupFrame legend="Welcome Onboard" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
-          <div className={styles.userAvatar}>
+          {/* <div className={styles.userAvatar}>
                 <span className="text-2xl">👤</span>
-              </div>
+              </div> */}
           <div className={styles.userInfoBox}>
             <div className="mb-4">
               {/* <div className={styles.userGreeting}>Welcome</div> */}
@@ -103,7 +103,7 @@ export const AuthWidget: React.FC = () => {
   // 未登入視圖
   return (
     <GroupFrame legend="Get Your Access Key">
-      {msg && <div className="mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200">{msg}</div>}
+      {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}
       {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 
       <div className={styles.loginContainer}>
@@ -122,7 +122,7 @@ export const AuthWidget: React.FC = () => {
           </div>
         ) : (
           <div className={styles.inputGroup}>
-            <label className="block text-xs mb-1 font-bold">Access Key</label>
+            <label className={styles.labelAuth}>Enter the key</label>
             <input
               type="password"
               placeholder="********"
@@ -132,7 +132,7 @@ export const AuthWidget: React.FC = () => {
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               autoFocus
             />
-            <div className="mt-1 text-[10px] text-gray-500">Check your inbox for the key.</div>
+            
           </div>
         )}
 

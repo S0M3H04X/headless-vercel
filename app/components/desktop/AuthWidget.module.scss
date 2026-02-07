@@ -41,6 +41,9 @@
   align-items: center;
   gap: 0.25rem;
   width: 100%;
+  font-family: $font-system;
+  font-size: 16px;
+  text-transform: uppercase;
 }
 
 .labelAuth {
@@ -48,6 +51,13 @@
   font-size: 22px;
   color: hsl(var(--specular-highlight) / 0.9);
   // margin-bottom: 0.5rem;
+}
+
+.msgBox {
+  // border-radius: 2px;
+  font-family: $font-pixel;
+  font-size: 12px;
+  text-align: center;
 }
 
 .inputMail, .inputKey {

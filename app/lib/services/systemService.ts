@@ -76,7 +76,13 @@ export const SystemService = {
       case 'ABOUT':
         openWindow({
           title: 'About 1313',
-          content: { kind: WidgetKind.PDFViewer, sourceId: 'about_doc' }, // 範例：開啟說明文件
+          content: {
+            kind: WidgetKind.PDFViewer,
+            sourceId: '/assets/md/about.md',
+            initialMeta: {
+              markdownSource: '/assets/md/about.md'
+            }
+          },
           initialGeometry: { width: 400, height: 300, x: 'center', y: 'center' }
         });
         break;

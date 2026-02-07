@@ -5,7 +5,7 @@
 }
 
 .markdown-body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: $font-pixel;
   line-height: 1.6;
   color: #1f2937;
 }
@@ -21,7 +21,7 @@
 .markdown-body h2 {
   font-size: 1.875rem;
   font-weight: 700;
-  margin-top: 2rem;
+  // margin-top: 2rem;
   margin-bottom: 1rem;
   color: #333;
 }

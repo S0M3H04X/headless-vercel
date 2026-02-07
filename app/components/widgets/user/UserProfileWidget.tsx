@@ -26,9 +26,9 @@ const UserProfileWidget: React.FC = () => {
         ];
 
         return (
-            <div className="h-full flex flex-col bg-[#c0c0c0] p-4 text-sm font-sans select-none">
+            <div className="h-full flex flex-col p-4 text-sm select-none">
                 {/* Header / Profile Card */}
-                <div className="bg-white border-2 border-gray-600 shadow-inset p-4 mb-4">
+                <div className="border-1 border-gray-600 shadow-inset p-4 mb-4">
                     <div className="flex items-center gap-4 border-b border-gray-300 pb-4 mb-4">
                         {/* Avatar */}
                         <div className="w-14 h-14 bg-gray-200 border border-gray-400 flex items-center justify-center overflow-hidden rounded-full shadow-md">
