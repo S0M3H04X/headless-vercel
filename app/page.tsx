@@ -24,7 +24,7 @@ export default function Home() {
         </div>
 
         {/* Boot Content */}
-        <div className="absolute bottom-0 left-0 p-8 z-10 flex flex-col items-start gap-2">
+        <div className="absolute bottom-1 left-0 p-8 z-10 flex flex-col items-start gap-2">
           <p className={`text-3xl text-black ${styles.bootScreen}`}>BOOTING SYSTEM...</p>
           <div className="w-64">
             <ProgressBar height="12px" />
