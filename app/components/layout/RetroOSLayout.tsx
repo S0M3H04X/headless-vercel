@@ -27,7 +27,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
       
 
       {/* Layer 3, 4, 5: Injected Content */}
-      <div className="relative z-10 w-full h-full">
+      <div className="relative z-10 w-full">
         {children}
 
         {/* Global Auth Modal */}
