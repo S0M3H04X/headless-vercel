@@ -13,7 +13,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className={`${styles.bootScreen} relative h-screen w-screen overflow-hidden`}>
+      <div className={`${styles.bootScreen} relative h-viewport w-viewport overflow-hidden`}>
         {/* Background Animation */}
         <div className={`absolute inset-0 z-0 overflow-hidden ${styles.backgroundAnimation}`}>
           <NameGame
