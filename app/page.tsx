@@ -13,7 +13,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className={`${styles.bootScreen} relative h-viewport w-viewport overflow-hidden`}>
+      <div className={`${styles.bootScreen} relative h-screen w-screen overflow-hidden`}>
         {/* Background Animation */}
         <div className={`absolute inset-0 z-0 overflow-hidden ${styles.backgroundAnimation}`}>
           <NameGame
@@ -24,7 +24,7 @@ export default function Home() {
         </div>
 
         {/* Boot Content */}
-        <div className="absolute bottom-1 left-0 p-8 z-10 flex flex-col items-start gap-2">
+        <div className="absolute top-1 left-0 p-8 z-10 flex flex-col items-start gap-2">
           <p className={`text-3xl text-black ${styles.bootScreen}`}>BOOTING SYSTEM...</p>
           <div className="w-64">
             <ProgressBar height="12px" />
