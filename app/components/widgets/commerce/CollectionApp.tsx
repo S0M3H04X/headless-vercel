@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { ScenarioService } from '@/lib/services/scenarioService';
 import { BaseWidgetProps } from '@/lib/types/workspace';
@@ -31,11 +31,20 @@ export const CollectionApp: React.FC<BaseWidgetProps> = ({ id, content }) => {
   }, [products]);
 
   // Navigation handlers
+  const lastClickTimeRef = useRef<number>(0);
+  const THROTTLE_DELAY = 350; // ms
+
   const handlePrevious = () => {
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < THROTTLE_DELAY) return;
+    lastClickTimeRef.current = now;
     setSelectedIndex((prev) => (prev > 0 ? prev - 1 : products.length - 1));
   };
 
   const handleNext = () => {
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < THROTTLE_DELAY) return;
+    lastClickTimeRef.current = now;
     setSelectedIndex((prev) => (prev < products.length - 1 ? prev + 1 : 0));
   };
 
