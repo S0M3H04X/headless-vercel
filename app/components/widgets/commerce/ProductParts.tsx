@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/primitives/Button';
 import styles from './ProductParts.module.scss';
 
 
-const DEFAULT_DESC_STATE = { fontSize: 14, showDetails: true };
+const DEFAULT_DESC_STATE = { fontSize: 18, showDetails: true };
 const DEFAULT_TITLE_STATE = { fontSize: 24, showDetails: true };
 const DEFAULT_IMAGE_STATE = { width: 500, showDetails: true };
 
@@ -230,17 +230,18 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
         <div
           style={{ fontSize: state.fontSize }}
           className={styles.descriptionText}
-        >
-          {product?.description || "No description available for this product."}
-        </div>
+          dangerouslySetInnerHTML={{
+            __html: product?.descriptionHtml || product?.description || "No description available for this product."
+          }}
+        />
 
         {/* 狀態控制的額外資訊 */}
-        {state.showDetails && (
+        {/* {state.showDetails && (
           <div className="mt-6 pt-4 border-gray-100 text-xs text-gray-400 font-mono">
             Product ID: {content.sourceId}<br />
             Source: Shopify Storefront API
           </div>
-        )}
+        )} */}
       </div>
 
 

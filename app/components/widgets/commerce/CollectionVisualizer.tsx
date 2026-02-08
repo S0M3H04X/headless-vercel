@@ -28,7 +28,7 @@ const DitheredImage: React.FC<{ ditherScale: number; colorLevels: number }> = ({
     const { viewport, size } = useThree();
 
     // Load the texture
-    const texture = useTexture('/assets/img/style.jpeg');
+    const texture = useTexture('/assets/img/bg-3.webp');
 
     // Configure texture
     texture.minFilter = THREE.LinearFilter;
