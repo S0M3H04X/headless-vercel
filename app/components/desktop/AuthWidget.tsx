@@ -104,10 +104,7 @@ export const AuthWidget: React.FC = () => {
   // 未登入視圖
   return (
     <GroupFrame legend="Get Your Access Key" className={styles.loginContainer}>
-      {/* SDF Cube Layer */}
-      <div className="absolute inset-0 z-0 h-full pointer-events-disable overflow-hidden">
-        <SDFCube className="opacity-30" />
-      </div>
+      
 
       <div className="relative z-10 w-full">
         {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}
@@ -165,6 +162,11 @@ export const AuthWidget: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* SDF Cube Layer */}
+      <div className="absolute inset-0 z-0 h-full pointer-events-disable overflow-hidden">
+        <SDFCube className="opacity-30" />
       </div>
     </GroupFrame>
   );
