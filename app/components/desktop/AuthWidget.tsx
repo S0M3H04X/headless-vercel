@@ -105,7 +105,7 @@ export const AuthWidget: React.FC = () => {
   return (
     <GroupFrame legend="Get Your Access Key" className={styles.loginContainer}>
       {/* SDF Cube Layer */}
-      <div className="absolute inset-0 z-0 h-full pointer-events-auto">
+      <div className="absolute inset-0 z-0 h-full pointer-events-disable overflow-hidden">
         <SDFCube className="opacity-30" />
       </div>
 

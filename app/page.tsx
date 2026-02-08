@@ -15,7 +15,7 @@ export default function Home() {
     return (
       <div className={`${styles.bootScreen} relative h-screen w-screen overflow-hidden`}>
         {/* Background Animation */}
-        <div className={`absolute inset-0 z-0 ${styles.backgroundAnimation}`}>
+        <div className={`absolute inset-0 z-0 overflow-hidden ${styles.backgroundAnimation}`}>
           <NameGame
             className="w-full h-full"
             fontSize={16}
