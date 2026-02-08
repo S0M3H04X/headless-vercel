@@ -22,7 +22,7 @@ export const useBootSequence = () => {
         const [configRes] = await Promise.all([
           fetch('/api/os/boot'),
           useAuthStore.getState().checkAuth(),
-          new Promise(resolve => setTimeout(resolve, 3000))
+          new Promise(resolve => setTimeout(resolve, 1500))
         ]);
 
         if (!configRes.ok) throw new Error('Failed to boot');

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { AuthWidget } from '@/components/desktop/AuthWidget'; // [修正] 加上大括號
-import { SDFCube } from '@/components/widgets/SDFCube';
+
 import styles from './RetroOSLayout.module.scss';
 
 
@@ -24,10 +24,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
         style={{ backgroundImage: `url(${wallpaper || '/assets/img/2.jpg'})` }}
       />
 
-      {/* SDF Cube Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-auto">
-        <SDFCube className="w-full h-full opacity-40" />
-      </div>
+      
 
       {/* Layer 3, 4, 5: Injected Content */}
       <div className="relative z-10 w-full h-full">

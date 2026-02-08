@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/primitives/Button';
 import { GroupFrame } from '@/components/ui/primitives/Forms';
 import { ProgressBar } from '@/components/ui/primitives';
+import { SDFCube } from '@/components/widgets/SDFCube';
 import styles from './AuthWidget.module.scss';
 
 type AuthStep = 'email' | 'key';
@@ -81,7 +82,7 @@ export const AuthWidget: React.FC = () => {
           <div className={styles.userInfoBox}>
             <div className="mb-4">
               {/* <div className={styles.userGreeting}>Welcome</div> */}
-              
+
               <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
             </div>
             <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
@@ -102,60 +103,67 @@ export const AuthWidget: React.FC = () => {
 
   // 未登入視圖
   return (
-    <GroupFrame legend="Get Your Access Key">
-      {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}
-      {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
+    <GroupFrame legend="Get Your Access Key" className={styles.loginContainer}>
+      {/* SDF Cube Layer */}
+      <div className="absolute inset-0 z-0 h-full pointer-events-auto">
+        <SDFCube className="opacity-30" />
+      </div>
 
-      <div className={styles.loginContainer}>
-        {step === 'email' ? (
-          <div className={styles.inputGroup}>
-            <label className={styles.labelAuth}>Enter Email Address</label>
-            <input
-              type="email"
-              placeholder='address@mail.com'
-              className={styles.inputMail}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}
-              autoFocus
-            />
-          </div>
-        ) : (
-          <div className={styles.inputGroup}>
-            <label className={styles.labelAuth}>Enter the key</label>
-            <input
-              type="password"
-              placeholder="********"
-              className={styles.inputKey}
-              value={accessKey}
-              onChange={(e) => setAccessKey(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-              autoFocus
-            />
-            
-          </div>
-        )}
+      <div className="relative z-10 w-full">
+        {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}
+        {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
 
-        <div className="flex justify-between items-center pt-2 gap-2">
-          {loading ? (
-            <div className="w-full">
-              <ProgressBar height="12px" label="Processing Request..." />
+        <div className={styles.loginContainer}>
+          {step === 'email' ? (
+            <div className={styles.inputGroup}>
+              <label className={styles.labelAuth}>Enter Email Address</label>
+              <input
+                type="email"
+                placeholder='address@mail.com'
+                className={styles.inputMail}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleRequestKey()}
+                autoFocus
+              />
             </div>
           ) : (
-            <>
-              {step === 'key' && (
-                <Button onClick={() => setStep('email')} variant="default" className="w-20">Back</Button>
-              )}
-              <div className="flex-1"></div>
-              <Button
-                onClick={step === 'email' ? handleRequestKey : handleLogin}
-                isDefault={true}
-                className="min-w-[100px]"
-              >
-                {step === 'email' ? 'Get Key' : 'Enter System'}
-              </Button>
-            </>
+            <div className={styles.inputGroup}>
+              <label className={styles.labelAuth}>Enter the key</label>
+              <input
+                type="password"
+                placeholder="********"
+                className={styles.inputKey}
+                value={accessKey}
+                onChange={(e) => setAccessKey(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                autoFocus
+              />
+
+            </div>
           )}
+
+          <div className="flex justify-between items-center pt-2 gap-2">
+            {loading ? (
+              <div className="w-full">
+                <ProgressBar height="12px" label="Processing Request..." />
+              </div>
+            ) : (
+              <>
+                {step === 'key' && (
+                  <Button onClick={() => setStep('email')} variant="default" className="w-20">Back</Button>
+                )}
+                <div className="flex-1"></div>
+                <Button
+                  onClick={step === 'email' ? handleRequestKey : handleLogin}
+                  isDefault={true}
+                  className="min-w-[100px]"
+                >
+                  {step === 'email' ? 'Get Key' : 'Enter System'}
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </GroupFrame>
