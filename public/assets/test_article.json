@@ -1,0 +1,16 @@
+{
+  "en": {
+    "title": "Test Article",
+    "subtitle": "Testing markdown file loading",
+    "content": "/assets/md/test.md",
+    "coverImage": {
+      "url": "https://placehold.co/600x400",
+      "alt": "Placeholder Image"
+    }
+  },
+  "zh": {
+    "title": "測試文章",
+    "subtitle": "測試Markdown檔案載入",
+    "content": "/assets/md/test.md"
+  }
+}

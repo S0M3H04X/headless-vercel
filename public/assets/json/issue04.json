@@ -13,11 +13,11 @@
   "en": {
     "title": "low tech vs high tech",
     "subtitle": "As technology becomes increasingly invasive in our lives, the urgent need now is not to passively endure it, but to start taking control of it ourselves. In contrast to the dogmatism of high tech and the naive techno-optimism, low tech culture advocates for an approach that is approachable, fundamental, and most importantly, proactive towards machines. Ultimately, technology is not just a matter of progress; it is first and foremost a social choice. High tech or low tech? Stop or continue?",
-    "content": "High tech or low tech?"
+    "content": "/assets/md/HighTechLowTech_en.md"
   },
   "zh": {
     "title": "低科技與高科技",
     "subtitle": "隨著科技對我們的侵入愈來愈深，現在迫切需要的，不再是被動承受，而是開始將它們掌握在自己手中。相對於高科技的教條主義與天真的科技樂觀主義，low tech 文化主張一種親近、基礎、而且最重要的是對機器保持主動的態度。歸根究柢，科技不只是進步的問題，首先是一種社會選擇。高科技還是低科技？停止，還是繼續？",
-    "content": "..."
+    "content": "/assets/md/HighTechLowTech_zh.md"
   }
 }

@@ -181,7 +181,7 @@ const SimpleMarkdown = ({ text, source, className }: { text?: string; source?: s
   }
 
   return (
-    <div className={`${styles.markdownContainer} ${className || ''} p-6 overflow-y-auto overflow-x-hidden w-full font-sans`}>
+    <div className={`${styles.markdownContainer} ${className || ''} overflow-y-auto overflow-x-hidden w-full font-sans`}>
       {elements}
     </div>
   );
@@ -239,7 +239,11 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
 
 
           {/* Markdown Content */}
-          <SimpleMarkdown text={data.content} className="p-0 px-8" />
+          {data.content?.endsWith('.md') ? (
+            <SimpleMarkdown source={data.content} className="p-0" />
+          ) : (
+            <SimpleMarkdown text={data.content} className="p-0" />
+          )}
 
           {/* Previews Gallery */}
           {data.previews && data.previews.length > 0 && (

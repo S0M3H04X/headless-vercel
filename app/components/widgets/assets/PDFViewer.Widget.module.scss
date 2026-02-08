@@ -4,9 +4,16 @@
   font-family: $font-pixel;
 }
 
-.markdown-body {
+.markdownContainer {
   font-family: $font-pixel;
+  padding-top: 18px;
   line-height: 1.6;
+  color: #1f2937;
+} 
+
+.markdown-body {
+  // font-family: $font-pixel;
+  // line-height: 1.6;
   color: #1f2937;
 }
 
