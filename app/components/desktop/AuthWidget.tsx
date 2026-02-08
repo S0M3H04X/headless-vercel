@@ -74,7 +74,7 @@ export const AuthWidget: React.FC = () => {
   // [Fix] 登入後顯示會員資訊 (My Account View)
   if (isAuthenticated) {
     return (
-      <GroupFrame legend="Welcome Onboard" className={styles.logoutContainer}>
+      <GroupFrame legend="Welcome & Enjoy" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
           {/* <div className={styles.userAvatar}>
                 <span className="text-2xl">👤</span>

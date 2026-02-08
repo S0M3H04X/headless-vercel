@@ -20,11 +20,15 @@
 }
 
 .logoutContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
+
+  & legend {
+    font-family: $font-menu;
+    font-size: 22px;
+    text-transform: uppercase;
+    color: hsl(var(--specular-highlight) / 0.9);
+    top: 30%;
+  } 
+
 }
 
 .grantedContainer {
@@ -32,7 +36,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  width: 60%;
   gap: 2rem;
 }
 
@@ -55,10 +59,13 @@
 }
 
 .msgBox {
-  // border-radius: 2px;
+  margin: 0 auto;
+  width: 50%;
+  border-radius: 2px;
   font-family: $font-pixel;
   font-size: 12px;
   text-align: center;
+
 }
 
 .inputMail, .inputKey {
@@ -127,12 +134,12 @@
       1px 1px 0 #000;
   backdrop-filter: blur(4px);
   border-radius: 2px;
-  padding: 0 8px;
+  padding: 8px 16px;
   font-family: $font-pixel;
   font-weight: 100;
   font-size: 14px;
   color: $color-text;
-  margin: 0; // 置中
+  width: 100%;
 
   // 標題列橫紋 (Stripes)
   &::before {
