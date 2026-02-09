@@ -79,7 +79,7 @@ const WindowContent: React.FC<WindowContentProps> = ({
   children,
   className,
   scrollable = true,
-  padding = 'medium',
+  padding = 'none',
 }) => {
   const paddingClass = {
     none: styles.paddingNone,

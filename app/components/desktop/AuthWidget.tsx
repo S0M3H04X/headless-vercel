@@ -85,7 +85,7 @@ export const AuthWidget: React.FC = () => {
 
               <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
             </div>
-            <p>{`> Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
+            <p>{`>_ Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
 
             {/* <p>{`> Session Type: CAMPAIGN`}</p> */}
             {/* <p>{`> Permissions: READ`}</p> */}

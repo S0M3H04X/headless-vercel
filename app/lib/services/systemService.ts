@@ -80,7 +80,9 @@ export const SystemService = {
             kind: WidgetKind.PDFViewer,
             sourceId: '/assets/md/about.md',
             initialMeta: {
-              markdownSource: '/assets/md/about.md'
+              markdownSource: '/assets/md/about.md',
+              typingEffect: true,
+              showToolbar: false
             }
           },
           initialGeometry: { width: 200, height: 200, x: 'center', y: 'center' }

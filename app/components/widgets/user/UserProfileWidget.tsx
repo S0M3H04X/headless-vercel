@@ -4,6 +4,9 @@ import { useAuthStore } from '@/store/authStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { WidgetKind } from '@/lib/types/workspace';
 import { Button } from '@/components/ui/primitives/Button';
+import { Tabs } from '@/components/ui/primitives/Tabs';
+
+import styles from './UserProfileWidget.module.scss';
 
 const UserProfileWidget: React.FC = () => {
     const { user, isAuthenticated, logout } = useAuthStore();
@@ -26,10 +29,10 @@ const UserProfileWidget: React.FC = () => {
         ];
 
         return (
-            <div className="w-full h-full flex flex-col p-4 justify-between text-sm select-none">
+            <div className={`${styles.profileContainer} w-full h-full flex flex-col p-4 justify-between text-sm select-none`}>
                 {/* Header / Profile Card */}
-                <div className="border-1 border-gray-600 mb-4">
-                    <div className="flex items-center gap-4 pb-4 mb-4">
+                <div className="border-1 border-gray-600">
+                    <div className="flex items-center gap-4 m-4">
                         {/* Avatar */}
                         <div className="w-14 h-14 bg-gray-200 border border-gray-400 flex items-center justify-center overflow-hidden rounded-full shadow-md">
                             <img
@@ -65,6 +68,23 @@ const UserProfileWidget: React.FC = () => {
                         </div>
                     </div> */}
                 </div>
+
+                <Tabs defaultValue="shipping" className="flex-1 flex flex-col min-h-0 mb-4">
+                    <Tabs.List className="mb-[-1px] z-10 px-0 pl-1">
+                        <Tabs.Trigger value="shipping">Shipping</Tabs.Trigger>
+                        <Tabs.Trigger value="returns">Returns</Tabs.Trigger>
+                    </Tabs.List>
+
+                    <Tabs.Panel value="shipping" className="p-0 bg-transparent border-0 shadow-none">
+                        <h2 className="font-bold mb-2">Shipping:</h2>
+                        <p>Most of the time orders are fulfilled next day, tracking will be provided via email. Contact us via 1313heart.cool4u@gmail.com.</p>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="returns" className="p-0 bg-transparent border-0 shadow-none">
+                        <h2 className="font-bold mb-2">Returns:</h2>
+                        <p>Refunds will only be issued if an item is incorrectly listed. It is the buyers' responsibility to refer to sizing and measurements to ensure items will fit.</p>
+                    </Tabs.Panel>
+
+                </Tabs>
 
                 {/* Orders Section */}
                 {/* <div className="flex-1 bg-white border-2 border-gray-600 shadow-inset p-3 mb-4 overflow-y-auto custom-scrollbar">

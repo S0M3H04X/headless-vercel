@@ -287,6 +287,30 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
   );
 };
 
+// Terminal Typewriter Component
+const TerminalTypewriter = ({ text, speed = 50 }: { text: string; speed?: number }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!text) return;
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  return (
+    <div className="w-full h-full text-gray-900 p-6 overflow-auto whitespace-pre-wrap text-md md:text-base leading-relaxed">
+      {displayedText}
+      <span className="animate-pulse inline-block w-2 h-4 bg-gray-900 ml-1 align-left"></span>
+    </div>
+  );
+};
+
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
@@ -310,6 +334,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
   }, []); // Empty dependency array = run once on mount
 
   // JSON/Markdown Content
+  const [rawMarkdown, setRawMarkdown] = useState<string | null>(null);
   const [markdownHtml, setMarkdownHtml] = useState<string | null>(null); // For raw .md files rendered via remark-html
   const [jsonContent, setJsonContent] = useState<MultilingualContent | null>(null);
   const [language, setLanguage] = useState<'en' | 'zh'>(state.lastLanguage || 'en');
@@ -335,6 +360,7 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
           const res = await fetch(content.sourceId);
           if (!res.ok) throw new Error('Failed to fetch Markdown file');
           const text = await res.text();
+          setRawMarkdown(text);
           const processedContent = await remark().use(html).process(text);
           setMarkdownHtml(processedContent.toString());
           setIsError(null);
@@ -406,52 +432,54 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
 
   return (
     <WindowLayout className={`h-full w-full ${styles.pdfViewerWindow}`}>
-      {/* TOOLBAR */}
-      <WindowLayout.Toolbar className="flex justify-between items-center px-4 py-2 border-b border-gray-200 bg-gray-50 h-12 shrink-0">
-        {/* Left Controls (PDF Only) */}
-        <div className="flex gap-2 items-center">
-          {isPdf && (
-            <>
-              <button onClick={() => changePage(-1)} disabled={state.pageNumber <= 1} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">←</button>
-              <span className="text-sm min-w-[60px] text-center font-mono">
-                {state.pageNumber} / {numPages || '--'}
-              </span>
-              <button onClick={() => changePage(1)} disabled={numPages !== null && state.pageNumber >= numPages} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">→</button>
-            </>
-          )}
+      {/* TOOLBAR: Show by default unless explicitly disabled */}
+      {content.initialMeta?.showToolbar !== false && (
+        <WindowLayout.Toolbar className="flex justify-between items-center px-4 py-2 border-b border-gray-200 bg-gray-50 h-12 shrink-0">
+          {/* Left Controls (PDF Only) */}
+          <div className="flex gap-2 items-center">
+            {isPdf && (
+              <>
+                <button onClick={() => changePage(-1)} disabled={state.pageNumber <= 1} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">←</button>
+                <span className="text-sm min-w-[60px] text-center font-mono">
+                  {state.pageNumber} / {numPages || '--'}
+                </span>
+                <button onClick={() => changePage(1)} disabled={numPages !== null && state.pageNumber >= numPages} className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 text-sm">→</button>
+              </>
+            )}
 
-          {(isJson && activeJsonData) && (
-            <div className="text-sm font-semibold text-gray-600">
-              {language === 'en' ? 'English' : '中文'}
-            </div>
-          )}
-        </div>
+            {(isJson && activeJsonData) && (
+              <div className="text-sm font-semibold text-gray-600">
+                {language === 'en' ? 'English' : '中文'}
+              </div>
+            )}
+          </div>
 
-        {/* Right Controls */}
-        <div className="flex gap-2 items-center">
-          {/* Language Switch for JSON */}
-          {isJson && activeJsonData && (
-            <button
-              onClick={toggleLanguage}
-              className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              {language === 'en' ? '中文翻譯' : 'English Version'}
-            </button>
-          )}
+          {/* Right Controls */}
+          <div className="flex gap-2 items-center">
+            {/* Language Switch for JSON */}
+            {isJson && activeJsonData && (
+              <button
+                onClick={toggleLanguage}
+                className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                {language === 'en' ? '中文翻譯' : 'English Version'}
+              </button>
+            )}
 
-          {/* Scale Controls for PDF */}
-          {isPdf && (
-            <>
-              <button onClick={() => changeScale(-0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">-</button>
-              <span className="text-xs min-w-[40px] text-center">{Math.round(state.scale * 100)}%</span>
-              <button onClick={() => changeScale(0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">+</button>
-            </>
-          )}
-        </div>
-      </WindowLayout.Toolbar>
+            {/* Scale Controls for PDF */}
+            {isPdf && (
+              <>
+                <button onClick={() => changeScale(-0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">-</button>
+                <span className="text-xs min-w-[40px] text-center">{Math.round(state.scale * 100)}%</span>
+                <button onClick={() => changeScale(0.1)} className="px-2 py-1 bg-white border border-gray-300 rounded text-sm">+</button>
+              </>
+            )}
+          </div>
+        </WindowLayout.Toolbar>
+      )}
 
       {/* CONTENT */}
-      <WindowLayout.Content className="flex-1 bg-white relative">
+      <WindowLayout.Content className="flex-1 relative">
 
         {/* Error State */}
         {isError && (
@@ -469,13 +497,17 @@ export default function PDFViewerWidget({ id, content, internalState }: WidgetPr
         )}
 
         {/* Mode: Markdown File */}
-        {isMd && markdownHtml && (
-          <div
-            className={`p-8 shadow-sm min-h-full w-full max-w-4xl mx-auto ${styles['markdown-body']}`}
-            dangerouslySetInnerHTML={{ __html: markdownHtml }}
-          />
+        {isMd && content.initialMeta?.typingEffect ? (
+          <TerminalTypewriter text={rawMarkdown || ''} />
+        ) : (
+          isMd && markdownHtml && (
+            <div
+              className={`p-8 shadow-sm min-h-full w-full max-w-4xl mx-auto ${styles['markdown-body']}`}
+              dangerouslySetInnerHTML={{ __html: markdownHtml }}
+            />
+          )
         )}
-        {isMd && !markdownHtml && !isError && (
+        {isMd && !markdownHtml && !isError && !content.initialMeta?.typingEffect && (
           <SimpleMarkdown text={content.initialMeta?.description as string} source={content.initialMeta?.markdownSource as string} />
         )}
 
