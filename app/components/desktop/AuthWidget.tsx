@@ -108,7 +108,7 @@ export const AuthWidget: React.FC = () => {
 
       <div className="relative z-10 w-full">
         {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}
-        {error && <div className="mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200">{error}</div>}
+        {error && <div className={`mb-3 text-red-700 text-xs px-2 py-1 bg-red-50 border border-red-200 ${styles.msgBox}`}>{error}</div>}
 
         <div className={styles.loginContainer}>
           {step === 'email' ? (
