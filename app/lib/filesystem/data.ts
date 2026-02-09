@@ -15,52 +15,24 @@ export const INITIAL_FILE_SYSTEM: FileSystemNode[] = [
         icon: '/assets/classicy/img/icons/system/drives/disk.png',
         requiredTier: 'member',
         children: [
-          // {
-          //   id: 'apps',
-          //   name: 'Applications',
-          //   type: 'folder',
-          //   children: [
-          //     {
-          //       id: 'radio',
-          //       name: 'Radio',
-          //       type: 'app',
-          //       requiredTier: 'member',
-          //       appId: WidgetKind.MediaPlayer,
-          //       icon: '/assets/classicy/img/icons/system/files/sound.png'
-          //     },
-          //   ]
-          // },
           {
             id: 'shop',
             name: 'Shop',
             type: 'app',
             appId: WidgetKind.Collection,
-            metadata: { handle: '1cr3dit' },
+            metadata: { handle: 'One Credit' },
             icon: '/assets/classicy/img/icons/system/folders/favorites.png',
             requiredTier: 'member',
-            // children: [
-            //   // 1. Collection App Shortcut
-            //   {
-            //     id: 'link_tees',
-            //     name: 'One Credit Collection',
-            //     type: 'app',
-            //     appId: WidgetKind.Collection,
-            //     metadata: { handle: '1cr3dit' },
-            //     requiredTier: 'member',
-            //     icon: '/assets/classicy/img/icons/system/folders/folder-flip.png'
-            //   },
-              // 2. Product Shortcut
-              // {
-              //   id: 'link_basic_tee',
-              //   name: 'Basic Tee',
-              //   type: 'widget',
-              //   appId: WidgetKind.Product,
-              //   requiredTier: 'member',
-              //   metadata: { handle: 'basic-tee' },
-              //   icon: '/assets/classicy/img/icons/system/files/stationary-black.png'
-              // }
-            // ]
-          }
+          },
+          // {
+          //   id: 'scan',
+          //   name: 'Scan',
+          //   type: 'app',
+          //   appId: WidgetKind.PDFViewer,
+          //   metadata: { handle: '1cr3dit' },
+          //   icon: '/assets/classicy/img/icons/system/folders/favorites.png',
+          //   requiredTier: 'member',
+          // },
         ]
       }
     ]

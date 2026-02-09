@@ -32,7 +32,7 @@ const UserProfileWidget: React.FC = () => {
             <div className={`${styles.profileContainer} w-full h-full flex flex-col p-4 justify-between text-sm select-none`}>
                 {/* Header / Profile Card */}
                 <div className="border-1 border-gray-600">
-                    <div className="flex items-center gap-4 m-4">
+                    <div className="flex items-center gap-4 mx-2 my-4">
                         {/* Avatar */}
                         <div className="w-14 h-14 bg-gray-200 border border-gray-400 flex items-center justify-center overflow-hidden rounded-full shadow-md">
                             <img
@@ -50,8 +50,8 @@ const UserProfileWidget: React.FC = () => {
                             {/* <div className="text-blue-700 font-bold text-[10px] uppercase tracking-wider bg-blue-50 inline-block px-1 rounded border border-blue-100 mt-1">
                                 OS Insider • Gold
                             </div> */}
-                            <div className="text-black text-[12px] mt-1 tracking-tighter">
-                                ID: {user?.email || 'unknown'}
+                            <div className="text-black text-[16px] mt-1">
+                                {user?.email || 'unknown'}
                             </div>
                         </div>
                     </div>
@@ -76,12 +76,10 @@ const UserProfileWidget: React.FC = () => {
                     </Tabs.List>
 
                     <Tabs.Panel value="shipping" className="p-0 bg-transparent border-0 shadow-none">
-                        <h2 className="font-bold mb-2">Shipping:</h2>
-                        <p>Most of the time orders are fulfilled next day, tracking will be provided via email. Contact us via 1313heart.cool4u@gmail.com.</p>
+                        <p className="text-lg">Most of the time orders are fulfilled next day, tracking will be provided via email. Contact us via 1313heart.cool4u@gmail.com.</p>
                     </Tabs.Panel>
                     <Tabs.Panel value="returns" className="p-0 bg-transparent border-0 shadow-none">
-                        <h2 className="font-bold mb-2">Returns:</h2>
-                        <p>Refunds will only be issued if an item is incorrectly listed. It is the buyers' responsibility to refer to sizing and measurements to ensure items will fit.</p>
+                        <p className="text-lg">Refunds will only be issued if an item is incorrectly listed. It is the buyers' responsibility to refer to sizing and measurements to ensure items will fit.</p>
                     </Tabs.Panel>
 
                 </Tabs>
@@ -118,12 +116,12 @@ const UserProfileWidget: React.FC = () => {
                 </div> */}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end items-center pt-2">
+                {/* <div className="flex justify-end items-center pt-2"> */}
                     {/* <div className="text-[10px] text-gray-500">v2.1.0-stable</div> */}
-                    <Button onClick={() => { logout(); window.location.reload(); }} variant="default">
+                    {/* <Button onClick={() => { logout(); window.location.reload(); }} variant="default">
                         Sign Out
-                    </Button>
-                </div>
+                    </Button> */}
+                {/* </div> */}
             </div>
         );
     }

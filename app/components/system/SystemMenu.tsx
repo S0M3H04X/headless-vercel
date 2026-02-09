@@ -51,7 +51,7 @@ export const SystemMenu: React.FC = () => {
   const handleMyAccount = () => {
     if (isAuthenticated) {
       focusOrOpenWindow({
-        title: 'My Account',
+        title: 'INFO',
         content: { kind: WidgetKind.UserProfile, sourceId: 'user-profile' },
         initialGeometry: { width: 700, height: 500, x: 100, y: 100 }
       });

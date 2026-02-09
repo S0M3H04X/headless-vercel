@@ -212,7 +212,7 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
     <section className="semantic-article w-full h-full flex flex-col overflow-auto">
       {/* Cover Image */}
       {data.coverImage && (
-        <figure className="mb-6">
+        <figure className="mb-6 px-2">
           <img
             src={data.coverImage.url}
             alt={data.coverImage.alt || data.title}
@@ -227,14 +227,14 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
       )}
       {/* Header Area */}
       {(data.title || data.subtitle) && (
-        <header className="pb-4 text-left border-b border-gray-100">
+        <header className="pb-4 px-4 text-left border-gray-100">
           {data.title && <h1 className="text-3xl font-bold text-gray-900 mb-2">{data.title}</h1>}
           {data.subtitle && <p className="text-lg text-gray-900 font-light">{data.subtitle}</p>}
         </header>
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full">
+      <div className="px-4 flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full">
         <article className="flex-1 min-w-0 pb-12">
 
 

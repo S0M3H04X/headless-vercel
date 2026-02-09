@@ -61,7 +61,7 @@ const APP_CONFIG: Record<string, AppConfig> = {
     icon: 'user',
     requiredTier: 'member',
     action: () => useWorkspaceStore.getState().focusOrOpenWindow({
-      title: 'My Account',
+      title: 'Info',
       content: { kind: WidgetKind.UserProfile, sourceId: 'me' }
     })
   },
