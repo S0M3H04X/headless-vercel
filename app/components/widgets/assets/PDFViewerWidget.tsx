@@ -229,7 +229,7 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
       {(data.title || data.subtitle) && (
         <header className="pb-4 px-4 text-left border-gray-100">
           {data.title && <h1 className="text-3xl font-bold text-gray-900 mb-2">{data.title}</h1>}
-          {data.subtitle && <p className="text-lg text-gray-900 font-light">{data.subtitle}</p>}
+          {data.subtitle && <p className="text-xl text-gray-900 leading-relaxed">{data.subtitle}</p>}
         </header>
       )}
 
