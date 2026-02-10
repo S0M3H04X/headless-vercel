@@ -108,7 +108,7 @@ export async function getProduct(handle: string): Promise<Product | null> {
           url
           altText
         }
-        images(first: 5) {
+        images(first: 8) {
           edges {
             node {
               url
