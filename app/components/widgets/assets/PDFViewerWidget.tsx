@@ -240,16 +240,16 @@ const JSONContentRenderer = ({ data }: { data: JSONArticleData }) => {
 
           {/* Markdown Content */}
           {data.content?.endsWith('.md') ? (
-            <SimpleMarkdown source={data.content} className="p-0" />
+            <SimpleMarkdown source={data.content} className="p-0 tracking-wide" />
           ) : (
-            <SimpleMarkdown text={data.content} className="p-0" />
+            <SimpleMarkdown text={data.content} className="p-0 tracking-wide" />
           )}
 
           {/* Previews Gallery */}
           {data.previews && data.previews.length > 0 && (
             <section className="mt-12">
               <h3 className="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4">Previews</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> 
                 {data.previews.map((img, idx) => (
                   <figure key={idx} className="flex flex-col gap-2">
                     <img

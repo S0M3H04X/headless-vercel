@@ -70,16 +70,32 @@ const UserProfileWidget: React.FC = () => {
                 </div>
 
                 <Tabs defaultValue="shipping" className="flex-1 flex flex-col min-h-0 mb-4">
-                    <Tabs.List className="mb-[-1px] z-10 px-0 pl-1">
-                        <Tabs.Trigger value="shipping">Shipping</Tabs.Trigger>
-                        <Tabs.Trigger value="returns">Returns</Tabs.Trigger>
+                    <Tabs.List className="mb-[-1px] z-10 px-0 pl-1 tracking-wider">
+                        <Tabs.Trigger value="shipping">Shipping Terms</Tabs.Trigger>
+                        <Tabs.Trigger value="returns">Return Policy</Tabs.Trigger>
                     </Tabs.List>
 
                     <Tabs.Panel value="shipping" className="p-0 bg-transparent border-0 shadow-none">
-                        <p className="text-lg">Most of the time orders are fulfilled next day, tracking will be provided via email. Contact us via 1313heart.cool4u@gmail.com.</p>
+                        <p className="text-md overflow-y-scroll max-h-[120px] tracking-wide">
+                            Most of the time orders will be shipped out next day, tracking will be provided via email.
+                            <br /><br />
+                            Shipping times may vary based on your location. Please allow 7-14 business days for international orders.
+                            <br /><br />
+                            1313HEART™ is not responsible for any customs fees or import duties that may apply to international shipments.
+                            <br /><br />
+                            For special queries, please contact us via 1313heart.cool4u@gmail.com.
+                        </p>
                     </Tabs.Panel>
                     <Tabs.Panel value="returns" className="p-0 bg-transparent border-0 shadow-none">
-                        <p className="text-lg">Refunds will only be issued if an item is incorrectly listed. It is the buyers' responsibility to refer to sizing and measurements to ensure items will fit.</p>
+                        <p className="text-md overflow-y-scroll max-h-[120px] tracking-wide">
+                            All items are measured flat. Buyers are responsible for checking measurements and sizing to ensure proper fit.
+                            <br /><br />
+                            Placing an order constitutes an offer to purchase. We reserve the right to accept or decline any order at our discretion.
+                            <br /><br />
+                             Please review your order carefully, as cancellations may not be possible once an order is accepted.
+                            <br /><br />
+                            If an order is declined, modified, or canceled, we will attempt to contact you using the details provided at checkout.
+                        </p>
                     </Tabs.Panel>
 
                 </Tabs>
@@ -117,8 +133,8 @@ const UserProfileWidget: React.FC = () => {
 
                 {/* Footer Actions */}
                 {/* <div className="flex justify-end items-center pt-2"> */}
-                    {/* <div className="text-[10px] text-gray-500">v2.1.0-stable</div> */}
-                    {/* <Button onClick={() => { logout(); window.location.reload(); }} variant="default">
+                {/* <div className="text-[10px] text-gray-500">v2.1.0-stable</div> */}
+                {/* <Button onClick={() => { logout(); window.location.reload(); }} variant="default">
                         Sign Out
                     </Button> */}
                 {/* </div> */}

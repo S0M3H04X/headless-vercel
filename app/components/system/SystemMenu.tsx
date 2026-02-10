@@ -75,7 +75,7 @@ export const SystemMenu: React.FC = () => {
           ${isOpen ? styles.menuButtonOpen : 'hover:bg-gray-700 hover:text-white text-black'}
         `}
       >
-        1313Heart
+        1313HEART
       </button>
 
       {isOpen && (
