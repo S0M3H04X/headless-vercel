@@ -1,0 +1,21 @@
+{
+  "name": "One Credit",
+  "short_name": "One Credit",
+  "icons": [
+    {
+      "src": "/assets/classicy/img/icons/applications/internet-explorer/app.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/classicy/img/icons/applications/internet-explorer/app.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000080",
+  "background_color": "#000000",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

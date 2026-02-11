@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
+import withSerwistInit from "@serwist/next";
+
+const withSerwist = withSerwistInit({
+  // Note: This is only an example.
+  swSrc: "app/sw.ts",
+  swDest: "public/sw.js",
+  disable: process.env.NODE_ENV === "development",
+});
+
 const nextConfig = {
   rewrites: async () => {
     const apiRewrites = [
@@ -68,4 +77,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSerwist(nextConfig);

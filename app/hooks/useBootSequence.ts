@@ -19,9 +19,22 @@ export const useBootSequence = () => {
         // [Optimized] Parallelize config fetch and auth check
         // This ensures the "Desktop" doesn't render until we know the user's state
         // [Feature] Ensure minimum boot time of 3 seconds for aesthetic purposes
+        const prefetchCriticalAssets = async () => {
+          const assets = [
+            '/assets/classicy/img/icons/applications/internet-explorer/app.png',
+            '/assets/classicy/img/icons/system/folders/favorites.png',
+            '/assets/classicy/img/ui/window/stripes.png'
+          ];
+          assets.forEach(url => {
+            const img = new Image();
+            img.src = url;
+          });
+        };
+
         const [configRes] = await Promise.all([
           fetch('/api/os/boot'),
           useAuthStore.getState().checkAuth(),
+          prefetchCriticalAssets(), // Lightweight prefetch
           new Promise(resolve => setTimeout(resolve, 1500))
         ]);
 
