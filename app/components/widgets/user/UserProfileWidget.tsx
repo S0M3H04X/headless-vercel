@@ -1,5 +1,6 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
+import multiavatar from '@multiavatar/multiavatar/esm';
 import { useAuthStore } from '@/store/authStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { WidgetKind } from '@/lib/types/workspace';
@@ -9,8 +10,13 @@ import { Tabs } from '@/components/ui/primitives/Tabs';
 import styles from './UserProfileWidget.module.scss';
 
 const UserProfileWidget: React.FC = () => {
-    const { user, isAuthenticated, logout } = useAuthStore();
+    const { user, isAuthenticated, logout, avatarSeed } = useAuthStore();
     const { openWindow } = useWorkspaceStore();
+
+    const avatarSvg = useMemo(() => {
+        const seed = avatarSeed ?? user?.email ?? 'default';
+        return multiavatar(seed);
+    }, [avatarSeed, user?.email]);
 
     const handleReLogin = () => {
         openWindow({
@@ -34,14 +40,10 @@ const UserProfileWidget: React.FC = () => {
                 <div className="border-1 border-gray-600">
                     <div className="flex items-center gap-4 mx-2 my-4">
                         {/* Avatar */}
-                        <div className="w-14 h-14 bg-gray-200 border border-gray-400 flex items-center justify-center overflow-hidden rounded-full shadow-md">
-                            <img
-                                src="/assets/classicy/img/icons/system/users/user.png"
-                                alt="Avatar"
-                                className="w-10 h-10 opacity-80"
-                                onError={(e) => e.currentTarget.src = 'https://placehold.co/100x100?text=U'}
-                            />
-                        </div>
+                        <div
+                            className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-full shadow-md"
+                            dangerouslySetInnerHTML={{ __html: avatarSvg }}
+                        />
                         {/* Name & Badge */}
                         <div>
                             {/* <div className="font-bold text-lg text-gray-900 leading-tight">
@@ -92,7 +94,7 @@ const UserProfileWidget: React.FC = () => {
                             <br /><br />
                             Placing an order constitutes an offer to purchase. We reserve the right to accept or decline any order at our discretion.
                             <br /><br />
-                             Please review your order carefully, as cancellations may not be possible once an order is accepted.
+                            Please review your order carefully, as cancellations may not be possible once an order is accepted.
                             <br /><br />
                             If an order is declined, modified, or canceled, we will attempt to contact you using the details provided at checkout.
                         </p>

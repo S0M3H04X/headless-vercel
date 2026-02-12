@@ -15,16 +15,25 @@ export async function GET() {
       );
     `);
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Database schema initialized successfully (otp_sessions created).' 
+    // 建立 member_avatars 表格
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS member_avatars (
+        email TEXT PRIMARY KEY,
+        avatar_seed TEXT NOT NULL,
+        updated_at INTEGER
+      );
+    `);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Database schema initialized successfully (otp_sessions, member_avatars created).'
     });
-    
+
   } catch (error: any) {
     console.error('[Setup Error]', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message 
+    return NextResponse.json({
+      success: false,
+      error: error.message
     }, { status: 500 });
   }
 }

@@ -77,8 +77,8 @@ export const AuthWidget: React.FC = () => {
       <GroupFrame legend="Welcome & Enjoy" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
           {/* <div className={styles.userAvatar}>
-                <span className="text-2xl">👤</span>
-              </div> */}
+            <span className="text-2xl">👤</span>
+          </div> */}
           <div className={styles.userInfoBox}>
             <div className="mb-4">
               {/* <div className={styles.userGreeting}>Welcome</div> */}
@@ -104,7 +104,7 @@ export const AuthWidget: React.FC = () => {
   // 未登入視圖
   return (
     <GroupFrame legend="Get Your Access Key" className={styles.loginContainer}>
-      
+
 
       <div className="relative z-10 w-full">
         {msg && <div className={`mb-3 text-green-700 text-xs px-2 py-1 bg-green-50 border border-green-200 ${styles.msgBox}`}>{msg}</div>}

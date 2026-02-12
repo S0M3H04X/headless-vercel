@@ -12,12 +12,14 @@ interface AuthState {
     tier?: UserTier; // From backend
   } | null;
   customerAccessToken: string | null;
+  avatarSeed: string | null;
 
   isAuthOpen: boolean;
   checkAuth: () => Promise<void>;
   login: () => void;
   logout: () => Promise<void>;
   closeAuth: () => void;
+  setAvatarSeed: (seed: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: true,
   user: null,
   customerAccessToken: null,
+  avatarSeed: null,
   isAuthOpen: false,
 
   checkAuth: async () => {
@@ -52,6 +55,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             useCartStore.getState().associateUser(data.accessToken, data.user?.email);
           }
 
+          // [Avatar] Fetch or initialize avatar seed from Turso
+          try {
+            const avatarRes = await fetch('/api/auth/avatar');
+            if (avatarRes.ok) {
+              const { avatarSeed } = await avatarRes.json();
+              if (avatarSeed) {
+                set({ avatarSeed });
+              } else if (data.user?.email) {
+                // First login — persist email as the avatar seed
+                const seed = data.user.email;
+                await fetch('/api/auth/avatar', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ avatarSeed: seed })
+                });
+                set({ avatarSeed: seed });
+              }
+            }
+          } catch (e) {
+            console.error('[AuthStore] Avatar sync failed:', e);
+          }
+
           // [Sync] Restore workspace state from DB
           try {
             const stateRes = await fetch('/api/auth/state');
@@ -72,14 +97,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           }
 
         } else {
-          set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
+          set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null, avatarSeed: null });
         }
       } else {
-        set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
+        set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null, avatarSeed: null });
       }
     } catch (error) {
       console.error('[AuthStore] Check failed', error);
-      set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null });
+      set({ isAuthenticated: false, tier: 'guest', isLoading: false, user: null, customerAccessToken: null, avatarSeed: null });
     }
   },
 
@@ -89,6 +114,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   closeAuth: () => {
     set({ isAuthOpen: false });
+  },
+
+  setAvatarSeed: async (seed: string) => {
+    try {
+      await fetch('/api/auth/avatar', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatarSeed: seed })
+      });
+      set({ avatarSeed: seed });
+    } catch (e) {
+      console.error('[AuthStore] Failed to update avatar seed:', e);
+    }
   },
 
   logout: async () => {
@@ -108,7 +146,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (e) {
       console.error('Logout failed:', e);
     } finally {
-      set({ isAuthenticated: false, tier: 'guest', user: null, customerAccessToken: null });
+      set({ isAuthenticated: false, tier: 'guest', user: null, customerAccessToken: null, avatarSeed: null });
       // [Cleanup] Clear local persistence to prevent state leaking to next user
       localStorage.removeItem('headless-cart-storage');
       localStorage.removeItem('headless-workspace-storage');
