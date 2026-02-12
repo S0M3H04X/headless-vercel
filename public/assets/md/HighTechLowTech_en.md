@@ -82,7 +82,7 @@ When you drive calmly down the roads in a patched-up old wreck, bought second-ha
 
 When you organize an improvised rave according to the art of sound systems born in Jamaica in the early 1950s, using grandma’s turntable, an amp, and speaker cabinets lovingly cobbled together without any regard for hi-fi standards, you are low tech in pure jubilation. Without even thinking about it—and all the better for it.
 
-Take a stick and draw in the sand. Grab your pencil and tap out a rhythm on your lamp. Reinvent the computer with sheets of paper. Use *Crash* as a hat if it rains. Sample the world and make it your own. Low tech, in reality, does not exist—because the tool does not matter.
+Take a stick and draw in the sand. Grab your pencil and tap out a rhythm on your lamp. Reinvent the computer with sheets of paper. Use Crash as a hat if it rains. Sample the world and make it your own. Low tech, in reality, does not exist—because the tool does not matter.
 
 Be Dada. Be pirates. Be cynical philosophers. And don’t listen to the lesson-givers. Don’t listen to me.
 
