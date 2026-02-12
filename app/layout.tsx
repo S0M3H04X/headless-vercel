@@ -78,13 +78,39 @@ const appleGaramond = localFont({
 
 
 export const metadata: Metadata = {
-  title: 'ONE CREDIT limited edition',
+  metadataBase: new URL('https://headless-vercel.vercel.app'),
+  title: {
+    default: 'ONE CREDIT limited edition',
+    template: '%s | ONE CREDIT'
+  },
   description: 'by 1313<3',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "One Credit",
+  },
+  openGraph: {
+    title: 'ONE CREDIT limited edition',
+    description: 'by 1313<3',
+    url: 'https://headless-vercel.vercel.app',
+    siteName: 'ONE CREDIT',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/assets/img/og-image.jpg', // Using an existing image as placeholder/default
+        width: 1200,
+        height: 630,
+        alt: 'ONE CREDIT limited edition',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ONE CREDIT limited edition',
+    description: 'by 1313<3',
+    images: ['/assets/img/style.jpeg'], // Using an existing image
   },
 }
 

@@ -9,37 +9,43 @@ uniform vec2 uResolution;
 
 varying vec2 vUv;
 
-// 8x8 Bayer matrix for ordered dithering
+// Helper function for 2x2 Bayer Matrix
+// Returns value in range [0, 3]
+// Map:
+// 0 2
+// 3 1
+float bayer2(vec2 c) {
+    c = floor(c);
+    float x = mod(c.x, 2.0);
+    float y = mod(c.y, 2.0);
+    
+    // Optimized math for 2x2 Bayer: 0, 2, 3, 1
+    // Simple conditional is efficient for 2x2
+    if (x == 0.0 && y == 0.0) return 0.0;
+    if (x == 1.0 && y == 0.0) return 2.0;
+    if (x == 0.0 && y == 1.0) return 3.0;
+    return 1.0;
+}
+
+// 8x8 Bayer matrix using recursive definition (loop-free)
 float bayerMatrix8x8(vec2 position) {
-    int x = int(mod(position.x, 8.0));
-    int y = int(mod(position.y, 8.0));
+    float v = 0.0;
     
-    // Bayer 8x8 matrix values normalized to 0-1
-    float matrix[64];
-    matrix[0] = 0.0/64.0;   matrix[1] = 32.0/64.0;  matrix[2] = 8.0/64.0;   matrix[3] = 40.0/64.0;
-    matrix[4] = 2.0/64.0;   matrix[5] = 34.0/64.0;  matrix[6] = 10.0/64.0;  matrix[7] = 42.0/64.0;
-    matrix[8] = 48.0/64.0;  matrix[9] = 16.0/64.0;  matrix[10] = 56.0/64.0; matrix[11] = 24.0/64.0;
-    matrix[12] = 50.0/64.0; matrix[13] = 18.0/64.0; matrix[14] = 58.0/64.0; matrix[15] = 26.0/64.0;
-    matrix[16] = 12.0/64.0; matrix[17] = 44.0/64.0; matrix[18] = 4.0/64.0;  matrix[19] = 36.0/64.0;
-    matrix[20] = 14.0/64.0; matrix[21] = 46.0/64.0; matrix[22] = 6.0/64.0;  matrix[23] = 38.0/64.0;
-    matrix[24] = 60.0/64.0; matrix[25] = 28.0/64.0; matrix[26] = 52.0/64.0; matrix[27] = 20.0/64.0;
-    matrix[28] = 62.0/64.0; matrix[29] = 30.0/64.0; matrix[30] = 54.0/64.0; matrix[31] = 22.0/64.0;
-    matrix[32] = 3.0/64.0;  matrix[33] = 35.0/64.0; matrix[34] = 11.0/64.0; matrix[35] = 43.0/64.0;
-    matrix[36] = 1.0/64.0;  matrix[37] = 33.0/64.0; matrix[38] = 9.0/64.0;  matrix[39] = 41.0/64.0;
-    matrix[40] = 51.0/64.0; matrix[41] = 19.0/64.0; matrix[42] = 59.0/64.0; matrix[43] = 27.0/64.0;
-    matrix[44] = 49.0/64.0; matrix[45] = 17.0/64.0; matrix[46] = 57.0/64.0; matrix[47] = 25.0/64.0;
-    matrix[48] = 15.0/64.0; matrix[49] = 47.0/64.0; matrix[50] = 7.0/64.0;  matrix[51] = 39.0/64.0;
-    matrix[52] = 13.0/64.0; matrix[53] = 45.0/64.0; matrix[54] = 5.0/64.0;  matrix[55] = 37.0/64.0;
-    matrix[56] = 63.0/64.0; matrix[57] = 31.0/64.0; matrix[58] = 55.0/64.0; matrix[59] = 23.0/64.0;
-    matrix[60] = 61.0/64.0; matrix[61] = 29.0/64.0; matrix[62] = 53.0/64.0; matrix[63] = 21.0/64.0;
+    // The value is built recursively. 
+    // The finest coordinate bit (x%2) actually contributes to the High bits of the value 
+    // to create the high-frequency checkerboard pattern.
     
-    int index = y * 8 + x;
+    // Layer 1 (Finest detail - 1x1 scale) -> Contributes values 0, 16, 32, 48
+    v += bayer2(position) * 16.0;
     
-    // WebGL 1.0 compatible indexing
-    for (int i = 0; i < 64; i++) {
-        if (i == index) return matrix[i];
-    }
-    return 0.0;
+    // Layer 2 (2x2 scale) -> Contributes values 0, 4, 8, 12
+    v += bayer2(position / 2.0) * 4.0;
+    
+    // Layer 3 (Coarsest detail - 4x4 scale) -> Contributes values 0, 1, 2, 3
+    v += bayer2(position / 4.0) * 1.0;
+    
+    // Normalize 0-63 to 0.0-1.0
+    return v / 64.0;
 }
 
 // Quantize color to limited palette
