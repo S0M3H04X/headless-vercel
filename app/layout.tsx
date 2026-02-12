@@ -78,9 +78,9 @@ const appleGaramond = localFont({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://headless-vercel.vercel.app'),
+  metadataBase: new URL('https://one-credit.1313heart.com'),
   title: {
-    default: 'ONE CREDIT limited edition',
+    default: 'ONE CREDIT, One Chance.',
     template: '%s | ONE CREDIT'
   },
   description: 'by 1313<3',
@@ -91,9 +91,9 @@ export const metadata: Metadata = {
     title: "One Credit",
   },
   openGraph: {
-    title: 'ONE CREDIT limited edition',
+    title: 'ONE CREDIT, One Chance.',
     description: 'by 1313<3',
-    url: 'https://headless-vercel.vercel.app',
+    url: 'https://one-credit.1313heart.com',
     siteName: 'ONE CREDIT',
     locale: 'en_US',
     type: 'website',
@@ -102,20 +102,20 @@ export const metadata: Metadata = {
         url: '/assets/img/og-image.jpg', // Using an existing image as placeholder/default
         width: 1200,
         height: 630,
-        alt: 'ONE CREDIT limited edition',
+        alt: 'ONE CREDIT, One Chance.',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ONE CREDIT limited edition',
+    title: 'ONE CREDIT, One Chance.',
     description: 'by 1313<3',
-    images: ['/assets/img/style.jpeg'], // Using an existing image
+    images: ['/assets/img/og-image.jpg'], // Using an existing image
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: "#000080",
+  themeColor: "#a1e0fff0",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

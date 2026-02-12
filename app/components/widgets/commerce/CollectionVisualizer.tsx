@@ -77,8 +77,8 @@ const LoadingFallback = () => (
 );
 
 export const CollectionVisualizer: React.FC<VisualizerProps> = ({
-    isLoading = true,
-    ditherScale = 2,      // Size of dither pattern (higher = larger pattern)
+    isLoading = false,
+    ditherScale = 1,      // Size of dither pattern (higher = larger pattern)
     colorLevels = 8,      // Number of color levels (lower = more posterized)
 }) => {
     return (
