@@ -102,7 +102,7 @@ export const CollectionVisualizer: React.FC<VisualizerProps> = ({
                     dpr={1}
                     camera={{ position: [0, 0, 5], fov: 50 }}
                     className={styles.visualizerCanvas}
-                    style={{ width: '100%', height: '542px' }}
+                    style={{ width: '100%', height: '100%' }}
                 >
                     <Suspense fallback={<LoadingFallback />}>
                         <DitheredImage ditherScale={ditherScale} colorLevels={colorLevels} />

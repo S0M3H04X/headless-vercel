@@ -19,6 +19,6 @@ export const INITIAL_LAYOUTS = {
   },
   COLLECTION: {
     // Updated to match SystemService usage instead of the old full-screen default
-    APP: { x: 0, y: 0, width: 640, height: 480 },
+    APP: { x: 0, y: 0, width: 360, height: 548 },
   },
 } satisfies Record<string, LayoutGroup>;

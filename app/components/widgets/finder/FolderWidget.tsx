@@ -59,7 +59,7 @@ interface FolderIconItemProps {
 }
 
 const FolderIconItem = ({ item, onOpen }: FolderIconItemProps) => {
-    const { onTouchStart, onTouchEnd, onDoubleClick, onClick } = useIconInteraction({
+    const { onTouchStart, onTouchEnd, onClick } = useIconInteraction({
         onOpen,
         onSelect: () => console.log('Selected:', item.name),
     });
@@ -69,7 +69,6 @@ const FolderIconItem = ({ item, onOpen }: FolderIconItemProps) => {
             className={styles.item}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
-            onDoubleClick={onDoubleClick}
             onClick={onClick}
             title={item.name}
         >

@@ -42,20 +42,16 @@ export const useIconInteraction = ({ onOpen, onSelect }: UseIconInteractionProps
     }
   }, [onOpen]);
 
-  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-    onOpen();
-  }, [onOpen]);
-
   const handleClick = useCallback((e: React.MouseEvent) => {
+    onOpen();
     if (onSelect) {
       onSelect();
     }
-  }, [onSelect]);
+  }, [onOpen, onSelect]);
 
   return {
     onTouchStart: handleTouchStart,
     onTouchEnd: handleTouchEnd,
-    onDoubleClick: handleDoubleClick,
     onClick: handleClick,
   };
 };

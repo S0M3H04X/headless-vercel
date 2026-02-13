@@ -62,7 +62,7 @@ interface IconItemProps {
 }
 
 const IconItem = ({ node, onOpen }: IconItemProps) => {
-  const { onTouchStart, onTouchEnd, onDoubleClick, onClick } = useIconInteraction({
+  const { onTouchStart, onTouchEnd, onClick } = useIconInteraction({
     onOpen,
     onSelect: () => console.log('Selected:', node.name), // Future: Implement selection state
   });
@@ -72,7 +72,6 @@ const IconItem = ({ node, onOpen }: IconItemProps) => {
       className={styles.desktopIcon}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
-      onDoubleClick={onDoubleClick}
       onClick={onClick}
     >
       <img src={node.icon || '/assets/classicy/img/icons/system/files/file.png'} alt={node.name} />
