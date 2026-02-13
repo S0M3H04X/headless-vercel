@@ -41,6 +41,16 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
   const { product, loading } = useShopifyProduct(content.sourceId);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Zoom state
+  // Magnifier state
+  const [magnifierState, setMagnifierState] = useState({
+    active: false,
+    x: 0,
+    y: 0,
+    imgWidth: 0,
+    imgHeight: 0,
+  });
+
   // Touch state for swipe detection
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -90,8 +100,38 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
   return (
     <div
       className={`${styles.imageContainer} relative group touch-pan-y`}
-      onTouchStart={hasMultipleImages ? onTouchStart : undefined}
-      onTouchMove={hasMultipleImages ? onTouchMove : undefined}
+      onMouseMove={(e) => {
+        if (!magnifierState.active) return;
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - left;
+        const y = e.clientY - top;
+        setMagnifierState((prev) => ({ ...prev, x, y, imgWidth: width, imgHeight: height }));
+      }}
+      onTouchMove={(e) => {
+        if (!magnifierState.active) {
+          // If not active, let default swipe logic handle it (or do nothing)
+          if (hasMultipleImages) onTouchMove(e);
+          return;
+        }
+        // If active, track lens
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - left;
+        const y = touch.clientY - top;
+        setMagnifierState((prev) => ({ ...prev, x, y, imgWidth: width, imgHeight: height }));
+      }}
+      onTouchStart={(e) => {
+        if (magnifierState.active) {
+          // Initialize pos
+          const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = touch.clientX - left;
+          const y = touch.clientY - top;
+          setMagnifierState((prev) => ({ ...prev, x, y, imgWidth: width, imgHeight: height }));
+        } else if (hasMultipleImages) {
+          onTouchStart(e);
+        }
+      }}
       onTouchEnd={hasMultipleImages ? onTouchEnd : undefined}
     >
       {currentImg ? (
@@ -100,7 +140,57 @@ export const ProductImageWidget = ({ content }: BaseWidgetProps) => {
             src={currentImg.url}
             alt={currentImg.altText || product?.title || 'Product Image'}
             className={styles.imageSlide}
+          // Remove old transform style
           />
+
+          {/* Toggle Button */}
+          <button
+            className={styles.magnifierButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              const isActive = !magnifierState.active;
+
+              if (isActive) {
+                const container = e.currentTarget.parentElement;
+                if (container) {
+                  const { width, height } = container.getBoundingClientRect();
+                  setMagnifierState({
+                    active: true,
+                    x: width / 2,
+                    y: height / 2,
+                    imgWidth: width,
+                    imgHeight: height
+                  });
+                } else {
+                  setMagnifierState(prev => ({ ...prev, active: true }));
+                }
+              } else {
+                setMagnifierState(prev => ({ ...prev, active: false }));
+              }
+            }}
+            aria-label="Toggle Magnifier"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              {magnifierState.active && <line x1="11" y1="8" x2="11" y2="14"></line>}
+              {magnifierState.active && <line x1="8" y1="11" x2="14" y2="11"></line>} {/* Optional: Plus/Minus indication, or just search icon */}
+            </svg>
+          </button>
+
+          {/* Lens Element */}
+          {magnifierState.active && (
+            <div
+              className={styles.magnifierLens}
+              style={{
+                top: magnifierState.y - 75, // Center lens (150px / 2)
+                left: magnifierState.x - 75,
+                backgroundImage: `url(${currentImg.url})`,
+                backgroundSize: `${magnifierState.imgWidth * 2.5}px ${magnifierState.imgHeight * 2.5}px`, // 2.5x Zoom
+                backgroundPosition: `-${magnifierState.x * 2.5 - 75}px -${magnifierState.y * 2.5 - 75}px`, // Align background
+              }}
+            />
+          )}
 
           {hasMultipleImages && (
             <>
