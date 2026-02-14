@@ -24,6 +24,12 @@ const APP_CONFIG: Record<string, AppConfig> = {
     requiredTier: 'admin',
     action: () => ScenarioService.launchProductSuite('tee')
   },
+  'media_player': {
+    label: 'Music',
+    icon: 'music',
+    requiredTier: 'member',
+    action: () => ScenarioService.launchMediaPlayer()
+  },
   'video_studio': {
     label: 'Studio',
     icon: 'retro-camera',

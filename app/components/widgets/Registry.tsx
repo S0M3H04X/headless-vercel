@@ -20,7 +20,10 @@ const WIDGET_TIERS: Record<string, UserTier> = {
   [WidgetKind.VideoMixer]: 'admin',
 
   // Pro Only
-  [WidgetKind.MediaPlayer]: 'pro',
+  // [WidgetKind.MediaPlayer]: 'pro', // Changed to member for now
+
+  // Member Only
+  [WidgetKind.MediaPlayer]: 'member',
 
   // Member Only
   [WidgetKind.UserProfile]: 'member',

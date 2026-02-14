@@ -270,6 +270,18 @@ export const WindowManager = () => {
           transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
         };
 
+        // [Modified] MediaPlayer renders independently (Webamp handles its own windowing)
+        if (win.content.kind === WidgetKind.MediaPlayer) {
+          return (
+            <WidgetRenderer
+              key={win.id}
+              id={win.id}
+              content={win.content}
+              internalState={win.internalState}
+            />
+          );
+        }
+
         return (
           <ClassicyWindow
             key={win.id}
@@ -280,6 +292,7 @@ export const WindowManager = () => {
             zIndex={isMissionControlActive ? 9001 + stackOrder.indexOf(win.id) : zIndex} // MC: flatten z-indexes above backdrop (9000)
             style={mcStyle}
             isDragDisabled={isMissionControlActive}
+            isFrameless={win.content.kind === WidgetKind.MediaPlayer}
           >
             <WidgetRenderer
               id={win.id}

@@ -41,7 +41,20 @@ export const ScenarioService = {
       });
     }
 
-    
+
+  },
+
+  // Scenario 3: Media Player (Audio Only)
+  launchMediaPlayer: () => {
+    const { focusOrOpenWindow } = useWorkspaceStore.getState();
+    focusOrOpenWindow({
+      title: 'Winamp',
+      content: {
+        kind: WidgetKind.MediaPlayer,
+        sourceId: 'https://raw.githubusercontent.com/captbaritone/webamp-music/master/HvH_-_The_13th_Floor.mp3'
+      },
+      initialGeometry: { x: 'center', y: 'center', width: 'auto', height: 'auto' }
+    });
   },
 
 

@@ -42,7 +42,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         set((state) => {
           // 策略 C (Hybrid):
           // 1. Dock (Installed Apps) -> 強制使用 Server 設定
-          const newApps = dock || [];
+          const newApps = dock || ['launcher', 'profile', 'media_player', 'cart', 'pdf_viewer'];
 
           // 2. Windows -> 檢查 LocalStorage 是否有殘留視窗
           const hasExistingWindows = Object.keys(state.windows).length > 0;
