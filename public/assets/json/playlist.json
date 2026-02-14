@@ -3,22 +3,22 @@
     "id": "track_01",
     "title": "Big Wednesday",
     "artist": "Freeland",
-    "year": "2088",
+    "year": "1999",
     "url": "/assets/mp3/02 Freeland - The Animatrix-The Album - 02 Big Wednesday.mp3",
     "cover": "/assets/img/album_neon.jpg"
   },
   {
     "id": "track_02",
     "title": "Mist",
-    "artist": "System 404",
-    "year": "1999",
+    "artist": "Nujabes",
+    "year": "2003",
     "url": "/assets/mp3/02 Mist.mp3",
     "cover": "/assets/img/album_rain.jpg"
   },  
   {
     "id": "track_03",
     "title": "Six of One and Half a Dozen of the Other",
-    "artist": "Lazerhawk",
+    "artist": "Unknown Artist",
     "year": "2015",
     "url": "/assets/mp3/02 Six of One and Half a Dozen of the Other.mp3",
     "cover": "/assets/img/album_city.jpg"
@@ -27,14 +27,14 @@
     "id": "track_04",
     "title": "Blind Tiger",
     "artist": "Layo & Bushwacka!",
-    "year": "2020",
+    "year": "1999",
     "url": "/assets/mp3/03 Layo & Bushwacka! - The Animatrix-The Album - 03 Blind Tiger.mp3",
     "cover": "/assets/img/album_neon.jpg"
   }, 
   {
     "id": "track_05",
     "title": "I Don't Like You",
-    "artist": "Futurecop!",
+    "artist": "Unknown Artist",
     "year": "2013",
     "url": "/assets/mp3/04 I Don't Like You.mp3",
     "cover": "/assets/img/album_city.jpg"
@@ -51,7 +51,7 @@
     "id": "track_07",
     "title": "MOBO★MOGA",
     "artist": "Orange Lounge",
-    "year": "2016",
+    "year": "2006",
     "url": "/assets/mp3/07 - Orange Lounge - MOBO★MOGA.mp3",
     "cover": "/assets/img/album_rain.jpg"
   }
