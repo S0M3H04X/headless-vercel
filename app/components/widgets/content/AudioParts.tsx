@@ -7,6 +7,8 @@ import { BaseWidgetProps } from '@/lib/types/workspace';
 import { WindowLayout, WindowToolbar, WindowContent } from '@/components/system/window/WindowLayout';
 import playlistData from '@/../public/assets/json/playlist.json';
 
+import styles from './AudioParts.module.scss';
+
 // --- Schemas ---
 const VisualiserStateSchema = z.object({
   showOverlay: z.boolean().default(true),
@@ -21,6 +23,7 @@ export const Visualiser = () => null;
 export const PlaybackController = ({ id }: BaseWidgetProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { updateWindowTitle } = useWorkspaceStore();
+  const [titlePhase, setTitlePhase] = useState(0); // 0: Now Playing, 1: Title, 2: Artist, 3: Time
 
   // Use a stable selector or separate hooks to avoid re-renders loop
   const isPlaying = useAudioStudioStore(s => s.isPlaying);
@@ -33,6 +36,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
 
   const setPlaying = useAudioStudioStore(s => s.setPlaying);
   const setProgress = useAudioStudioStore(s => s.setProgress);
+  const setVolume = useAudioStudioStore(s => s.setVolume);
   const nextTrack = useAudioStudioStore(s => s.nextTrack);
   const prevTrack = useAudioStudioStore(s => s.prevTrack);
   const registerAudio = useAudioStudioStore(s => s.registerAudio);
@@ -45,14 +49,31 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
     setPlaylist(playlistData);
   }, [setPlaylist]);
 
+  // Rotate Title Phase
+  useEffect(() => {
+    if (!currentTrack) return;
+    const interval = setInterval(() => {
+      setTitlePhase((prev) => (prev + 1) % 4);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [currentTrack]);
+
   // Sync Window Title
   useEffect(() => {
     if (currentTrack) {
-      updateWindowTitle(id, `🎵 ${currentTrack.artist} - ${currentTrack.title}`);
+      let titleText = "";
+      switch (titlePhase) {
+        case 0: titleText = "▶ NOW PLAYING"; break;
+        case 1: titleText = `🎵 ${currentTrack.title}`; break;
+        case 2: titleText = `by ${currentTrack.artist}`; break;
+        case 3: titleText = `${formatTime(currentTime)} / ${formatTime(duration)}`; break;
+        default: titleText = "Audio Player";
+      }
+      updateWindowTitle(id, titleText);
     } else {
       updateWindowTitle(id, "Audio Player");
     }
-  }, [currentTrack, id, updateWindowTitle]);
+  }, [currentTrack, id, updateWindowTitle, titlePhase, currentTime, duration]);
 
   // Register Audio Element
   useEffect(() => {
@@ -82,7 +103,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
       }
       audioRef.current.volume = volume;
     }
-  }, [isPlaying, volume, setPlaying]);
+  }, [isPlaying, volume, setPlaying, currentTrack]);
 
   const handleTimeUpdate = () => {
     if (!audioRef.current) return;
@@ -122,7 +143,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
 
 
   return (
-    <WindowLayout className="h-full w-full bg-gray-900 border-t-4 border-green-500 font-mono text-white">
+    <WindowLayout className={`h-full w-full`}>
       {/* Toolbar with Transport Controls */}
       <WindowToolbar className="flex items-center justify-center gap-2 border-b border-gray-700 bg-gray-800/50 p-1">
         <button onClick={prevTrack} className="hover:bg-gray-700 p-1 rounded transition-colors text-lg" title="Previous">
@@ -130,17 +151,29 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
         </button>
         <button
           onClick={() => setPlaying(!isPlaying)}
-          className={`p-1 rounded font-bold flex items-center justify-center transition-all min-w-[60px] ${isPlaying ? 'bg-green-600 hover:bg-green-500 text-black shadow-[0_0_10px_rgba(0,255,0,0.5)]' : 'bg-gray-700 hover:bg-gray-600'}`}
+          className={`${styles.playButton} p-1 rounded flex items-center justify-center transition-all min-w-[30px] ${isPlaying ? 'text-black' : 'border shadow-[0_0_2px_rgba(0,0,0,0.5)]'}`}
           title={isPlaying ? "Pause" : "Play"}
         >
-          {isPlaying ? 'PAUSE' : 'PLAY'}
+          {isPlaying ? '⏸' : '▶'}
         </button>
         <button onClick={nextTrack} className="hover:bg-gray-700 p-1 rounded transition-colors text-lg" title="Next">
           ⏭
         </button>
+
+        {/* Volume Control */}
+        <div className={`flex items-center gap-2 ml-4 border-l border-gray-700 pl-4 ${styles.volumeControl}`}>
+          <span className="text-xs">VOL</span>
+          <input
+            type="range"
+            min="0" max="1" step="0.01"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+            className={`w-20 h-1 bg-gray-600 rounded-md appearance-none cursor-pointer accent-black ${styles.sliderInput}`}
+          />
+        </div>
       </WindowToolbar>
 
-      <WindowContent className="p-4 flex flex-col gap-2">
+      <WindowContent padding="medium" className="flex flex-col gap-2">
         {/* Hidden Audio Element */}
         {currentTrack && (
           <audio
@@ -158,7 +191,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
 
 
         {/* Time Display */}
-        <div className="flex justify-between text-xs font-digital text-green-600">
+        <div className={`flex justify-between text-xs ${styles.timeDisplay}`}>
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -169,55 +202,13 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
           min="0" max="100"
           value={progress || 0}
           onChange={(e) => setProgress(Number(e.target.value))}
-          className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+          className="w-full h-1 appearance-none cursor-pointer"
         />
       </WindowContent>
     </WindowLayout>
   );
 };
 
-// --- 3. EQ Mixer (Volume) ---
-export const EQMixer = () => {
-  const { volume, setVolume } = useAudioStudioStore();
-
-  return (
-    <div className="h-full w-full bg-gray-800 p-4 flex flex-col items-center gap-2 text-white border-t-4 border-blue-500">
-      <span className="text-[10px] font-bold tracking-widest text-gray-400 mb-1">MAIN VOL</span>
-      <div className="relative h-full w-12 bg-black rounded-lg overflow-hidden border border-gray-700 group">
-        {/* Volume Level Visualization */}
-        <div
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-600 via-cyan-400 to-white transition-all duration-75 ease-out opacity-80 group-hover:opacity-100"
-          style={{ height: `${volume * 100}%` }}
-        >
-          <div className="w-full h-px bg-white/50 absolute top-0"></div>
-        </div>
-
-        {/* Grid Lines */}
-        <div className="absolute inset-0 flex flex-col justify-between p-1 pointer-events-none opacity-30">
-          {[...Array(10)].map((_, i) => <div key={i} className="w-full h-px bg-gray-500"></div>)}
-        </div>
-
-        {/* Slider Overlay */}
-        <input
-          type="range"
-          min="0" max="1" step="0.01"
-          value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-ns-resize"
-          style={{ appearance: 'slider-vertical' } as any} // Webkit hack, though overlay div works better usually
-        />
-        {/* Standard Range Input Hack for verticality if above doesn't work well */}
-        <input
-          type="range"
-          min="0" max="1" step="0.01"
-          value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
-          className="absolute inset-0 w-[500%] h-[200%] opacity-0 cursor-pointer -rotate-90 origin-top-left translate-y-[100%]"
-          style={{ width: '100vh', height: '100px' }} // Large hit area
-        />
-
-      </div>
-      <span className="font-mono text-xs text-cyan-300 mt-2">{Math.round(volume * 100)}%</span>
-    </div>
-  );
-};
+// --- 3. EQ Mixer (Deprecated/Removed) ---
+// Logic moved to Toolbar
+export const EQMixer = () => null;

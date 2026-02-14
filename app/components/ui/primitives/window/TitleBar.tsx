@@ -1,5 +1,5 @@
 'use client';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './TitleBar.module.scss';
 import { WindowButton } from './Controls';
 
@@ -53,7 +53,7 @@ export const WindowTitleBar = React.forwardRef<HTMLDivElement, WindowTitleBarPro
 
 
 
-          <span className={styles.titleText}>{title}</span>
+          <TitleText>{title}</TitleText>
         </div>
 
         {/* Right Side: Controls */}
@@ -77,4 +77,33 @@ export const WindowTitleBar = React.forwardRef<HTMLDivElement, WindowTitleBarPro
     );
   }
 );
+const TitleText = ({ children }: { children: React.ReactNode }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [isMarquee, setIsMarquee] = useState(false);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const text = textRef.current;
+    if (container && text) {
+      setIsMarquee(text.offsetWidth > container.offsetWidth);
+    }
+  }, [children]);
+
+  return (
+    <div className={styles.titleContainer} ref={containerRef}>
+      <div className={`${styles.titleTextWrapper} ${isMarquee ? styles.marquee : ''}`}>
+        <span ref={textRef} className={styles.titleText}>
+          {children}
+        </span>
+        {isMarquee && (
+          <span className={styles.titleText} aria-hidden="true">
+            {children}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
+
 WindowTitleBar.displayName = 'WindowTitleBar';

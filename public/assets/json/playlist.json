@@ -1,26 +1,58 @@
 [
   {
     "id": "track_01",
-    "title": "Quantum Jazz",
-    "artist": "The Algorithms",
-    "year": "2042",
-    "url": "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-    "cover": "/assets/img/album_jazz.jpg"
-  },
-  {
-    "id": "track_02",
-    "title": "Neon Highway",
-    "artist": "Cyber Driver",
+    "title": "Big Wednesday",
+    "artist": "Freeland",
     "year": "2088",
-    "url": "https://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/ateapill.ogg",
+    "url": "/assets/mp3/02 Freeland - The Animatrix-The Album - 02 Big Wednesday.mp3",
     "cover": "/assets/img/album_neon.jpg"
   },
   {
-    "id": "track_03",
-    "title": "Digital Rain",
+    "id": "track_02",
+    "title": "Mist",
     "artist": "System 404",
     "year": "1999",
-    "url": "https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/win.ogg",
+    "url": "/assets/mp3/02 Mist.mp3",
+    "cover": "/assets/img/album_rain.jpg"
+  },  
+  {
+    "id": "track_03",
+    "title": "Six of One and Half a Dozen of the Other",
+    "artist": "Lazerhawk",
+    "year": "2015",
+    "url": "/assets/mp3/02 Six of One and Half a Dozen of the Other.mp3",
+    "cover": "/assets/img/album_city.jpg"
+  },
+  {
+    "id": "track_04",
+    "title": "Blind Tiger",
+    "artist": "Layo & Bushwacka!",
+    "year": "2020",
+    "url": "/assets/mp3/03 Layo & Bushwacka! - The Animatrix-The Album - 03 Blind Tiger.mp3",
+    "cover": "/assets/img/album_neon.jpg"
+  }, 
+  {
+    "id": "track_05",
+    "title": "I Don't Like You",
+    "artist": "Futurecop!",
+    "year": "2013",
+    "url": "/assets/mp3/04 I Don't Like You.mp3",
+    "cover": "/assets/img/album_city.jpg"
+  },
+  {
+    "id": "track_06",
+    "title": "WILD RUSH",
+    "artist": "FACTOR-X",
+    "year": "2011",
+    "url": "/assets/mp3/05 - FACTOR-X - WILD RUSH.mp3",
+    "cover": "/assets/img/album_neon.jpg"
+  },
+  {
+    "id": "track_07",
+    "title": "MOBO★MOGA",
+    "artist": "Orange Lounge",
+    "year": "2016",
+    "url": "/assets/mp3/07 - Orange Lounge - MOBO★MOGA.mp3",
     "cover": "/assets/img/album_rain.jpg"
   }
 ]

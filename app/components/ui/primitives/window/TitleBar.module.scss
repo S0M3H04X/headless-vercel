@@ -10,14 +10,14 @@
   justify-content: space-between;
   padding: 8px 0;
   height: 42px; // Standard height
-  
+
   color: #fff;
   font-weight: 100;
   font-size: 13px;
   cursor: default;
   user-select: none;
 
-  
+
 
   &.active {
     background: $color-platinum-light;
@@ -36,22 +36,29 @@
 .titleText {
   position: relative;
   z-index: 1;
-  background-color: $color-platinum-light; // 遮住橫紋
-  box-shadow:
-      inset 1px 1px 0 #444,
-      inset 2px 2px 0 #888,
-      inset -1px -1px 0 #fff;
-      // 1px 1px 0 #000;
-  backdrop-filter: blur(4px);
-  border-radius: 2rem;
   padding: 0 8px;
   font-family: $font-menu;
   font-weight: 100;
   font-size: 14px;
   color: $color-text;
-  margin: 0; // 置中
+  white-space: nowrap; // Ensure text stays on one line
 
-  // 標題列橫紋 (Stripes)
+
+}
+
+.titleContainer {
+  position: relative;
+  max-width: 120px;
+  overflow: hidden;
+  background-color: $color-platinum-light;
+  border-radius: 2rem;
+  box-shadow:
+    inset 1px 1px 0 #444,
+    inset 2px 2px 0 #888,
+    inset -1px -1px 0 #fff;
+  z-index: 1;
+
+    // 標題列橫紋 (Stripes)
   &::before {
     content: '';
     position: absolute;
@@ -67,11 +74,62 @@
     pointer-events: none;
     z-index: -1;
   }
-  
+
   &.active {
     color: #000;
   }
+}
 
+.titleTextWrapper {
+  margin: 0 auto;
+  display: flex;
+  gap: 16px; // Gap between marquee duplicates
+  width: fit-content;
+
+
+
+  &.marquee {
+    animation: scroll-left 10s linear infinite;
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-50% - 8px));
+  }
+
+  // Move by 50% of wrapper width (one full copy) minus half gap? No, logic is tricky.
+  // Better logic: move by -100% of the single text width?
+  // Let's rely on standard marquee: we have 2 copies. Move by -50% of the wrapper (which contains 2 copies + gap).
+  // Actually, standard is: transform: translateX(-50%); creates visual jump if gap isn't handled.
+  // Let's try simple:
+  // Wrapper width = Text + Gap + Text
+  // Move from 0 to -(Text + Gap)
+}
+
+// Adjust keyframes for smoother loop
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 8px));
+  }
+
+  // Assuming gap is 16px outside keyframes? No, gap is inside flex.
+  // If wrapper has 2 children with gap 16px.
+  // Total width = W + 16 + W.
+  // We want to shift by W + 16.
+  // That is exactly 50% of total width + 8px? No.
+  // Simplest is: translateX(-50%) of the *wrapper* if it contains exactly 2 copies.
+  // But wrapper width is (2W + 16). 50% is W + 8.
+  // Shifting by W + 8 leaves 8px gap at the start?
+  // Let's just use translateX(-50%) and see. The gap logic usually handles reasonable smoothness.
 }
 
 .titleControls {

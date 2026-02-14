@@ -81,10 +81,10 @@ export const ScenarioService = {
       initialGeometry: layout.CONTROL
     });
 
-    openWindow({
-      title: 'Master EQ',
-      content: { kind: WidgetKind.VideoMixer, sourceId: 'mix_01' },
-      initialGeometry: layout.MIXER
-    });
+    // openWindow({
+    //   title: 'Master EQ',
+    //   content: { kind: WidgetKind.VideoMixer, sourceId: 'mix_01' },
+    //   initialGeometry: layout.MIXER
+    // });
   }
 };

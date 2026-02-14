@@ -104,7 +104,7 @@ export const useAudioStudioStore = create<AudioStudioState>()(
       setCurrentIndex: (index) => {
         const { playlist } = get();
         if (index >= 0 && index < playlist.length) {
-          set({ currentIndex: index, isPlaying: true }); // Auto-play on track change
+          set({ currentIndex: index, isPlaying: true, currentTime: 0, progress: 0 }); // Auto-play on track change
           // Audio element source update is handled in the component via effect
         }
       },

@@ -11,7 +11,7 @@ export const INITIAL_LAYOUTS = {
   },
   VIDEO: {
     VISUALISER: { x: 20, y: 100, width: 300, height: 340 },
-    CONTROL: { x: 20, y: 450, width: 350, height: 200 },
+    CONTROL: { x: 20, y: 42, width: 250, height: 150 },
     MIXER: { x: 20, y: 450, width: 150, height: 200 },
   },
   PDF: {
