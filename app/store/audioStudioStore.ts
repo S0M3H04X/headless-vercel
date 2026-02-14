@@ -52,7 +52,7 @@ export const useAudioStudioStore = create<AudioStudioState>()(
     (set, get) => ({
       isPlaying: false,
       progress: 0,
-      volume: 1,
+      volume: 0.5,
       currentTime: 0,
       duration: 0,
 

@@ -5,6 +5,9 @@ import { db } from '@/lib/db';
 
 const TABLE_NAME = 'member_avatars';
 
+export const dynamic = 'force-dynamic';
+
+
 // Helper: extract email from session cookie
 function getEmailFromToken(token: string): string | null {
   if (token.startsWith('os_session_')) {

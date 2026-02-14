@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
@@ -65,23 +68,23 @@ export async function GET(request: Request) {
     // 2. [新增] 存入 Refresh Token (長期)
     // 雖然 API 可能沒回傳 refresh_token 的 expires_in，但通常較長，我們設為 30 天
     if (refresh_token) {
-        cookieStore.set('shopify_refresh_token', refresh_token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30, // 30 天
-        });
+      cookieStore.set('shopify_refresh_token', refresh_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30, // 30 天
+      });
     }
 
     if (id_token) {
-       cookieStore.set('shopify_id_token', id_token, {
+      cookieStore.set('shopify_id_token', id_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
         maxAge: expires_in,
-       });
+      });
     }
 
     // 5. 清理暫存的 PKCE Cookie
