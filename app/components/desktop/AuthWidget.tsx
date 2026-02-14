@@ -48,7 +48,7 @@ export const AuthWidget: React.FC = () => {
 
   const handleLogin = async () => {
     if (!accessKey.trim()) {
-      alert("Please enter your access key.");
+      alert("Please enter your private key.");
       return;
     }
     setLoading(true); setError('');
@@ -103,7 +103,7 @@ export const AuthWidget: React.FC = () => {
 
   // 未登入視圖
   return (
-    <GroupFrame legend="Get Your Access Key" className={styles.loginContainer}>
+    <GroupFrame legend="Get Your VIP Key" className={styles.loginContainer}>
 
 
       <div className="relative z-10 w-full">
@@ -129,7 +129,7 @@ export const AuthWidget: React.FC = () => {
               <label className={styles.labelAuth}>Enter the key</label>
               <input
                 type="password"
-                placeholder="********"
+                placeholder="******"
                 className={styles.inputKey}
                 value={accessKey}
                 onChange={(e) => setAccessKey(e.target.value)}
@@ -156,7 +156,7 @@ export const AuthWidget: React.FC = () => {
                   isDefault={true}
                   className="min-w-[100px]"
                 >
-                  {step === 'email' ? 'Get Key' : 'Enter System'}
+                  {step === 'email' ? 'Get VIP Key' : 'Enter VIP Space'}
                 </Button>
               </>
             )}

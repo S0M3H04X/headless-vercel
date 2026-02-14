@@ -23,8 +23,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Please wait 5 minutes before requesting a new key.' }, { status: 429 });
     }
 
-    // 2. 生成 Access Key (8位數，增強安全性)
-    const accessKey = Math.floor(10000000 + Math.random() * 90000000).toString();
+    // 2. 生成 Access Key (6位數，增強安全性)
+    const accessKey = Math.floor(100000 + Math.random() * 900000).toString();
 
     // 3. Shopify 同步 (Optional)
     // 嘗試在 Shopify 建立該用戶 (如果不存在)，確保他是 "Real Customer"
