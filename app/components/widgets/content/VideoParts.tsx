@@ -39,39 +39,39 @@ export const Visualiser = ({ content, internalState }: BaseWidgetProps) => {
     const { currentTime, duration } = videoRef.current;
     if (duration > 0) {
       // 這裡使用 setState 避免觸發不必要的 re-render 迴圈
-      useVideoStudioStore.setState({ 
-          progress: (currentTime / duration) * 100, 
-          currentTime 
+      useVideoStudioStore.setState({
+        progress: (currentTime / duration) * 100,
+        currentTime
       });
     }
   };
 
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
-        const video = videoRef.current;
-        setDuration(video.duration);
-        
-        // [關鍵修復] 當影片 Meta 下載完畢，強制跳轉到上次記憶的時間
-        // 加個微小的閾值避免干擾從頭播放
-        if (Math.abs(video.currentTime - storedTime) > 1) {
-            console.log(`[Video] Restoring playback position: ${storedTime}`);
-            video.currentTime = storedTime;
-        }
+      const video = videoRef.current;
+      setDuration(video.duration);
+
+      // [關鍵修復] 當影片 Meta 下載完畢，強制跳轉到上次記憶的時間
+      // 加個微小的閾值避免干擾從頭播放
+      if (Math.abs(video.currentTime - storedTime) > 1) {
+        console.log(`[Video] Restoring playback position: ${storedTime}`);
+        video.currentTime = storedTime;
+      }
     }
   };
 
   const handlePlayPause = () => {
-      // 監聽原生播放事件（例如使用者點擊影片畫面）
-      if (videoRef.current) {
-          setPlaying(!videoRef.current.paused);
-      }
+    // 監聽原生播放事件（例如使用者點擊影片畫面）
+    if (videoRef.current) {
+      setPlaying(!videoRef.current.paused);
+    }
   };
 
   return (
     <div className="h-full w-full bg-black flex items-center justify-center overflow-hidden relative group">
       {/* 模擬音波視覺效果 (裝飾用) */}
       <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
-         <div className="w-full h-1 bg-green-500 animate-pulse"></div>
+        <div className="w-full h-1 bg-green-500 animate-pulse"></div>
       </div>
 
       <video
@@ -112,17 +112,17 @@ export const PlaybackController = () => {
         <span className="text-xl font-bold tracking-widest">CONTROL DECK</span>
         <span className="text-xs text-gray-400">{isPlaying ? 'RUNNING' : 'STANDBY'}</span>
       </div>
-      
+
       {/* Time Display */}
       <div className="bg-black p-2 rounded text-center text-2xl text-green-400 font-digital border border-gray-700">
         {formatTime(currentTime)} <span className="text-xs text-gray-600">/ {formatTime(duration)}</span>
       </div>
 
       {/* Progress Bar */}
-      <input 
-        type="range" 
-        min="0" max="100" 
-        value={progress || 0} 
+      <input
+        type="range"
+        min="0" max="100"
+        value={progress || 0}
         onChange={(e) => setProgress(Number(e.target.value))}
         className="w-full accent-purple-500 cursor-pointer"
       />
@@ -130,7 +130,7 @@ export const PlaybackController = () => {
       {/* Transport Controls */}
       <div className="grid grid-cols-3 gap-2 mt-auto">
         <button className="bg-gray-700 hover:bg-gray-600 p-2 rounded">⏮</button>
-        <button 
+        <button
           onClick={() => setPlaying(!isPlaying)}
           className={`p-2 rounded font-bold ${isPlaying ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
         >
@@ -151,18 +151,18 @@ export const EQMixer = () => {
       <span className="text-xs font-bold mb-2">MASTER OUT</span>
       <div className="relative h-32 w-8 bg-black rounded-full overflow-hidden border border-gray-600">
         {/* Volume Level Visualization */}
-        <div 
-            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-500 via-yellow-400 to-red-500 transition-all duration-100"
-            style={{ height: `${volume * 100}%` }}
+        <div
+          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-500 via-yellow-400 to-red-500 transition-all duration-100"
+          style={{ height: `${volume * 100}%` }}
         />
         {/* Slider Overlay */}
-        <input 
-            type="range" 
-            min="0" max="1" step="0.01"
-            value={volume}
-            onChange={(e) => setVolume(Number(e.target.value))}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            style={{ transform: 'rotate(-90deg) translateX(-40%)', transformOrigin: 'center' }} // Hacky vertical slider
+        <input
+          type="range"
+          min="0" max="1" step="0.01"
+          value={volume}
+          onChange={(e) => setVolume(Number(e.target.value))}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          style={{ transform: 'rotate(-90deg) translateX(-40%)', transformOrigin: 'center' }} // Hacky vertical slider
         />
       </div>
       <span className="font-mono text-sm">{Math.round(volume * 100)}%</span>

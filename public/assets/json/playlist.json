@@ -1,0 +1,26 @@
+[
+  {
+    "id": "track_01",
+    "title": "Quantum Jazz",
+    "artist": "The Algorithms",
+    "year": "2042",
+    "url": "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
+    "cover": "/assets/img/album_jazz.jpg"
+  },
+  {
+    "id": "track_02",
+    "title": "Neon Highway",
+    "artist": "Cyber Driver",
+    "year": "2088",
+    "url": "https://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/ateapill.ogg",
+    "cover": "/assets/img/album_neon.jpg"
+  },
+  {
+    "id": "track_03",
+    "title": "Digital Rain",
+    "artist": "System 404",
+    "year": "1999",
+    "url": "https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/win.ogg",
+    "cover": "/assets/img/album_rain.jpg"
+  }
+]

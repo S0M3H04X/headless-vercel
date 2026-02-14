@@ -15,9 +15,6 @@ import styles from './Registry.module.scss';
 
 const WIDGET_TIERS: Record<string, UserTier> = {
   // Admin Only
-  [WidgetKind.VideoControl]: 'admin',
-  [WidgetKind.VideoVisual]: 'admin',
-  [WidgetKind.VideoMixer]: 'admin',
 
   // Pro Only
   [WidgetKind.MediaPlayer]: 'pro',
@@ -26,12 +23,17 @@ const WIDGET_TIERS: Record<string, UserTier> = {
   [WidgetKind.UserProfile]: 'member',
   [WidgetKind.Cart]: 'member',
   [WidgetKind.Collection]: 'member',
-  [WidgetKind.Product]: 'member', // Product Browsing is member feature
-  [WidgetKind.PDFViewer]: 'member', // Manuals should be readable? Or member? Let's say member based on Launcher.
+  [WidgetKind.Product]: 'member',
+  [WidgetKind.PDFViewer]: 'member',
+
+  // [Modified] Video/Audio Studio is now Member Tier
+  [WidgetKind.VideoControl]: 'member',
+  [WidgetKind.VideoVisual]: 'member',
+  [WidgetKind.VideoMixer]: 'member',
 
   // Guest Access (Default)
   [WidgetKind.Auth]: 'guest',
-  [WidgetKind.Folder]: 'guest', // Folders access controlled by FS node, but widget itself is open
+  [WidgetKind.Folder]: 'guest',
 
 };
 
@@ -49,10 +51,10 @@ const WIDGET_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<B
   [WidgetKind.Cart]: lazy(() => import('./commerce/CartWidget')),
   [WidgetKind.UserProfile]: lazy(() => import('./user/UserProfileWidget')),
 
-  // [新增] 影音原子組件
-  [WidgetKind.VideoControl]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.PlaybackController }))),
-  [WidgetKind.VideoVisual]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.Visualiser }))),
-  [WidgetKind.VideoMixer]: lazy(() => import('./content/VideoParts').then(m => ({ default: m.EQMixer }))),
+  // [Modified] Audio Parts Refactor
+  [WidgetKind.VideoControl]: lazy(() => import('./content/AudioParts').then(m => ({ default: m.PlaybackController }))),
+  [WidgetKind.VideoVisual]: lazy(() => import('./content/AudioParts').then(m => ({ default: m.Visualiser }))),
+  [WidgetKind.VideoMixer]: lazy(() => import('./content/AudioParts').then(m => ({ default: m.EQMixer }))),
 
   // [修正] 註冊 Auth
   [WidgetKind.Auth]: lazy(() => import('../desktop/AuthWidget').then(m => ({

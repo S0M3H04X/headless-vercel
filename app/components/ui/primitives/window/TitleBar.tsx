@@ -45,6 +45,14 @@ export const WindowTitleBar = React.forwardRef<HTMLDivElement, WindowTitleBarPro
               <img src={icon} alt="" className="w-full h-full object-contain" />
             </div>
           )}
+
+
+
+
+
+
+
+
           <span className={styles.titleText}>{title}</span>
         </div>
 

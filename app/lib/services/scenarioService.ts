@@ -41,13 +41,13 @@ export const ScenarioService = {
       });
     }
 
-    
+
   },
 
 
 
-  // Scenario 2: Video Studio (with Singleton Check)
-  launchVideoStudio: (sourceId?: string) => {
+  // Scenario 2: Audio Studio (was Video Studio)
+  launchAudioStudio: (sourceId?: string) => {
     const store = useWorkspaceStore.getState();
 
     // [Fix 1] Singleton Check: 檢查是否已經有 Video Studio 相關視窗
@@ -57,7 +57,7 @@ export const ScenarioService = {
 
     if (hasVideoStudio) {
       // 這裡簡單使用 alert，實務上可以使用 Toast 通知
-      alert("Video Studio is already running. Only one instance is allowed.");
+      alert("Audio Studio is already running. Only one instance is allowed.");
       return;
     }
 
@@ -67,11 +67,13 @@ export const ScenarioService = {
     const videoUrl = sourceId || 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
     // [Fix 2] 使用常數佈局
-    openWindow({
-      title: 'Studio Monitor A',
-      content: { kind: WidgetKind.VideoVisual, sourceId: videoUrl },
-      initialGeometry: layout.VISUALISER
-    });
+    // [Fix 2] 使用常數佈局
+    // Visualiser 視窗移除，改為 Desktop Background 渲染
+    // openWindow({
+    //   title: 'Studio Monitor A',
+    //   content: { kind: WidgetKind.VideoVisual, sourceId: videoUrl },
+    //   initialGeometry: layout.VISUALISER
+    // });
 
     openWindow({
       title: 'Transport',

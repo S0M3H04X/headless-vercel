@@ -12,12 +12,12 @@
   },
   "member": {
     "role": "member",
-    "dock": ["launcher", "cart", "pdf_viewer"],
+    "dock": ["launcher", "cart", "pdf_viewer", "audio_studio"],
     "autoStart": [] 
   },
   "admin": {
     "role": "admin",
-    "dock": ["launcher", "product_browser", "video_studio", "cart", "profile", "pdf_viewer"],
+    "dock": ["launcher", "product_browser", "audio_studio", "cart", "profile", "pdf_viewer"],
     "autoStart": []
   }
 }

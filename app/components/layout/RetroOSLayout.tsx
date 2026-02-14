@@ -4,6 +4,35 @@ import { AuthWidget } from '@/components/desktop/AuthWidget'; // [修正] 加上
 
 import styles from './RetroOSLayout.module.scss';
 
+import { useAudioStudioStore } from '@/store/audioStudioStore';
+import { WebGPUCanvas } from '@/components/three/WebGPUCanvas';
+import { Suspense, lazy } from 'react';
+
+// Lazy load the shader component to avoid SSR issues with Three.js/WebGPU
+const AudioReactiveShader = lazy(() => import('./AudioReactiveShader')); // We need to create this!
+
+const WallpaperLayer = ({ defaultWallpaper }: { defaultWallpaper?: string }) => {
+  const isVisualiserActive = useAudioStudioStore(s => s.isVisualiserActive);
+
+  if (isVisualiserActive) {
+    return (
+      <div className="absolute inset-0 z-0 bg-black pointer-events-none">
+        <WebGPUCanvas>
+          <Suspense fallback={null}>
+            <AudioReactiveShader />
+          </Suspense>
+        </WebGPUCanvas>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none transition-all duration-500"
+      style={{ backgroundImage: `url(${defaultWallpaper || '/assets/img/2.jpg'})` }}
+    />
+  );
+};
 
 interface RetroOSLayoutProps {
   children: React.ReactNode;
@@ -24,7 +53,7 @@ export const RetroOSLayout: React.FC<RetroOSLayoutProps> = ({ children, wallpape
         style={{ backgroundImage: `url(${wallpaper || '/assets/img/2.jpg'})` }}
       />
 
-      
+
 
       {/* Layer 3, 4, 5: Injected Content */}
       <div className="relative z-10 w-full h-full">

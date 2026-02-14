@@ -107,7 +107,6 @@ export const ClassicyWindow: React.FC<ClassicyWindowProps> = ({
       {/* Title Bar: Standard Windows Only */}
       {/* {!points && ( // Hide standard title bar for polygon windows? Or keep it? keeping for now but maybe inside? */}
 
-      {/* Using Window.TitleBar */}
       <Window.TitleBar
         title={title}
         isActive={isActive}

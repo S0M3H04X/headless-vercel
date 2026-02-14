@@ -24,11 +24,11 @@ const APP_CONFIG: Record<string, AppConfig> = {
     requiredTier: 'admin',
     action: () => ScenarioService.launchProductSuite('tee')
   },
-  'video_studio': {
+  'audio_studio': {
     label: 'Studio',
-    icon: 'retro-camera',
-    requiredTier: 'admin', // VideoControl/Visual/Mixer are admin-only, but Studio app is member
-    action: () => ScenarioService.launchVideoStudio('01')
+    icon: 'music', // Changed icon
+    requiredTier: 'member', // Member tier
+    action: () => ScenarioService.launchAudioStudio('01')
   },
   'pdf_viewer': {
     label: 'Scan',
