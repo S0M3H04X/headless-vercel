@@ -297,7 +297,7 @@ export const ProductInfoWidget = ({ content, internalState }: BaseWidgetProps) =
           const isSoldOut = !variant?.availableForSale || (variant?.quantityAvailable !== undefined && variant.quantityAvailable <= 0);
 
           return (
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col gap-2 items-end">
               {/* {isSoldOut && (
                 <span className="text-red-500 text-xs font-bold uppercase tracking-wider border border-red-500 px-2 py-0.5 rounded">
                   Sold Out
