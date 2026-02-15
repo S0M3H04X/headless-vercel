@@ -1,6 +1,11 @@
 >_ ABOUT
 
-1313HEART specializes in retro clothing, publications & objects. With a focus on music, the arts and counter culture. 1313HEART is dedicated to pushing the transition to sustainable consumption through curation, sourcing and reference points.
+At 1313HEART, we don’t just "sell clothes." We curate the artifacts of a life lived loud. We are a dedicated space for the threads, pages, and oddities that define the fringes of music, art, and the counter-culture movements that shaped us.
+
+We believe the future of fashion isn't only in a factory; it’s in the rotation. By sourcing with intent and centering our aesthetic on deep-cut references, we’re making sustainable consumption a subcultural standard.
+
+    Buy less. Reference more. Keep the culture moving.
+
 
 >_ What's "One Credit"?
 
