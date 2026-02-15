@@ -90,7 +90,7 @@ export const AuthWidget: React.FC = () => {
 
             <p>{`>_ Your VIP Access:`}</p>
             <p>{`>_ 1313 Archived Issue`}</p>
-            <p>{`>_ 90s-00s Hidden Gems`}</p>
+            <p>{`>_ 90s-00s Playlist`}</p>
             <p>{`>_ Selected Items`}</p>
           </div>
           <div className={styles.userGreeting}>Enjoy</div>
