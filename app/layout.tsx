@@ -3,6 +3,7 @@ import './global.css';
 import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 import { Pixelify_Sans, VT323 } from "next/font/google";
 import localFont from 'next/font/local';
+import { Analytics } from '@vercel/analytics/next';
 // import 'winbox/dist/css/winbox.min.css';
 // import "@sakun/system.css";
 
@@ -129,7 +130,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${pixelifySans.variable} ${vt323.variable} ${chicagoKare.variable} ${ishmeria.variable} ${arcade.variable} ${llPixel3.variable} ${appleGaramond.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
