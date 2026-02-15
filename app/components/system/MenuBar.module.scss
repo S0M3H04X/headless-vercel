@@ -30,3 +30,29 @@
   border-radius: 20px;
   z-index: 100;
 }
+
+.marqueeScroll {
+  display: flex;
+  width: max-content;
+  animation: marquee 10s linear infinite;
+
+  /* Pause on hover for better UX */
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.marqueeItem {
+  padding-right: 2rem;
+  /* The gap between loops */
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}

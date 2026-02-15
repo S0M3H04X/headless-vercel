@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/store/authStore'; // [新增]
 import { SystemMenu } from './SystemMenu';
 import { useWorkspaceStore } from '@/store/workspaceStore';
@@ -9,6 +9,47 @@ import { Z_INDEX, LAYOUT } from '@/lib/constants/ui';
 import { PixelIcon } from '@/components/ui/primitives/PixelIcon';
 
 import styles from './MenuBar.module.scss';
+
+const ScrollingTitle = ({ title }: { title: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current && textRef.current) {
+        setIsOverflowing(textRef.current.scrollWidth > containerRef.current.clientWidth);
+      }
+    };
+
+    // Initial check
+    checkOverflow();
+    // Re-check on window resize
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [title]);
+
+  return (
+    <div
+      className={`ml-4 text-sm text-black px-2 border-l border-gray-300 overflow-hidden whitespace-nowrap h-full flex items-center relative transition-all duration-300`}
+      style={{
+        maxWidth: '200px',
+        maskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' : 'none',
+        WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' : 'none'
+      }}
+      ref={containerRef}
+    >
+      {isOverflowing ? (
+        <div className={styles.marqueeScroll}>
+          <span className={styles.marqueeItem}>{title}</span>
+          <span className={styles.marqueeItem}>{title}</span>
+        </div>
+      ) : (
+        <span ref={textRef}>{title}</span>
+      )}
+    </div>
+  );
+};
 
 export const MenuBar: React.FC = () => {
   const [time, setTime] = useState<string>('');
@@ -68,9 +109,7 @@ export const MenuBar: React.FC = () => {
     >
       <div className="flex items-center h-full">
         <SystemMenu />
-        <div className="ml-4 text-sm text-black px-2 border-l border-gray-300">
-          {activeWindowTitle}
-        </div>
+        <ScrollingTitle key={activeWindowTitle} title={activeWindowTitle} />
       </div>
 
       <div className="flex items-center h-full px-3 font-semibold text-sm text-black gap-3">

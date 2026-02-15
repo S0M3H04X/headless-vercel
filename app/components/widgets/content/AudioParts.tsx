@@ -146,7 +146,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
     <WindowLayout className={`h-full w-full`}>
       {/* Toolbar with Transport Controls */}
       <WindowToolbar className="flex items-center justify-center gap-2 border-b border-gray-700 bg-gray-800/50 p-1">
-        <button onClick={prevTrack} className="hover:bg-gray-700 p-1 rounded transition-colors text-lg" title="Previous">
+        <button onClick={prevTrack} className="p-1 rounded transition-colors text-lg" title="Previous">
           ⏮
         </button>
         <button
@@ -156,7 +156,7 @@ export const PlaybackController = ({ id }: BaseWidgetProps) => {
         >
           {isPlaying ? '⏸' : '▶'}
         </button>
-        <button onClick={nextTrack} className="hover:bg-gray-700 p-1 rounded transition-colors text-lg" title="Next">
+        <button onClick={nextTrack} className="p-1 rounded transition-colors text-lg" title="Next">
           ⏭
         </button>
 
