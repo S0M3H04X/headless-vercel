@@ -26,7 +26,7 @@
     font-size: 22px;
     text-transform: uppercase;
     color: hsl(var(--specular-highlight) / 0.9);
-    top: 30%;
+    top: 5rem;
   } 
 
 }
@@ -36,8 +36,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 60%;
-  gap: 2rem;
+  width: 80%;
+  gap: 0.5rem;
+  font-family: $font-pixel;
 }
 
 .inputGroup {
@@ -117,10 +118,22 @@
   
 }
 
-.greeting {
+.userGreeting {
+  position: absolute;
+  bottom: 4.2rem;
   font-family: $font-pixel;
   font-size: 14px;
   color: hsl(var(--shadow-color) / 0.7);
+}
+
+.builderQuote {
+  position: absolute;
+  bottom: 0.5rem;
+  // left: 50%;
+  // transform: translateX(-50%);
+  font-family: $font-pixel;
+  font-size: 10px;
+  color: hsl(var(--shadow-color) / 0.5);
 }
 
 .userInfoBox {

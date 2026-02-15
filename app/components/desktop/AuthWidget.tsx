@@ -74,25 +74,27 @@ export const AuthWidget: React.FC = () => {
   // [Fix] 登入後顯示會員資訊 (My Account View)
   if (isAuthenticated) {
     return (
-      <GroupFrame legend="Welcome & Enjoy" className={styles.logoutContainer}>
+      <GroupFrame legend="Welcome" className={styles.logoutContainer}>
         <div className={styles.grantedContainer}>
           {/* <div className={styles.userAvatar}>
             <span className="text-2xl">👤</span>
           </div> */}
-          <div className={styles.userInfoBox}>
-            <div className="mb-4">
-              {/* <div className={styles.userGreeting}>Welcome</div> */}
+          <div className="mb-4">
+            
 
-              <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
-            </div>
+            <div className={styles.userEmail}>{user?.email || 'Authenticated User'}</div>
+          </div>
+          <div className={styles.userInfoBox}>
+
             <p>{`>_ Tier: ${(user?.tier || 'member').toUpperCase()}`}</p>
 
-            {/* <p>{`> Session Type: CAMPAIGN`}</p> */}
-            {/* <p>{`> Permissions: READ`}</p> */}
-            {/* <p>{`> Status: CONNECTED`}</p> */}
-            {/* <p>{`> Encrypted: YES`}</p> */}
+            <p>{`>_ Your VIP Access:`}</p>
+            <p>{`>_ 1313 Archived Issue`}</p>
+            <p>{`>_ 90s-00s Hidden Gems`}</p>
+            <p>{`>_ Selected Items`}</p>
           </div>
-
+          <div className={styles.userGreeting}>Enjoy</div>
+          <div className={styles.builderQuote}>Build with &lt;3 by S0M3H04X</div>
           {/* <Button onClick={handleLogout} className={styles.logoutButton} isDefault={true}>
             Log Out
           </Button> */}
